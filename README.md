@@ -2,6 +2,9 @@
 <p align="center">
   <img src="Imgs/img.jpg" alt="Leap">
 </p>
+
+
+
 ## Overview
 The **LEAP Smart Control System** is an innovative project designed to simplify and enhance home automation by integrating multiple technologies such as face recognition, gesture recognition, chatbot interactions, and a mobile application. This system aims to provide seamless and secure control over various home devices and systems.
 
