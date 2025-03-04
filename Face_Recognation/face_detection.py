@@ -1,167 +1,167 @@
-# Face Recognition Project
-
-import os
-import numpy as np
 import cv2
-from deepface import DeepFace
-import pandas as pd
+import numpy as np
+import dlib
 import sqlite3
+import os
+from datetime import datetime
 
 
-class FaceRecognitionSystem:
-    def __init__(self, database_path="face_database.db"):
-        """
-        Initialize the Face Recognition System
+# --- Database Setup ---
+def setup_database():
+    conn = sqlite3.connect("face_recognition.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            embedding BLOB NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-        Args:
-            database_path (str): Path to the SQLite database for storing face embeddings
-        """
-        self.database_path = database_path
-        self.setup_database()
 
-    def setup_database(self):
-        """
-        Create SQLite database to store face embeddings and user information
-        """
-        conn = sqlite3.connect(self.database_path)
-        cursor = conn.cursor()
+# --- Store Face Embedding in Database ---
+def store_face_embedding(name, embedding):
+    conn = sqlite3.connect("face_recognition.db")
+    cursor = conn.cursor()
+    embedding_blob = embedding.tobytes()  # Convert numpy array to binary
+    cursor.execute("INSERT INTO users (name, embedding) VALUES (?, ?)", (name, embedding_blob))
+    conn.commit()
+    conn.close()
+    print(f"Stored embedding for {name} in database.")
 
-        # Create tables for storing face information
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL UNIQUE,
-                image_path TEXT NOT NULL
-            )
-        """)
 
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS face_embeddings (
-                user_id INTEGER,
-                embedding BLOB,
-                FOREIGN KEY(user_id) REFERENCES users(id)
-            )
-        """)
+# --- Load Known Embeddings from Database ---
+def load_known_embeddings():
+    conn = sqlite3.connect("face_recognition.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT name, embedding FROM users")
+    rows = cursor.fetchall()
+    known_embeddings = {}
+    for name, embedding_blob in rows:
+        embedding = np.frombuffer(embedding_blob, dtype=np.float64)  # Convert binary back to numpy array
+        known_embeddings[name] = embedding
+    conn.close()
+    return known_embeddings
 
-        conn.commit()
-        conn.close()
 
-    def register_face(self, name, image_path):
-        """
-        Register a new face in the database
+# --- Initialize dlib Models ---
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+face_recognizer = dlib.face_recognition_model_v1("dlib_face_recognition_resnet_model_v1.dat")
 
-        Args:
-            name (str): Name of the person
-            image_path (str): Path to the image file
 
-        Returns:
-            bool: True if registration successful, False otherwise
-        """
-        try:
-            # Detect and extract face embedding
-            embedding = DeepFace.represent(
-                img_path=image_path, model_name="Facenet512", enforce_detection=True
-            )[0]["embedding"]
+# --- Compute Face Embedding ---
+def compute_embedding(image, face_rect):
+    shape = predictor(image, face_rect)
+    embedding = face_recognizer.compute_face_descriptor(image, shape)
+    return np.array(embedding)  # 128-dimensional vector
 
-            # Connect to database
-            conn = sqlite3.connect(self.database_path)
-            cursor = conn.cursor()
 
-            # Insert user
-            cursor.execute(
-                "INSERT INTO users (name, image_path) VALUES (?, ?)", (name, image_path)
-            )
-            user_id = cursor.lastrowid
+# --- Register Faces from Dataset ---
+def register_faces(dataset_path):
+    if not os.path.exists(dataset_path):
+        print(f"Dataset path {dataset_path} does not exist!")
+        return
 
-            # Insert embedding
-            cursor.execute(
-                "INSERT INTO face_embeddings (user_id, embedding) VALUES (?, ?)",
-                (user_id, np.array(embedding).tobytes()),
-            )
+    for person_name in os.listdir(dataset_path):
+        person_dir = os.path.join(dataset_path, person_name)
+        if not os.path.isdir(person_dir):
+            continue
 
-            conn.commit()
-            conn.close()
+        # Take the first image for each person as their reference
+        for image_file in os.listdir(person_dir):
+            image_path = os.path.join(person_dir, image_file)
+            img = cv2.imread(image_path)
+            if img is None:
+                print(f"Failed to load {image_path}")
+                continue
 
-            print(f"Successfully registered {name}")
-            return True
+            faces = detector(img)
+            if len(faces) == 0:
+                print(f"No face detected in {image_path}")
+                continue
 
-        except Exception as e:
-            print(f"Error registering face: {e}")
-            return False
+            embedding = compute_embedding(img, faces[0])
+            store_face_embedding(person_name, embedding)
+            print(f"Registered {person_name} from {image_path}")
+            break  # One image per person for simplicity
 
-    def recognize_face(self, image_path, threshold=0.4):
-        """
-        Recognize a face from the database
 
-        Args:
-            image_path (str): Path to the image to recognize
-            threshold (float): Similarity threshold for recognition
+# --- Real-Time Face Recognition ---
+def recognize_face(embedding, known_embeddings, threshold=0.6):
+    min_dist = float("inf")
+    identity = "Unknown"
 
-        Returns:
-            dict: Recognition results
-        """
-        try:
-            # Get all registered embeddings
-            conn = sqlite3.connect(self.database_path)
-            cursor = conn.cursor()
+    for name, known_embedding in known_embeddings.items():
+        distance = np.linalg.norm(embedding - known_embedding)  # Euclidean distance
+        if distance < min_dist:
+            min_dist = distance
+            if min_dist < threshold:  # Threshold for dlib
+                identity = name
 
-            cursor.execute("""
-                SELECT users.name, face_embeddings.embedding 
-                FROM users 
-                JOIN face_embeddings ON users.id = face_embeddings.user_id
-            """)
+    return identity, min_dist
 
-            registered_faces = cursor.fetchall()
-            conn.close()
 
-            # Detect face in input image
-            input_embedding = DeepFace.represent(
-                img_path=image_path, model_name="Facenet512", enforce_detection=True
-            )[0]["embedding"]
+def main():
+    # Setup database
+    setup_database()
 
-            # Compare embeddings
-            for name, stored_embedding in registered_faces:
-                stored_embedding = np.frombuffer(stored_embedding, dtype=np.float64)
-                distance = np.linalg.norm(np.array(input_embedding) - stored_embedding)
+    # Path to your dataset (e.g., LFW or custom dataset)
+    dataset_path = "lfw-deepfunneled"  # Update this to your dataset path
+    register_faces(dataset_path)
 
-                if distance < threshold:
-                    return {"recognized": True, "name": name, "distance": distance}
+    # Load known embeddings
+    known_embeddings = load_known_embeddings()
+    if not known_embeddings:
+        print("No known faces registered. Please add faces to the dataset.")
+        return
 
-            return {"recognized": False}
+    # Start webcam
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Could not open webcam.")
+        return
 
-        except Exception as e:
-            print(f"Recognition error: {e}")
-            return {"recognized": False, "error": str(e)}
+    print("Starting real-time face recognition. Press 'q' to quit.")
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("Error: Could not read frame.")
+            break
 
-    def detect_faces_in_image(self, image_path):
-        """
-        Detect and draw rectangles around faces in an image
+        # Detect faces
+        faces = detector(frame)
+        for face in faces:
+            x, y, w, h = (face.left(), face.top(), face.right() - face.left(), face.bottom() - face.top())
 
-        Args:
-            image_path (str): Path to the image
+            try:
+                # Compute embedding
+                embedding = compute_embedding(frame, face)
 
-        Returns:
-            numpy.ndarray: Image with detected faces
-        """
-        try:
-            # Read the image
-            image = cv2.imread(image_path)
+                # Recognize the face
+                identity, distance = recognize_face(embedding, known_embeddings)
 
-            # Detect faces
-            faces = DeepFace.extract_faces(img_path=image_path, enforce_detection=True)
+                # Display result
+                label = f"{identity} (Dist: {distance:.2f})"
+                color = (0, 255, 0) if identity != "Unknown" else (0, 0, 255)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+                cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
+            except Exception as e:
+                print(f"Error recognizing face: {e}")
 
-            # Draw rectangles around detected faces
-            for face in faces:
-                x, y, w, h = (
-                    face["facial_area"]["x"],
-                    face["facial_area"]["y"],
-                    face["facial_area"]["w"],
-                    face["facial_area"]["h"],
-                )
-                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # Show the frame
+        cv2.imshow("Facial Recognition", frame)
 
-            return image
+        # Quit on 'q'
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
 
-        except Exception as e:
-            print(f"Face detection error: {e}")
-            return None
+    # Cleanup
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()
