@@ -10,7 +10,7 @@ const char* ssid = "Realme";
 const char* pass = "99999999";
 
 // Firebase project credentials 
-#define API_KEY "AIzaSyB3yQU7cFo3T_-NZdD0-YuuxrcDfkwhkqk" 
+#define API_KEY "" 
 #define DATABASE_URL "https://leap-smart-band-default-rtdb.firebaseio.com/" 
  
 // Firebase objects 
