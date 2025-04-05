@@ -44,4 +44,4 @@ This repository contains the development code for the **Leap Smart Control Syste
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/<your-username>/Leap-Smart-Control-System.git
+   git clone https://github.com/mohamed-mostafa-1/Leap-Smart-Control-System.git
