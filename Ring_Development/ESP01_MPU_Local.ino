@@ -1,72 +1,113 @@
-#include <Arduino.h>
-#include <ESP8266WiFi.h>
 #include <Wire.h>
+#include <ESP8266WiFi.h>          // Correct library for ESP8266
+#include <ESP8266WebServer.h>     // Web server for ESP8266
+#include <WebSocketsServer.h>
+#include <ArduinoJson.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
 
-// Wi-Fi credentials
+// Wi-Fi Credentials
 const char* ssid = "Realme";
-const char* pass = "99999999";
+const char* password = "99999999";
 
-// I2C address of the MPU-6050 (default is 0x68)
-const int MPU = 0x68;
+// WebServer & WebSocket
+ESP8266WebServer server(80);
+WebSocketsServer webSocket(81);
+Adafruit_MPU6050 mpu;
 
-// Variables to store MPU6050 data
-float AcX, AcY, AcZ, GyX, GyY, GyZ;
+void sendData() {
+    sensors_event_t a, g, temp;
+    mpu.getEvent(&a, &g, &temp);
+
+    StaticJsonDocument<200> jsonDoc;
+    jsonDoc["accel_x"] = a.acceleration.x;
+    jsonDoc["accel_y"] = a.acceleration.y;
+    jsonDoc["accel_z"] = a.acceleration.z;
+    jsonDoc["gyro_x"] = g.gyro.x;
+    jsonDoc["gyro_y"] = g.gyro.y;
+    jsonDoc["gyro_z"] = g.gyro.z;
+
+    char buffer[200];
+    serializeJson(jsonDoc, buffer);
+
+    webSocket.broadcastTXT(buffer); // Send JSON data to all clients
+}
+
+// Web page served from ESP8266
+const char webpage[] PROGMEM = R"rawliteral(
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPU6050 Data</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        h2 { margin-top: 20px; }
+        p { font-size: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>MPU6050 Data</h2>
+    <p id="sensorData">Waiting for data...</p>
+
+    <script>
+        var ws = new WebSocket("ws://" + window.location.hostname + ":81/");
+        
+        ws.onmessage = function(event) {
+            let data = JSON.parse(event.data);
+            document.getElementById("sensorData").innerHTML =
+                `Accel: X=${data.accel_x.toFixed(2)} Y=${data.accel_y.toFixed(2)} Z=${data.accel_z.toFixed(2)} | ` +
+                `Gyro: X=${data.gyro_x.toFixed(2)} Y=${data.gyro_y.toFixed(2)} Z=${data.gyro_z.toFixed(2)}`;
+        };
+    </script>
+</body>
+</html>
+)rawliteral";
+
+void handleRoot() {
+    server.send(200, "text/html", webpage);
+}
 
 void setup() {
-  // Start serial communication
-  Serial.begin(115200);
-  while (!Serial) {
-    delay(10); // Wait for Serial to initialize
-  }
+    Serial.begin(115200);
+    Wire.begin(); // Initialize I2C for MPU6050
 
-  // Connect to Wi-Fi
-  Serial.print("Connecting to Wi-Fi...");
-  WiFi.begin(ssid, pass);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
-  Serial.println("\nWi-Fi connected");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+    WiFi.begin(ssid, password);
+    Serial.print("Connecting to WiFi...");
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nWiFi connected.");
+    Serial.print("ESP IP Address: ");
+    Serial.println(WiFi.localIP());
 
-  // Initialize I2C communication
-  Wire.begin(2, 0); // SDA on GPIO2, SCL on GPIO0 (default for ESP-01S)
-  
-  
-  // Initialize MPU6050
-  Wire.beginTransmission(MPU);
-  Wire.write(0x6B); // Power management register
-  Wire.write(0);    // Wake up the MPU6050
-  Wire.endTransmission(true);
-  Serial.println("MPU6050 initialized");
+    server.on("/", handleRoot);
+    server.begin();
+    
+    webSocket.begin();
+    webSocket.onEvent([](uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
+        if (type == WStype_CONNECTED) {
+            Serial.println("Client connected.");
+        }
+    });
+
+    // Initialize MPU6050
+    if (!mpu.begin()) {
+        Serial.println("MPU6050 initialization failed!");
+        while (1);
+    }
+    Serial.println("MPU6050 initialized successfully.");
 }
 
 void loop() {
-  // Read raw data from MPU6050
-  Wire.beginTransmission(MPU);
-  Wire.write(0x3B); // Starting register for accelerometer data
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 14, true); // Request 14 bytes of data
+    server.handleClient();
+    webSocket.loop();
 
-  AcX = Wire.read(); // Accelerometer X-axis
-  AcY = Wire.read(); // Accelerometer Y-axis
-  AcZ = Wire.read(); // Accelerometer Z-axis
-  Wire.read(); Wire.read();             // Skip temperature data
-  GyX = Wire.read() << 8 | Wire.read(); // Gyroscope X-axis
-  GyY = Wire.read() << 8 | Wire.read(); // Gyroscope Y-axis
-  GyZ = Wire.read() << 8 | Wire.read(); // Gyroscope Z-axis
+    if (webSocket.connectedClients() > 0) { // Only send data if a client is connected
+        sendData();
+    }
 
-  // Print normalized values
-  Serial.print("Accel (m/s²): ");
-  Serial.print("X: "); Serial.print(AcX);
-  Serial.print(" Y: "); Serial.print(AcY);
-  Serial.print(" Z: "); Serial.println(AcZ);
-
-  Serial.print("Gyro (°/s): ");
-  Serial.print("X: "); Serial.print(GyX);
-  Serial.print(" Y: "); Serial.print(GyY);
-  Serial.print(" Z: "); Serial.println(GyZ);
-
-  delay(500); // Delay to reduce serial output frequency
+    delay(500); // Adjust delay for real-time updates
 }
