@@ -43,21 +43,69 @@ const char webpage[] PROGMEM = R"rawliteral(
     <style>
         body { font-family: Arial; text-align: center; padding-top: 30px; }
         h2 { margin-bottom: 20px; }
-        p { font-size: 20px; font-weight: bold; }
+        table { margin: auto; border-collapse: collapse; width: 90%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        #downloadBtn { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
     </style>
 </head>
 <body>
     <h2>MPU6050 Sensor Data</h2>
-    <p id="sensorData">Connecting...</p>
+    <button id="downloadBtn">Download CSV</button>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Accel X</th><th>Accel Y</th><th>Accel Z</th>
+                <th>Gyro X</th><th>Gyro Y</th><th>Gyro Z</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
     <script>
         const ws = new WebSocket("ws://" + location.hostname + ":81/");
+        const dataTableBody = document.querySelector("#dataTable tbody");
+        const dataArray = [];
+
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data);
-            document.getElementById("sensorData").innerHTML =
-                `Accel: X=${data.accel_x.toFixed(2)} Y=${data.accel_y.toFixed(2)} Z=${data.accel_z.toFixed(2)}<br>` +
-                `Gyro: X=${data.gyro_x.toFixed(2)} Y=${data.gyro_y.toFixed(2)} Z=${data.gyro_z.toFixed(2)}`;
+            const time = new Date().toLocaleTimeString();
+
+            // Store data in memory
+            const row = {
+                timestamp: time,
+                ax: data.accel_x.toFixed(2),
+                ay: data.accel_y.toFixed(2),
+                az: data.accel_z.toFixed(2),
+                gx: data.gyro_x.toFixed(2),
+                gy: data.gyro_y.toFixed(2),
+                gz: data.gyro_z.toFixed(2)
+            };
+            dataArray.push(row);
+
+            // Add row to table
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${row.timestamp}</td>
+                            <td>${row.ax}</td><td>${row.ay}</td><td>${row.az}</td>
+                            <td>${row.gx}</td><td>${row.gy}</td><td>${row.gz}</td>`;
+            dataTableBody.appendChild(tr);
         };
+
+        document.getElementById("downloadBtn").addEventListener("click", function () {
+            let csv = "Timestamp,Accel X,Accel Y,Accel Z,Gyro X,Gyro Y,Gyro Z\n";
+            dataArray.forEach(row => {
+                csv += `${row.timestamp},${row.ax},${row.ay},${row.az},${row.gx},${row.gy},${row.gz}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "sensor_data.csv";
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
     </script>
 </body>
 </html>
