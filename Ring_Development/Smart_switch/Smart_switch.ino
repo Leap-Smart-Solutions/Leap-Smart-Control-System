@@ -10,8 +10,8 @@
 #define WIFI_SSID "Realme"
 #define WIFI_PASSWORD "99999999"
 
-#define API_KEY "AIzaSyB3yQU7cFo3T_-NZdD0-YuuxrcDfkwhkqk"
-#define DATABASE_URL "https://leap-smart-band-default-rtdb.firebaseio.com/"
+#define API_KEY ""
+#define DATABASE_URL ""
 
 FirebaseData fbdo;
 FirebaseAuth auth;
