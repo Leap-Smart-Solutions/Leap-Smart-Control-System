@@ -7,8 +7,8 @@
 #define LED_PIN 0        // GPIO0 for LED
 #define BUTTON_PIN 2     // GPIO2 for Button
 
-#define WIFI_SSID "Realme"
-#define WIFI_PASSWORD "99999999"
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
 #define API_KEY ""
 #define DATABASE_URL ""
