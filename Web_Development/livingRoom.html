@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+  <link rel="icon" type="image/x-icon" href="https://www.thespruce.com/favicon.ico" />
+  <title>Leap</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+      color: #fff;
+    }
+
+    body {
+      background-color: #000;
+    }
+
+    /* Container for the entire dashboard */
+    .dash-container {
+      width: 100%;
+      min-height: 100vh; /* allow scrolling if content is tall */
+    }
+
+    header {
+      margin: 20px 20px 0 0;
+    }
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .head .date-menue {
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+    }
+    .head .date-menue img {
+      cursor: pointer;
+      width: 29px;
+    }
+    .head .date-menue p {
+      margin-left: 18px;
+      color: #fff;
+      line-height: 20px;
+      font-weight: 400;
+    }
+    .head nav {
+      width: 40%;
+    }
+    .head nav .nav-links {
+      display: flex;
+      justify-content: space-around;
+    }
+    .head nav .nav-links a {
+      text-decoration: none;
+      line-height: 14px;
+      color: #fff;
+      position: relative;
+    }
+    .head nav .nav-links #active::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #fff;
+      transition: width 0.3s ease;
+    }
+    .head nav .nav-links a::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #fff;
+      transition: width 0.3s ease;
+    }
+    .head nav .nav-links a:hover::after {
+      width: 100%;
+    }
+    .head .user-image img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    /*
+      Drop-down menu container:
+      1) Hidden by default (desktop or anything >768px)
+      2) Visible only on mobile (≤768px)
+    */
+    .display-nav-links {
+      /* HIDE BY DEFAULT */
+      display: none;
+      width: 160px;
+      background-color: #2c2c2c;
+      position: absolute;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 5;
+      overflow: hidden;
+      margin-left: 20px;
+    }
+    .display-nav-links nav {
+      display: flex;
+      flex-direction: column;
+    }
+    .display-nav-links nav a {
+      color: #f5f5f5;
+      padding: 12px 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      text-decoration: none;
+    }
+    .display-nav-links nav .line {
+      width: 80%;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 5px auto;
+    }
+    .display-nav-links nav a:hover {
+      color: #fff;
+      background-color: #444;
+      transform: scale(1.05);
+    }
+
+    /* Only show the .display-nav-links on mobile (≤768px) */
+    @media (max-width: 768px) {
+      .display-nav-links {
+        display: block;
+      }
+    }
+
+    /* Main content: 3 columns */
+    .main-content {
+      display: flex;
+      min-height: calc(100vh - 100px);
+    }
+    .main-content .left {
+      width: 18%;
+      padding: 0 20px;
+    }
+    .main-content .middle {
+      width: 48%;
+      margin: 0 2%;
+    }
+    .rigth {
+      width: 30%;
+    }
+
+    /* Cloud/Weather section */
+    .main-content .left .cloud {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .main-content .left .cloud span {
+      font-size: 130px;
+      margin-bottom: -10px;
+    }
+    .main-content .left .cloud .cloud-detailes {
+      position: static;
+      width: 67%;
+      margin-top: -65px;
+      margin-left: 67px;
+      background: rgba(248, 248, 248, 0.219);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(1.1px);
+      -webkit-backdrop-filter: blur(1.1px);
+      padding: 19px;
+    }
+    .main-content .left .cloud .cloud-detailes p {
+      color: #b9abab;
+      font-size: 15px;
+      line-height: 15px;
+    }
+    .main-content .left .cloud .cloud-detailes p strong {
+      display: inline-block;
+      margin: 0 35%;
+      width: 40%;
+      font-size: 25px;
+      padding: 2px;
+      line-height: 25px;
+      text-align: center;
+      color: grey;
+    }
+
+    /* Music card */
+    .music {
+      background-image: url("Img/photo.jpeg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-top: 5px;
+      width: 100%;
+      height: 235px;
+      border-radius: 20px;
+      padding: 0;
+      margin-bottom: 19px;
+    }
+    .music .empty {
+      height: 55%;
+      width: 100%;
+    }
+    .all-song {
+      background: rgba(227, 210, 210, 0.462);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(1.1px);
+      -webkit-backdrop-filter: blur(1.1px);
+      height: 45%;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    .all-song .song i {
+      cursor: pointer;
+    }
+    .continue {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 0 10px;
+      text-align: center;
+      background-color: #977f7f;
+      height: 3px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .continue::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #cdadad;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .music .song {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .music .controls {
+      display: flex;
+      justify-content: space-around;
+    }
+    .music .controls i {
+      color: #fff;
+      font-size: 20px;
+      transition: ease 0.5s;
+    }
+    .music .controls i:hover {
+      cursor: pointer;
+      color: rgb(69, 49, 71);
+    }
+
+    /* Electricity chart */
+    .electricity {
+      background-color: #1c1c1c;
+      border-radius: 20px;
+      padding: 15px;
+      width: 100%;
+      height: 180px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      color: white;
+      position: relative;
+      text-align: center;
+    }
+    .elec-detailes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .chart-header {
+      font-size: 15px;
+      text-align: center;
+      padding-left: 5px;
+    }
+    .dropdown {
+      background-color: #333;
+      border: 0.5px solid black;
+      border-radius: 10px;
+      padding-left: 5px;
+      font-size: 15px;
+    }
+    .chart-line {
+      height: 80px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chart-line svg {
+      width: 100%;
+      height: 100%;
+    }
+    .chart-line circle {
+      fill: #ff6600;
+      stroke: rgb(196, 194, 211);
+      stroke-width: 2;
+    }
+    .usage-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    /* Middle column sections */
+    .middle .middle-section .light {
+      padding: 10px 20px;
+      background-color: #1c1c1c;
+      width: 100%;
+      border-radius: 20px;
+      margin-top: 5px;
+      background: radial-gradient(circle, rgb(100, 90, 50), #2c2c2c, #1a1a1a);
+      position: relative;
+    }
+    .middle .middle-section .light .light-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .middle .middle-section .light .light-head i {
+      color: #ff6600;
+      cursor: pointer;
+    }
+
+    /* Lamp area layout */
+    .lightening-components {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .lightening-left,
+    .lightening-center,
+    .lightening-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      flex: 1;
+    }
+    .lightening-center img {
+      width: 120px;
+      margin: 10px;
+    }
+    .brightness-slider-row {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      margin-top: 25px;
+      gap: 5px;
+    }
+
+    /* Circular slider for lamp intensity */
+    .slider-container {
+      width: 150px;
+      height: 150px;
+      margin: 10px;
+    }
+    .circle {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #11c8dc 0deg,
+        #4dd0a6 90deg,
+        #f4e04d 180deg,
+        #f07b3f 270deg,
+        #11c8dc 360deg
+      );
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .center-text {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .center-text p {
+      margin: 0;
+      font-size: 12px;
+      color: #ccc;
+    }
+    .center-text h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .cursor {
+      position: relative;
+      width: 15px;
+      height: 15px;
+      border: 2px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      top: -55px;
+      left: 5px;
+    }
+
+    /* Reading/Working/Romantic scroller */
+    .lightening-right .scroll-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 15px;
+      position: static;
+      overflow: hidden;
+      gap: 15px;
+    }
+    .arrow {
+      font-size: 16px;
+      color: white;
+      opacity: 0.5;
+      cursor: pointer;
+      user-select: none;
+      transition: opacity 0.2s ease;
+      z-index: 2;
+    }
+    .arrow:hover {
+      opacity: 0.8;
+    }
+    .list {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      height: 80px;
+      position: relative;
+      z-index: 1;
+      color: #fff;
+    }
+    .list-item {
+      font-size: 18px;
+      opacity: 0.2;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .list-item.active {
+      font-size: 20px;
+      font-weight: bold;
+      opacity: 1;
+      pointer-events: none;
+    }
+    .fade-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(28, 28, 28, 1) 0%,
+        rgba(28, 28, 28, 0) 15%,
+        rgba(28, 28, 28, 0) 85%,
+        rgba(28, 28, 28, 1) 100%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .brightness-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .icon {
+      font-size: 1rem;
+    }
+    .slider {
+      -webkit-appearance: none;
+      width: 250px;
+      height: 8px;
+      background: linear-gradient(to right, #fbc02d, transparent);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      background-color: #fead01;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      background-color: #fead01;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* Bottom portion of middle column */
+    .middle .middle-section .mid-bot {
+      margin-top: 10px;
+      display: flex;
+      width: 100%;
+    }
+    .middle .middle-section .mid-bot .left-mid-bot {
+      width: 30%;
+    }
+    .middle .middle-section .mid-bot .left-mid-bot .camera,
+    .middle .middle-section .mid-bot .left-mid-bot .wifi {
+      padding: 10px 20px;
+      background-color: #1c1c1c;
+      border-radius: 15px;
+      margin: 15px 5px;
+      height: 43%;
+      width: 90%;
+    }
+    .fa-power-off {
+      color: #ff6600;
+      cursor: pointer;
+    }
+    .middle .middle-section .mid-bot .left-mid-bot .camera .camera-detailes,
+    .middle .middle-section .mid-bot .left-mid-bot .wifi .wifi-detailes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .middle .middle-section .mid-bot .left-mid-bot .camera img,
+    .middle .middle-section .mid-bot .left-mid-bot .wifi img {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+      padding-top: 10px;
+      width: 50%;
+    }
+    .middle .middle-section .mid-bot .left-mid-bot .wifi img {
+      width: 75%;
+    }
+
+    /* Robotic vacuum section */
+    .middle .middle-section .mid-bot .robotic {
+      width: 70%;
+      background-color: #1c1c1c;
+      border-radius: 16px;
+      padding: 10px 20px;
+      margin-top: 15px;
+      margin-bottom: 25px;
+      margin-left: 10px;
+      overflow: hidden;
+    }
+    .middle .middle-section .mid-bot .robotic:before {
+      content: "I'm almost done";
+      font-size: 14px;
+      position: relative;
+      top: 60px;
+      left: 50px;
+      background: rgba(248, 248, 248, 0.219);
+      padding: 10px;
+      border-radius: 5px;
+      border-bottom-right-radius: 5px;
+      border-bottom-right-radius: 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(1.1px);
+    }
+    .middle .middle-section .mid-bot .robotic .robotic-detailes {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .middle .middle-section .mid-bot .robotic img {
+      display: block;
+      margin-right: auto;
+      margin-left: auto;
+      margin-top: 10px;
+      width: 30%;
+    }
+    .middle .middle-section .mid-bot .robotic .boxs {
+      display: flex;
+      justify-content: space-around;
+      margin: 10px 0;
+    }
+    .middle .middle-section .mid-bot .robotic .m {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #111;
+      padding: 11px;
+      border-radius: 10px;
+      width: 80px;
+      height: 55px;
+      cursor: pointer;
+      transition: ease 0.5s;
+    }
+    .middle .middle-section .mid-bot .robotic .m:hover {
+      transform: scale(1.1);
+    }
+    .middle .middle-section .mid-bot .robotic .m i {
+      padding-bottom: 10px;
+    }
+    .middle .middle-section .mid-bot .robotic .m p {
+      font-size: 10px;
+    }
+    .middle .middle-section .mid-bot .robotic .rob-btn {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .middle .middle-section .mid-bot .robotic .rob-btn .white {
+      color: #1c1c1c;
+      background-color: #fff;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      font-weight: 500;
+      width: 100px;
+      height: 30px;
+      cursor: pointer;
+      transition: ease 0.5s;
+    }
+    .middle .middle-section .mid-bot .robotic .rob-btn .white:hover {
+      transform: scale(1.1);
+    }
+    .middle .middle-section .mid-bot .robotic .rob-btn .gray {
+      color: #fff;
+      background-color: #1c1c1c;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      font-weight: 500;
+      width: 100px;
+      height: 30px;
+      border: 1px solid #fff;
+      cursor: pointer;
+      transition: ease 0.5s;
+    }
+    .middle .middle-section .mid-bot .robotic .rob-btn .gray:hover {
+      transform: scale(1.1);
+    }
+
+    /* Right column: Air Conditioning */
+    .right-section {
+      background-color: #1c1c1c;
+      padding: 15px 20px;
+      border-radius: 30px;
+      width: 96%;
+      min-height: calc(100vh - 120px);
+    }
+    .right-section .air-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .right-section .img1 {
+      width: 90%;
+      height: 24%;
+      margin: 10px 0;
+    }
+
+    /* Thermostat (draggable dial) */
+    .thermostat-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .thermostat-circle {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, #0f4d6c, #072d40);
+    }
+    .thermostat-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+      pointer-events: none;
+    }
+    .thermostat-center p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .thermostat-center h2 {
+      margin: 5px 0 0;
+      font-size: 28px;
+    }
+    .thermostat-handle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+      cursor: grab;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .right-section .air-boxs {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .right-section .air-boxs .m {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #111;
+      padding: 15px;
+      border-radius: 10px;
+      width: 90px;
+      height: 65px;
+      cursor: pointer;
+      transition: ease 0.5s;
+      font-size: 13px;
+      padding-bottom: 3px;
+    }
+    .right-section .air-boxs .m i {
+      font-size: 19px;
+    }
+    .right-section .air-boxs .m:first-child p {
+      font-size: 12px;
+      color: #03454a;
+    }
+    .right-section .air-boxs .m:first-child i {
+      color: #888;
+    }
+    .right-section .air-boxs .m:hover {
+      transform: scale(1.1);
+    }
+    .right-section .air-boxs .special {
+      background-color: #11c8dc;
+      cursor: pointer;
+      transition: ease 0.5s;
+    }
+    .right-section .air-boxs .special:hover {
+      transform: scale(1.1);
+    }
+    .right-section .air2-boxs {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 22px;
+      padding: 0 22px;
+    }
+    .right-section .air2-boxs .time,
+    .right-section .air2-boxs .humidity {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #111;
+      padding: 15px;
+      border-radius: 10px;
+      width: 150px;
+      height: 65px;
+      cursor: pointer;
+      transition: ease 0.5s;
+    }
+    .right-section .air2-boxs .time:hover,
+    .right-section .air2-boxs .humidity:hover {
+      transform: scale(1.1);
+    }
+    .right-section .air2-boxs .time .m,
+    .right-section .air2-boxs .humidity .m {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .right-section .air2-boxs .time .m i,
+    .right-section .air2-boxs .humidity .m i {
+      font-size: 19px;
+      margin-bottom: 4px;
+    }
+    .right-section .air2-boxs .time p,
+    .right-section .air2-boxs .humidity p {
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .right-section .air2-boxs .time p strong,
+    .right-section .air2-boxs .humidity p strong {
+      font-size: 20px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .head nav .nav-links {
+        display: none;
+      }
+      .head .date-menue img {
+        display: block;
+        cursor: pointer;
+      }
+      .head nav {
+        width: auto;
+      }
+      .head nav .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background-color: #2c2c2c;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 5;
+        padding: 10px;
+      }
+      .head nav .nav-links.active a {
+        margin: 10px 0;
+      }
+      .main-content {
+        flex-direction: column;
+      }
+      .main-content .left,
+      .main-content .middle,
+      .rigth {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+      }
+      .main-content .left .cloud span {
+        font-size: 90px;
+      }
+      .main-content .left .cloud .cloud-detailes {
+        width: 80%;
+        margin: 10px auto;
+        margin-top: -20px;
+        padding: 10px;
+      }
+      .music {
+        height: 200px;
+      }
+      .middle .middle-section .light {
+        padding: 10px;
+      }
+      .lightening-components {
+        flex-direction: column;
+      }
+      .brightness-slider-row {
+        justify-content: center;
+      }
+      .thermostat-circle {
+        width: 150px;
+        height: 150px;
+      }
+      .thermostat-handle {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dash-container">
+    <header>
+      <div class="head">
+        <div class="date-menue">
+          <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" />
+          <p class="date">Thu, Jan 12</p>
+        </div>
+        <nav>
+          <div class="nav-links">
+            <a href="bedRoom.html">Bed Room</a>
+            <a href="livingRoom.html">LivingRoom</a>
+            <a href="kitchen" id="active" class="kitchen">Kitchen</a>
+          </div>
+        </nav>
+        <div class="user-image">
+          <img src="Img/1.jpg" alt="image" />
+        </div>
+      </div>
+    </header>
+
+    <!-- 
+      Drop-down menu (only shown on screens ≤768px) 
+      Contains Profile, LogOut, plus the other rooms
+    -->
+    <div class="display-nav-links">
+      <nav class="links">
+        <a href="profile.html">Profile</a>
+        <div class="line"></div>
+        <a href="landing.html" style="color: #ff3b30">LogOut</a>
+        <div class="line"></div>
+        <a href="bedRoom.html">Bed Room</a>
+        <a href="livingRoom.html">LivingRoom</a>
+        <a href="kitchen" id="active" class="kitchen">Kitchen</a>
+      </nav>
+    </div>
+
+    <!-- Main content: 3 columns -->
+    <div class="main-content">
+      <!-- Left column -->
+      <section class="left">
+        <div class="cloud">
+          <span>&#9925;</span>
+          <div class="cloud-detailes">
+            <p>
+              <strong class="cloud-degree">31&#176;</strong>
+              <br />
+              Today Will be cloudy. Apply SPF during the day
+            </p>
+          </div>
+        </div>
+
+        <div class="music">
+          <div class="empty"></div>
+          <div class="all-song">
+            <div class="song">
+              <div class="song-details">
+                <h4 class="song-title">Never Say Never</h4>
+                <p class="artist-name">Justin Bieber</p>
+              </div>
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </div>
+            <span class="continue"></span>
+            <div class="controls">
+              <i class="fa fa-fast-backward" aria-hidden="true"></i>
+              <i class="fa fa-play-circle" aria-hidden="true"></i>
+              <i class="fa fa-fast-forward" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="electricity">
+          <div class="elec-detailes">
+            <h4 class="chart-header">Electricity</h4>
+            <select class="dropdown">
+              <option value="Month">Month</option>
+              <option value="Day">Day</option>
+              <option value="Year">Year</option>
+              <option value="Hourly">Hourly</option>
+            </select>
+          </div>
+          <div class="chart-line">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <path
+                d="M10 80 Q 60 20, 110 70 T 210 40 T 290 70"
+                stroke="#ff6600"
+                fill="none"
+                stroke-width="4"
+              ></path>
+              <circle cx="160" cy="85" r="6" />
+            </svg>
+          </div>
+          <div class="usage-text">360kw</div>
+        </div>
+      </section>
+
+      <!-- Middle column -->
+      <section class="middle">
+        <div class="middle-section">
+          <div class="light">
+            <div class="light-head">
+              <h3>Lightning</h3>
+              <i class="fa fa-power-off" aria-hidden="true"></i>
+            </div>
+
+            <div class="lightening-components">
+              <div class="lightening-left">
+                <div class="slider-container">
+                  <div class="circle">
+                    <div class="cursor"></div>
+                    <div class="center-text">
+                      <p>Intensity</p>
+                      <h1 id="intensity-value">50%</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="lightening-center">
+                <img src="Img/lamp.png" alt="Lamp" />
+              </div>
+              <div class="lightening-right">
+                <div class="scroll-container">
+                  <div class="arrow" id="arrow-up">▲</div>
+                  <div class="list">
+                    <div class="list-item" id="item1">Reading</div>
+                    <div class="list-item active" id="item2">Working</div>
+                    <div class="list-item" id="item3">Romantic</div>
+                  </div>
+                  <div class="fade-overlay"></div>
+                  <div class="arrow" id="arrow-down">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="brightness-slider-row">
+              <span class="icon sun">☀️</span>
+              <input type="range" class="slider" min="0" max="100" value="50" />
+              <span class="icon moon">🌙</span>
+            </div>
+          </div>
+
+          <div class="mid-bot">
+            <div class="left-mid-bot">
+              <div class="camera">
+                <div class="camera-detailes">
+                  <h3>Camera</h3>
+                  <i class="fa fa-power-off" aria-hidden="true"></i>
+                </div>
+                <img src="Img/camera.png" alt="Camera" />
+              </div>
+
+              <div class="wifi">
+                <div class="wifi-detailes">
+                  <h3>Wi-Fi</h3>
+                  <i class="fa fa-power-off" aria-hidden="true"></i>
+                </div>
+                <img src="Img/wifi.png" alt="WiFi Router" />
+              </div>
+            </div>
+
+            <div class="robotic">
+              <div class="robotic-detailes">
+                <h3>Robotic Vacuum</h3>
+                <i class="fa fa-power-off" aria-hidden="true"></i>
+              </div>
+              <img src="Img/vacuum.png" alt="Vacuum" />
+              <div class="boxs">
+                <div class="m">
+                  <i class="fa-solid fa-cube"></i>
+                  <p>25 M'</p>
+                </div>
+                <div class="m">
+                  <i class="fa-solid fa-bolt"></i>
+                  <p>25 %</p>
+                </div>
+                <div class="m">
+                  <i class="fa-solid fa-clock"></i>
+                  <p>5 Mins left</p>
+                </div>
+              </div>
+              <div class="rob-btn">
+                <button class="white">Go Dock</button>
+                <button class="gray">Push</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column -->
+      <section class="rigth">
+        <div class="right-section">
+          <div class="air-head">
+            <h3>Air Conditioning</h3>
+            <i class="fa fa-power-off" aria-hidden="true"></i>
+          </div>
+
+          <img class="img1" src="Img/air-conditioner.png" alt="Air Conditioner Image" />
+
+          <div class="thermostat-container">
+            <div class="thermostat-circle">
+              <div class="thermostat-center">
+                <p id="thermostat-mode">Cooling</p>
+                <h2 id="thermostat-temp">23°C</h2>
+              </div>
+              <div class="thermostat-handle"></div>
+            </div>
+          </div>
+
+          <h3>Action</h3>
+          <div class="air-boxs">
+            <div class="m special">
+              <i class="fa-solid fa-snowflake"></i>
+              <p>Cooling</p>
+            </div>
+            <div class="m">
+              <i class="fa-solid fa-temperature-low"></i>
+              <p>Heating</p>
+            </div>
+            <div class="m">
+              <i class="fa-solid fa-wind"></i>
+              <p>AirWave</p>
+            </div>
+          </div>
+          <div class="air2-boxs">
+            <div class="time">
+              <div class="m">
+                <i class="fa-solid fa-clock"></i>
+                <p>Timer</p>
+              </div>
+              <p><strong>2</strong>Hours</p>
+            </div>
+            <div class="humidity">
+              <div class="m">
+                <i class="fas fa-tint" aria-hidden="true"></i>
+                <p>Humidity</p>
+              </div>
+              <p><strong>36</strong>%</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- JS scripts -->
+  <script src="Js/main.js"></script>
+  <script src="Js/scroller.js"></script>
+
+  <!-- Script for the draggable thermostat dial -->
+  <script>
+    const thermostatCircle = document.querySelector('.thermostat-circle');
+    const thermostatHandle = document.querySelector('.thermostat-handle');
+    const thermostatTemp = document.getElementById('thermostat-temp');
+    const thermostatMode = document.getElementById('thermostat-mode');
+
+    let isDragging = false;
+    let currentTemp = 23; // default
+
+    thermostatHandle.addEventListener('mousedown', startDrag);
+    thermostatHandle.addEventListener('touchstart', startDrag, { passive: false });
+
+    function startDrag(e) {
+      e.preventDefault();
+      isDragging = true;
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('touchmove', onDrag, { passive: false });
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
+    }
+
+    function onDrag(e) {
+      if (!isDragging) return;
+
+      let clientX, clientY;
+      if (e.type.includes('touch')) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+
+      const rect = thermostatCircle.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dx = clientX - centerX;
+      const dy = clientY - centerY;
+      let rad = Math.atan2(dy, dx);
+      let deg = rad * (180 / Math.PI) + 90;
+      deg = (deg + 360) % 360;
+
+      let temp = Math.round((deg / 360) * 30);
+      temp = Math.min(Math.max(temp, 0), 30);
+      currentTemp = temp;
+      thermostatTemp.textContent = temp + '°C';
+      thermostatMode.textContent = (temp < 20) ? 'Cooling' : 'Heating';
+
+      const radius = rect.width / 2 - 10;
+      let handleRad = (deg - 90) * (Math.PI / 180);
+      const x = radius * Math.cos(handleRad);
+      const y = radius * Math.sin(handleRad);
+      thermostatHandle.style.left = (rect.width / 2 + x) + 'px';
+      thermostatHandle.style.top = (rect.height / 2 + y) + 'px';
+    }
+
+    function endDrag() {
+      isDragging = false;
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('touchmove', onDrag);
+      document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchend', endDrag);
+    }
+  </script>
+  <script src="./Js/rooms.js"></script>
+  <script src="./Js/main.js"></script>
+</body>
+</html>
+
