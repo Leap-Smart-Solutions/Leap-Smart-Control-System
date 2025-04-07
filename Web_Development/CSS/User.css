@@ -1,0 +1,327 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  /* text-transform: capitalize; */
+  transition: all 0.2s linear;
+}
+
+/* color variables for the all pages  */
+:root {
+  --blue: #0366ff;
+  --black: #06090a;
+  --gray: #353535;
+  --light-gray: #d0d0d0;
+  --border: #b0b0b0;
+  --box-shadow: 0 0.5rem 1.5rem #8080808c;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--light-gray);
+  height: 100vh;
+  position: relative;
+}
+
+header a {
+  position: absolute;
+  background-color: var(--gray);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  top: 30px;
+  left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header a i {
+  color: #fff;
+}
+
+.User-information {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.User-information h1 {
+  width: 100%;
+  height: 29px;
+  margin-top: 45px;
+  color: #fff;
+  text-align: center;
+}
+
+.User-information .form-container {
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 4px 3px #8080808c;
+  width: 100%;
+  max-width: 839px;
+  height: auto;
+  border: 3px solid #b0b0b0;
+  margin-top: 45px;
+}
+
+.User-information .form-container h2 {
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.User-information .form-container p {
+  color: #b0b0b0;
+  font-size: 13px;
+  margin-left: 10px;
+  margin-top: 4px;
+  font-family: serif;
+}
+
+.User-information .form-container .content {
+  margin-top: 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.User-information .form-container .content .personal-information {
+  width: 100%;
+}
+
+.User-information .form-container .content .personal-information h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #fff;
+}
+
+.User-information .form-container .content .personal-information .name {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.User-information .form-container .content .personal-information .name input {
+  width: 100%;
+  height: 39px;
+  border-radius: 10px;
+  background-color: var(--light-gray);
+  margin-bottom: 10px;
+}
+
+.User-information
+  .form-container
+  .content
+  .personal-information
+  .name
+  :nth-child(2) {
+  margin-left: 0;
+}
+
+.User-information
+  .form-container
+  .content
+  .personal-information
+  .name
+  input:hover {
+  background-color: var(--border);
+}
+
+.User-information
+  .form-container
+  .content
+  .personal-information
+  .name
+  input::placeholder {
+  padding-left: 10px;
+  color: var(--gray);
+  font-weight: 400;
+  font-size: 16px;
+  width: 100%;
+  height: 19px;
+}
+
+.User-information .form-container .content .personal-information .birth-date {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.User-information
+  .form-container
+  .content
+  .personal-information
+  .birth-date
+  select {
+  width: 100%;
+  height: 39px;
+  border-radius: 8px;
+  background-color: var(--light-gray);
+  margin-bottom: 10px;
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-top: 26px;
+}
+
+.radio-container .radio-option label {
+  margin-left: 5px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.radio-container .radio-option input {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--gray);
+  border-radius: 50%;
+  outline: none;
+  background-color: var(--black);
+  cursor: pointer;
+  position: relative;
+}
+
+.User-information .form-container .content .line {
+  width: 100%;
+  height: 2px;
+  background: #fff;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.User-information .form-container .content .address {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.User-information .form-container .content .address h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #fff;
+}
+
+.User-information .form-container .content .address input {
+  margin-top: 8px;
+  border-radius: 10px;
+  background-color: var(--light-gray);
+  height: 39px;
+}
+
+.User-information .form-container .content .address input:hover {
+  background-color: var(--border);
+}
+
+.User-information .form-container .content .address input::placeholder {
+  padding-left: 10px;
+  color: var(--gray);
+  font-weight: 400;
+  font-size: 16px;
+  width: 100%;
+  height: 19px;
+}
+
+.User-information .form-container .submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.User-information .form-container .submit button {
+  width: 100%;
+  max-width: 657px;
+  height: 62px;
+  margin-top: 70px;
+  background-color: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.User-information .form-container .submit button:hover {
+  background-color: #0703ff;
+  scale: 1.1;
+}
+
+/* Media Queries for Responsiveness */
+@media (min-width: 768px) {
+  .User-information .form-container .content {
+    flex-direction: row;
+  }
+  .form-container {
+    margin: 30px;
+  }
+
+  .User-information .form-container .content .personal-information {
+    width: 47%;
+  }
+
+  .User-information .form-container .content .personal-information .name {
+    flex-direction: row;
+  }
+
+  .User-information .form-container .content .personal-information .name input {
+    width: 178px;
+    margin-bottom: 0;
+  }
+
+  .User-information
+    .form-container
+    .content
+    .personal-information
+    .name
+    :nth-child(2) {
+    margin-left: 6px;
+  }
+
+  .User-information .form-container .content .personal-information .birth-date {
+    flex-direction: row;
+  }
+
+  .User-information
+    .form-container
+    .content
+    .personal-information
+    .birth-date
+    select {
+    width: 110px;
+    margin-bottom: 0;
+  }
+
+  .User-information
+    .form-container
+    .content
+    .personal-information
+    .radio-container {
+    flex-direction: row !important;
+    margin-left: 50px !important;
+  }
+
+  .User-information .form-container .content .line {
+    width: 2px;
+    height: 120px;
+    margin-top: 60px;
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+}

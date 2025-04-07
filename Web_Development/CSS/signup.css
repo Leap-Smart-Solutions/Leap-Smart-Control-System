@@ -1,0 +1,233 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  /* text-transform: capitalize; */
+  transition: all 0.2s linear;
+}
+
+/* Color variables for all pages */
+:root {
+  --blue: #0366ff;
+  --black: #06090a;
+  --gray: #353535;
+  --light-gray: #d0d0d0;
+  --border: #b0b0b0;
+  --box-shadow: 0 0.5rem 1.5rem #8080808c;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--light-gray);
+  min-height: 100vh;
+  height: 100%;
+  position: relative;
+}
+
+header a {
+  position: absolute;
+  background-color: var(--gray);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  top: 30px;
+  left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header a i {
+  color: #fff;
+}
+
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.signup-container h1 {
+  text-align: center;
+  width: 100%;
+  height: 29px;
+  margin-top: 45px;
+  color: #fff;
+}
+
+.signup-container .signup-rectangle {
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 4px 3px #8080808c;
+  width: 100%;
+  max-width: 398px;
+  height: auto;
+  border: 3px solid #b0b0b0;
+  margin-top: 25px;
+}
+
+.signup-container .signup-rectangle h2 {
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.signup-container .signup-rectangle p {
+  color: #b0b0b0;
+  font-size: 12px;
+  margin-left: 10px;
+  margin-top: 4px;
+  font-family: serif;
+}
+
+.signup-container .signup-rectangle .filds {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+
+.signup-container .signup-rectangle .filds input {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--light-gray);
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.signup-container .signup-rectangle .filds input:hover {
+  background-color: var(--border);
+}
+
+.signup-container .signup-rectangle .filds input::placeholder {
+  padding-left: 10px;
+  color: var(--gray);
+  font-weight: 400;
+  font-size: 16px;
+  width: 100%;
+  height: 19px;
+}
+
+.signup-container .signup-rectangle .filds .add-phone {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.signup-container .signup-rectangle .filds .add-phone #phone {
+  width: 100%;
+}
+
+.signup-container .signup-rectangle .filds .add-phone .add-phone-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: var(--light-gray);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.signup-container .signup-rectangle h3 {
+  font-size: 16px;
+  height: 19px;
+  color: #f2f2f7;
+}
+
+.signup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3px;
+  gap: 10px;
+}
+
+.signup-buttons .signup-button img {
+  width: 50px;
+  height: 50px;
+}
+
+.signup-buttons .signup-button {
+  border-radius: 15px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.signup-container .signup-rectangle .submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-container .signup-rectangle .submit button {
+  width: 100%;
+  max-width: 312px;
+  height: 62px;
+  margin-top: 21.5px;
+  background-color: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.signup-container .signup-rectangle .submit button:hover {
+  background-color: #0703ff;
+  scale: 1.1;
+}
+
+.signup-buttons .signup-button:hover {
+  scale: 1.1;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .signup-container .signup-rectangle {
+    width: 90%;
+    max-width: 100%;
+  }
+
+  .signup-container .signup-rectangle .filds .add-phone #phone {
+    width: 90%;
+  }
+
+  .signup-container .signup-rectangle .filds .add-phone .add-phone-number {
+    width: 10%;
+    margin-top: 10px;
+  }
+
+  .signup-buttons {
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .signup-buttons .signup-button img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-container h1 {
+    font-size: 24px;
+  }
+
+  .signup-container .signup-rectangle h2 {
+    font-size: 20px;
+  }
+
+  .signup-container .signup-rectangle .submit button {
+    height: 50px;
+    font-size: 14px;
+  }
+}
