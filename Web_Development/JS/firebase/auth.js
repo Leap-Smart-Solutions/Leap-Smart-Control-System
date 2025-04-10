@@ -5,7 +5,7 @@ import { getFirestore, initializeFirestore, doc, setDoc, getDocs, collection } f
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCyleQHWfKDxUmmduFYCXUpmSTkWlC-EgU",
+  apiKey: "########################",
   authDomain: "leap-authentication.firebaseapp.com",
   projectId: "leap-authentication",
   storageBucket: "leap-authentication.firebasestorage.app",
