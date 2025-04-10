@@ -1,11 +1,12 @@
 import os
-import pickle
 from face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
+from utils.db_manager import initialize_db, insert_embedding
 
-def generate_embeddings(dataset_path, save_path):
+
+def generate_embeddings(dataset_path, db_path):
     model = load_vggface2_model()
-    embeddings = []
+    initialize_db(db_path)
 
     for person in os.listdir(dataset_path):
         person_dir = os.path.join(dataset_path, person)
@@ -17,20 +18,12 @@ def generate_embeddings(dataset_path, save_path):
             face = extract_face(img_path)
             if face is not None:
                 emb = get_embedding(model, face)
-                embeddings.append({
-                    'name': person,
-                    'embedding': emb.tolist(),  # So it's JSON/db serializable
-                    'image_path': img_path
-                })
-            else:
-                print(f"[!] Face not found in: {img_path}")
+                insert_embedding(person, emb.tolist(), img_path, db_path)
 
-    with open(save_path, 'wb') as f:
-        pickle.dump(embeddings, f)
-    print(f"[✔] Embeddings saved to: {save_path}")
+    print(f"[✔] Embeddings stored in database: {db_path}")
 
 
 if __name__ == "__main__":
     dataset_path = r"dataset"
-    save_path = r"embeddings\embeddings.pkl"
-    generate_embeddings(dataset_path, save_path)
+    db_path = r"database\embeddings.db"
+    generate_embeddings(dataset_path, db_path)
