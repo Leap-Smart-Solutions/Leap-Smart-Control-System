@@ -1,8 +1,8 @@
-# face_embedding.py
 import os
 from face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import initialize_db, insert_embedding
+
 
 def generate_embeddings(dataset_path, db_path):
     model = load_vggface2_model()
@@ -18,7 +18,7 @@ def generate_embeddings(dataset_path, db_path):
             face = extract_face(img_path)
             if face is not None:
                 emb = get_embedding(model, face)
-                insert_embedding(db_path, person, emb.tolist(), img_path)
+                insert_embedding(person, emb.tolist(), img_path, db_path)
 
     print(f"[✔] Embeddings stored in database: {db_path}")
 
