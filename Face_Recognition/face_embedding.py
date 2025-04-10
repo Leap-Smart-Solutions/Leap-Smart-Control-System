@@ -22,7 +22,15 @@ def generate_embeddings(dataset_path, save_path):
                     'embedding': emb.tolist(),  # So it's JSON/db serializable
                     'image_path': img_path
                 })
+            else:
+                print(f"[!] Face not found in: {img_path}")
 
     with open(save_path, 'wb') as f:
         pickle.dump(embeddings, f)
     print(f"[✔] Embeddings saved to: {save_path}")
+
+
+if __name__ == "__main__":
+    dataset_path = r"dataset"
+    save_path = r"embeddings\embeddings.pkl"
+    generate_embeddings(dataset_path, save_path)
