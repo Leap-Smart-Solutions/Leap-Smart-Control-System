@@ -1,4 +1,3 @@
-# utils/download_lfw_sample.py
 import os
 from sklearn.datasets import fetch_lfw_people
 import cv2
@@ -17,3 +16,6 @@ def download_lfw_subset(save_path='Face_Recognition/dataset', people_limit=3, im
         cv2.imwrite(filename, img_bgr)
 
     print(f"Saved a subset of LFW to: {save_path}")
+
+if __name__ == "__main__":
+    download_lfw_subset()
