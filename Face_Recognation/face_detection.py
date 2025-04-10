@@ -1,4 +1,3 @@
-# face_detection.py
 import cv2
 
 def extract_face(image_path, target_size=(224, 224)):
@@ -9,7 +8,7 @@ def extract_face(image_path, target_size=(224, 224)):
 
     if len(faces) == 0:
         return None
-    
+
     x, y, w, h = faces[0]
     face = img[y:y+h, x:x+w]
     face = cv2.resize(face, target_size)
