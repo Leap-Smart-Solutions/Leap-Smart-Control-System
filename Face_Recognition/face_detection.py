@@ -1,6 +1,5 @@
 import cv2
-import numpy as np
-from ultralytics import YOLO
+from ultralytics import YOLO  # type: ignore  # Suppress Pylance warning
 
 # Load the YOLOv8 model with mixed precision
 model = YOLO("yolov8n.pt")
