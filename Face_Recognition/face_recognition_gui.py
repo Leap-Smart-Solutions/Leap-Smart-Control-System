@@ -14,8 +14,17 @@ model = load_vggface2_model()
 db_path = "database/embeddings.db"
 log_path = "logs/recognition_log.csv"
 
+# Ensure the logs directory exists
 if not os.path.exists("logs"):
     os.makedirs("logs")
+
+# Verify the database path
+if not os.path.exists(db_path):
+    print(
+        f"[ERROR] Database file not found at {db_path}. Please ensure the database is created and embeddings are stored."
+    )
+else:
+    print(f"[INFO] Database found at {db_path}.")
 
 
 class FaceRecognitionApp:
@@ -23,6 +32,8 @@ class FaceRecognitionApp:
         self.root = root
         self.root.title("Face ID - Control System")
         self.root.geometry("600x500")
+
+        SELF_THRESHOLD = 0.8  # Fixed threshold (can be adjusted as needed)
 
         self.image_path = None
         self.setup_ui()
@@ -38,21 +49,6 @@ class FaceRecognitionApp:
 
         self.image_label = ttk.Label(self.frame)
         self.image_label.pack(pady=5)
-
-        self.threshold_label = ttk.Label(
-            self.frame, text="↑ More Strict    Threshold (0.5)    More Forgiving ↓"
-        )
-        self.threshold_label.pack(pady=5)
-
-        self.threshold_slider = ttk.Scale(
-            self.frame,
-            from_=0.3,
-            to=0.9,
-            orient="horizontal",
-            command=self.update_threshold_label,
-        )
-        self.threshold_slider.set(0.5)
-        self.threshold_slider.pack()
 
         self.result_label = ttk.Label(self.frame, text="", font=("Helvetica", 14))
         self.result_label.pack(pady=10)
@@ -82,10 +78,6 @@ class FaceRecognitionApp:
             self.image_label.configure(image=self.tk_image)
             self.result_label.configure(text="")
 
-    def update_threshold_label(self, val):
-        # Already visually indicated by the text above the slider
-        pass
-
     def recognize(self):
         if not self.image_path:
             messagebox.showerror("Error", "Please upload an image first.")
@@ -96,20 +88,42 @@ class FaceRecognitionApp:
             self.result_label.configure(text="No face detected.", foreground="red")
             return
 
-        emb = get_embedding(model, face)
+        # Adapted from recognizer.py
+        threshold = 0.8  # Fixed threshold (same as the default in recognizer.py)
+        new_emb = get_embedding(model, face)
         embeddings = fetch_all_embeddings(db_path)
+
+        # Debug: Check if embeddings are loaded
+        if not embeddings:
+            print(
+                "[ERROR] No embeddings found in the database. Please add persons to the database."
+            )
+            self.result_label.configure(
+                text="No embeddings in database.", foreground="red"
+            )
+            return
+
+        print(f"[INFO] Found {len(embeddings)} embeddings in the database.")
+        for name, stored_emb in embeddings:
+            print(
+                f"[DEBUG] Embedding for {name}: {stored_emb[:5]}..."
+            )  # Print first 5 values for brevity
 
         best_match = None
         best_score = -1
-        threshold = float(self.threshold_slider.get())
 
         for name, stored_emb in embeddings:
-            score = cosine_similarity([emb], [np.array(stored_emb)])[0][0]
-            if score > best_score:
-                best_score = score
-                best_match = name
+            try:
+                score = cosine_similarity([new_emb], [np.array(stored_emb)])[0][0]
+                print(f"[Similarity] {name}: {score:.4f}")
+                if score > best_score:
+                    best_score = score
+                    best_match = name
+            except Exception as e:
+                print(f"[ERROR] Failed to compute similarity for {name}: {e}")
+                continue
 
-        # Check if the best score passes the threshold
+        # Determine the result based on the threshold
         if best_score >= threshold:
             final_result = best_match
             color = "green"
