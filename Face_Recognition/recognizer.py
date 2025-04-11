@@ -10,7 +10,7 @@ def recognize_face(image_path, db_path="database/embeddings.db", threshold=0.8):
     model = load_vggface2_model()
     face = extract_face(image_path)
     if face is None:
-        return "No face found."
+        return "No face found.", 0.0  # Return a score of 0.0 for no face
 
     new_emb = get_embedding(model, face)
 
@@ -31,4 +31,7 @@ def recognize_face(image_path, db_path="database/embeddings.db", threshold=0.8):
             best_score = score
             best_match = name
 
-    return best_match if best_score > threshold else "Unknown"
+    if best_score >= threshold:
+        return best_match, best_score
+    else:
+        return "Unknown", best_score
