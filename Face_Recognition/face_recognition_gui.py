@@ -45,6 +45,23 @@ class FaceRecognitionApp:
         self.setup_ui()
 
     def setup_ui(self):
+        self.threshold_label = ttk.Label(
+            self.frame, text="↑ More Strict    Threshold (0.8)    More Forgiving ↓"
+        )
+        self.threshold_label.pack(pady=5)
+
+        self.threshold_var = tk.DoubleVar(value=0.8)
+        self.threshold_slider = ttk.Scale(
+            self.frame,
+            from_=0.5,
+            to=0.95,
+            orient="horizontal",
+            variable=self.threshold_var,
+            command=lambda val: self.threshold_label.configure(
+                text=f"↑ More Strict    Threshold ({float(val):.2f})    More Forgiving ↓"
+            ),
+        )
+        self.threshold_slider.pack()
         self.frame = ttk.Frame(self.root, padding=10)
         self.frame.pack(fill=tk.BOTH, expand=True)
 
@@ -149,6 +166,8 @@ class FaceRecognitionApp:
         frame_pil.thumbnail((300, 300))
         self.tk_image = ImageTk.PhotoImage(frame_pil)
         self.image_label.configure(image=self.tk_image)
+        threshold = self.threshold_var.get()
+        result, score = recognize_face(temp_path, db_path=db_path, threshold=threshold)
 
         # Schedule the next frame update
         self.root.after(30, self.update_video)  # Update every 30ms (~33 FPS)
@@ -176,6 +195,10 @@ class FaceRecognitionApp:
         self.result_label.configure(
             text=f"Match: {final_result} (Score: {round(score, 4)})",
             foreground=color,
+        )
+        threshold = self.threshold_var.get()
+        result, score = recognize_face(
+            self.image_path, db_path=db_path, threshold=threshold
         )
 
         # Save to logs
