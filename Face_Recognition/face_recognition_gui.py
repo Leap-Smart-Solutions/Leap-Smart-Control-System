@@ -5,7 +5,6 @@ import os
 import numpy as np
 from datetime import datetime
 import csv
-import json
 from face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import insert_embedding, fetch_all_embeddings
@@ -26,7 +25,6 @@ class FaceRecognitionApp:
         self.root.geometry("600x500")
 
         self.image_path = None
-
         self.setup_ui()
 
     def setup_ui(self):
@@ -85,7 +83,8 @@ class FaceRecognitionApp:
             self.result_label.configure(text="")
 
     def update_threshold_label(self, val):
-        pass  # Already has text above slider
+        # Already visually indicated by the text above the slider
+        pass
 
     def recognize(self):
         if not self.image_path:
@@ -110,19 +109,27 @@ class FaceRecognitionApp:
                 best_score = score
                 best_match = name
 
-        result = best_match if best_score > threshold else "Unknown"
+        # Check if the best score passes the threshold
+        if best_score >= threshold:
+            final_result = best_match
+            color = "green"
+        else:
+            final_result = "Unknown"
+            color = "orange"
+
         self.result_label.configure(
-            text=f"Match: {result}",
-            foreground="green" if result != "Unknown" else "orange",
+            text=f"Match: {final_result} (Score: {round(best_score, 4)})",
+            foreground=color,
         )
 
+        # Save to logs
         with open(log_path, "a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(
                 [
-                    datetime.now(),
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     os.path.basename(self.image_path),
-                    result,
+                    final_result,
                     round(best_score, 4),
                 ]
             )
