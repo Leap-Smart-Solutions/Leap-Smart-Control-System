@@ -22,11 +22,19 @@ def insert_embedding(
 ):
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
+    c.execute("SELECT id FROM embeddings WHERE name = ?", (name,))
+    existing = c.fetchone()
     emb_str = json.dumps(embedding)
-    c.execute(
-        "INSERT INTO embeddings (name, embedding, image_path) VALUES (?, ?, ?)",
-        (name, emb_str, image_path),
-    )
+    if existing:
+        c.execute(
+            "UPDATE embeddings SET embedding = ?, image_path = ? WHERE name = ?",
+            (emb_str, image_path, name),
+        )
+    else:
+        c.execute(
+            "INSERT INTO embeddings (name, embedding, image_path) VALUES (?, ?, ?)",
+            (name, emb_str, image_path),
+        )
     conn.commit()
     conn.close()
 
