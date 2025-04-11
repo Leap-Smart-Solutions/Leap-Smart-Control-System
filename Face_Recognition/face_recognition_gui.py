@@ -9,7 +9,6 @@ from face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import insert_embedding, fetch_all_embeddings
 from sklearn.metrics.pairwise import cosine_similarity
-from recognizer import recognize_face
 
 model = load_vggface2_model()
 db_path = "database/embeddings.db"
@@ -33,6 +32,8 @@ class FaceRecognitionApp:
         self.root = root
         self.root.title("Face ID - Control System")
         self.root.geometry("600x500")
+
+        SELF_THRESHOLD = 0.8  # Fixed threshold (can be adjusted as needed)
 
         self.image_path = None
         self.setup_ui()
@@ -87,7 +88,9 @@ class FaceRecognitionApp:
             self.result_label.configure(text="No face detected.", foreground="red")
             return
 
-        emb = get_embedding(model, face)
+        # Adapted from recognizer.py
+        threshold = 0.8  # Fixed threshold (same as the default in recognizer.py)
+        new_emb = get_embedding(model, face)
         embeddings = fetch_all_embeddings(db_path)
 
         # Debug: Check if embeddings are loaded
@@ -108,53 +111,23 @@ class FaceRecognitionApp:
 
         best_match = None
         best_score = -1
-        second_best_score = -1
-        threshold = float(self.threshold_slider.get())
 
-        # Compute similarity scores and track best and second-best
         for name, stored_emb in embeddings:
             try:
-                score = cosine_similarity([emb], [np.array(stored_emb)])[0][0]
+                score = cosine_similarity([new_emb], [np.array(stored_emb)])[0][0]
                 print(f"[Similarity] {name}: {score:.4f}")
                 if score > best_score:
-                    second_best_score = best_score
                     best_score = score
                     best_match = name
-                elif score > second_best_score:
-                    second_best_score = score
             except Exception as e:
                 print(f"[ERROR] Failed to compute similarity for {name}: {e}")
                 continue
 
-        # Handle the case where there's only one embedding
-        if second_best_score == -1:  # Only one embedding in the database
-            print(
-                "[INFO] Only one embedding in the database. Skipping confidence gap check."
-            )
-            score_gap = float("inf")  # Set to infinity to pass the check
-        else:
-            score_gap = best_score - second_best_score
-            print(
-                f"[INFO] Best score: {best_score:.4f}, Second-best score: {second_best_score:.4f}, Score gap: {score_gap:.4f}"
-            )
-
-        # Debug: Print the conditions before evaluation
-        print(f"[DEBUG] Threshold: {threshold:.4f}")
-        print(
-            f"[DEBUG] Condition 1 (best_score >= threshold): {best_score >= threshold}"
-        )
-        print(f"[DEBUG] Condition 2 (score_gap >= 0.1): {score_gap >= 0.1}")
-        print(
-            f"[DEBUG] Combined condition: {(best_score >= threshold) and (score_gap >= 0.1)}"
-        )
-
-        # Check if the best score passes the threshold and has a significant gap
-        if best_score >= threshold and score_gap >= 0.1:
-            print(f"[INFO] Match found: {best_match}")
+        # Determine the result based on the threshold
+        if best_score >= threshold:
             final_result = best_match
             color = "green"
         else:
-            print("[INFO] No match found. Labeling as Unknown.")
             final_result = "Unknown"
             color = "orange"
 
