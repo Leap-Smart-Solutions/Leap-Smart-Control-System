@@ -45,6 +45,11 @@ class FaceRecognitionApp:
         self.setup_ui()
 
     def setup_ui(self):
+        # Initialize the frame first
+        self.frame = ttk.Frame(self.root, padding=10)
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
+        # Threshold slider and label
         self.threshold_label = ttk.Label(
             self.frame, text="↑ More Strict    Threshold (0.8)    More Forgiving ↓"
         )
@@ -62,8 +67,6 @@ class FaceRecognitionApp:
             ),
         )
         self.threshold_slider.pack()
-        self.frame = ttk.Frame(self.root, padding=10)
-        self.frame.pack(fill=tk.BOTH, expand=True)
 
         self.upload_button = ttk.Button(
             self.frame, text="📁 Upload Image", command=self.upload_image
@@ -147,7 +150,10 @@ class FaceRecognitionApp:
             # Save the frame temporarily to recognize it
             temp_path = "temp_frame.jpg"
             cv2.imwrite(temp_path, frame)
-            result, score = recognize_face(temp_path, db_path=db_path, threshold=0.8)
+            threshold = self.threshold_var.get()
+            result, score = recognize_face(
+                temp_path, db_path=db_path, threshold=threshold
+            )
             os.remove(temp_path)
 
             # Display the result
@@ -166,8 +172,6 @@ class FaceRecognitionApp:
         frame_pil.thumbnail((300, 300))
         self.tk_image = ImageTk.PhotoImage(frame_pil)
         self.image_label.configure(image=self.tk_image)
-        threshold = self.threshold_var.get()
-        result, score = recognize_face(temp_path, db_path=db_path, threshold=threshold)
 
         # Schedule the next frame update
         self.root.after(30, self.update_video)  # Update every 30ms (~33 FPS)
@@ -178,7 +182,10 @@ class FaceRecognitionApp:
             return
 
         # Use recognize_face from recognizer.py (YOLOv8 for detection, VGGFace2 for recognition)
-        result, score = recognize_face(self.image_path, db_path=db_path, threshold=0.8)
+        threshold = self.threshold_var.get()
+        result, score = recognize_face(
+            self.image_path, db_path=db_path, threshold=threshold
+        )
 
         if result == "No face found.":
             self.result_label.configure(text="No face detected.", foreground="red")
@@ -195,10 +202,6 @@ class FaceRecognitionApp:
         self.result_label.configure(
             text=f"Match: {final_result} (Score: {round(score, 4)})",
             foreground=color,
-        )
-        threshold = self.threshold_var.get()
-        result, score = recognize_face(
-            self.image_path, db_path=db_path, threshold=threshold
         )
 
         # Save to logs
