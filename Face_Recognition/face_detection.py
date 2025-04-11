@@ -2,8 +2,10 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-# Load the YOLOv8 model (nano variant for efficiency)
+# Load the YOLOv8 model with mixed precision
 model = YOLO("yolov8n.pt")
+if model.device.type == "cuda":
+    model = model.half()  # Enable mixed precision (FP16)
 
 
 def extract_face(image_path):
@@ -22,20 +24,18 @@ def extract_face(image_path):
         print(f"[ERROR] Could not read image at {image_path}")
         return None
 
+    # Resize image for faster inference
+    image = cv2.resize(image, (416, 416))  # Reduced size for efficiency
+
     # Perform face detection using YOLOv8
-    results = model.predict(
-        image, conf=0.5, classes=[0]
-    )  # Class 0 is 'person' in COCO dataset
+    results = model.predict(image, conf=0.5, classes=[0])  # Class 0 is 'person'
 
     # Process the results
     for result in results:
-        boxes = result.boxes.xyxy.cpu().numpy()  # Get bounding boxes
+        boxes = result.boxes.xyxy.cpu().numpy()
         for box in boxes:
             x1, y1, x2, y2 = map(int, box[:4])
-            # Extract the face region (approximate the face as the upper part of the person's bounding box)
-            face_height = (
-                y2 - y1
-            ) // 3  # Approximate face height as 1/3 of the person height
+            face_height = (y2 - y1) // 3
             face_y1 = y1
             face_y2 = y1 + face_height
             face = image[face_y1:face_y2, x1:x2]
@@ -43,7 +43,7 @@ def extract_face(image_path):
             if face.size == 0:
                 continue
 
-            # Resize the face to a standard size (224x224 for VGGFace2)
+            # Resize the face to 224x224 for VGGFace2
             face = cv2.resize(face, (224, 224))
             return face
 

@@ -9,30 +9,28 @@ import torch
 # Load the VGGFace2 model
 model = load_vggface2_model()
 if torch.cuda.is_available():
-    model = model.cuda()  # Move to GPU if available
-    model = model.half()  # Enable mixed precision (FP16)
+    model = model.cuda()
+    model = model.half()
 
 
 def recognize_face(image_path, db_path="database/embeddings.db", threshold=0.8):
-    """
-    Recognize a face in an image using VGGFace2.
-
-    Args:
-        image_path (str): Path to the input image.
-        db_path (str): Path to the embeddings database.
-        threshold (float): Similarity threshold for recognition.
-
-    Returns:
-        tuple: (str, float) - The recognized name (or "Unknown") and the best similarity score.
-    """
-    face = extract_face(image_path)  # Now uses YOLOv8 for detection
+    face = extract_face(image_path)
     if face is None:
         return "No face found.", 0.0
+
+    # Optimize preprocessing for VGGFace2
+    face = face / 255.0  # Normalize to [0, 1]
+    face = np.transpose(face, (2, 0, 1))  # Convert to (C, H, W) for PyTorch
+    face = torch.tensor(
+        face, dtype=torch.float16 if torch.cuda.is_available() else torch.float32
+    )
+    if torch.cuda.is_available():
+        face = face.cuda()
 
     # Extract embedding using VGGFace2
     new_emb = get_embedding(model, face)
     if torch.cuda.is_available():
-        new_emb = new_emb.cuda().half()  # Convert to FP16 for mixed precision
+        new_emb = new_emb.cuda().half()
 
     # Load embeddings from the database
     conn = sqlite3.connect(db_path)
