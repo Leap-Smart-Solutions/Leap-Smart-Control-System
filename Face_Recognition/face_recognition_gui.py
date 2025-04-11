@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import os
 from datetime import datetime
 import csv
+import cv2
 from face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import insert_embedding, fetch_all_embeddings
@@ -13,8 +14,8 @@ import torch
 # Load the VGGFace2 model
 model = load_vggface2_model()
 if torch.cuda.is_available():
-    model = model.cuda()  # Move to GPU if available
-    model = model.half()  # Enable mixed precision (FP16)
+    model = model.cuda()
+    model = model.half()
 
 db_path = "database/embeddings.db"
 log_path = "logs/recognition_log.csv"
@@ -36,9 +37,11 @@ class FaceRecognitionApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Face ID - Control System")
-        self.root.geometry("600x500")
+        self.root.geometry("800x600")
 
         self.image_path = None
+        self.cap = None  # For video capture
+        self.is_running = False
         self.setup_ui()
 
     def setup_ui(self):
@@ -48,7 +51,17 @@ class FaceRecognitionApp:
         self.upload_button = ttk.Button(
             self.frame, text="📁 Upload Image", command=self.upload_image
         )
-        self.upload_button.pack(pady=10)
+        self.upload_button.pack(pady=5)
+
+        self.start_video_button = ttk.Button(
+            self.frame, text="🎥 Start Video", command=self.start_video
+        )
+        self.start_video_button.pack(pady=5)
+
+        self.stop_video_button = ttk.Button(
+            self.frame, text="⏹ Stop Video", command=self.stop_video
+        )
+        self.stop_video_button.pack(pady=5)
 
         self.image_label = ttk.Label(self.frame)
         self.image_label.pack(pady=5)
@@ -80,6 +93,65 @@ class FaceRecognitionApp:
             self.tk_image = ImageTk.PhotoImage(image)
             self.image_label.configure(image=self.tk_image)
             self.result_label.configure(text="")
+
+    def start_video(self):
+        if self.cap is not None:
+            return
+
+        self.cap = cv2.VideoCapture(0)  # Open webcam
+        if not self.cap.isOpened():
+            messagebox.showerror("Error", "Could not open webcam.")
+            self.cap = None
+            return
+
+        self.is_running = True
+        self.update_video()
+
+    def stop_video(self):
+        self.is_running = False
+        if self.cap is not None:
+            self.cap.release()
+            self.cap = None
+        self.image_label.configure(image="")
+        self.result_label.configure(text="")
+
+    def update_video(self):
+        if not self.is_running or self.cap is None:
+            return
+
+        ret, frame = self.cap.read()
+        if not ret:
+            self.stop_video()
+            return
+
+        # Detect and recognize faces in the frame
+        face = extract_face(frame)  # Uses YOLOv8
+        if face is not None:
+            # Save the frame temporarily to recognize it
+            temp_path = "temp_frame.jpg"
+            cv2.imwrite(temp_path, frame)
+            result, score = recognize_face(temp_path, db_path=db_path, threshold=0.8)
+            os.remove(temp_path)
+
+            # Display the result
+            if result == "No face found.":
+                self.result_label.configure(text="No face detected.", foreground="red")
+            else:
+                color = "green" if result != "Unknown" else "orange"
+                self.result_label.configure(
+                    text=f"Match: {result} (Score: {round(score, 4)})",
+                    foreground=color,
+                )
+
+        # Display the frame in the GUI
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame_pil = Image.fromarray(frame_rgb)
+        frame_pil.thumbnail((300, 300))
+        self.tk_image = ImageTk.PhotoImage(frame_pil)
+        self.image_label.configure(image=self.tk_image)
+
+        # Schedule the next frame update
+        self.root.after(30, self.update_video)  # Update every 30ms (~33 FPS)
 
     def recognize(self):
         if not self.image_path:
@@ -132,15 +204,14 @@ class FaceRecognitionApp:
         if not file_path:
             return
 
-        face = extract_face(file_path)  # Uses YOLOv8 for detection
+        face = extract_face(file_path)
         if face is None:
             messagebox.showerror("Error", "No face detected in the image.")
             return
 
-        # Extract embedding using VGGFace2
         emb = get_embedding(model, face)
         if torch.cuda.is_available():
-            emb = emb.cuda().half()  # Convert to FP16 for mixed precision
+            emb = emb.cuda().half()
         insert_embedding(name, emb.cpu().numpy().tolist(), file_path, db_path)
         messagebox.showinfo("Success", f"{name} has been added to the database!")
 
