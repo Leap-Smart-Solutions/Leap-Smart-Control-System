@@ -34,7 +34,85 @@ else:
 
 
 class FaceRecognitionApp:
-    # ... __init__ and other methods remain unchanged
+    def __init__(self, root):  # Add root parameter
+        self.root = root
+        self.root.title("Face ID - Control System")
+        self.root.geometry("800x600")
+
+        self.image_path = None
+        self.cap = None  # For video capture
+        self.is_running = False
+        self.setup_ui()
+
+    def setup_ui(self):
+        # Initialize the frame first
+        self.frame = ttk.Frame(self.root, padding=10)
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
+        # Threshold slider and label
+        self.threshold_label = ttk.Label(
+            self.frame, text="↑ More Strict    Threshold (0.8)    More Forgiving ↓"
+        )
+        self.threshold_label.pack(pady=5)
+
+        self.threshold_var = tk.DoubleVar(value=0.8)
+        self.threshold_slider = ttk.Scale(
+            self.frame,
+            from_=0.5,
+            to=0.95,
+            orient="horizontal",
+            variable=self.threshold_var,
+            command=lambda val: self.threshold_label.configure(
+                text=f"↑ More Strict    Threshold ({float(val):.2f})    More Forgiving ↓"
+            ),
+        )
+        self.threshold_slider.pack()
+
+        self.upload_button = ttk.Button(
+            self.frame, text="📁 Upload Image", command=self.upload_image
+        )
+        self.upload_button.pack(pady=5)
+
+        self.start_video_button = ttk.Button(
+            self.frame, text="🎥 Start Video", command=self.start_video
+        )
+        self.start_video_button.pack(pady=5)
+
+        self.stop_video_button = ttk.Button(
+            self.frame, text="⏹ Stop Video", command=self.stop_video
+        )
+        self.stop_video_button.pack(pady=5)
+
+        self.image_label = ttk.Label(self.frame)
+        self.image_label.pack(pady=5)
+
+        self.result_label = ttk.Label(self.frame, text="", font=("Helvetica", 14))
+        self.result_label.pack(pady=10)
+
+        self.recognize_button = ttk.Button(
+            self.frame, text="🔍 Recognize Face", command=self.recognize
+        )
+        self.recognize_button.pack(pady=5)
+
+        self.try_again_button = ttk.Button(
+            self.frame, text="🔁 Try Another Image", command=self.reset_ui
+        )
+        self.try_again_button.pack(pady=5)
+
+        self.add_person_button = ttk.Button(
+            self.frame, text="➕ Add Person to DB", command=self.add_new_person
+        )
+        self.add_person_button.pack(pady=5)
+
+    def upload_image(self):
+        file_path = filedialog.askopenfilename()
+        if file_path:
+            self.image_path = file_path
+            image = Image.open(file_path)
+            image.thumbnail((300, 300))
+            self.tk_image = ImageTk.PhotoImage(image)
+            self.image_label.configure(image=self.tk_image)
+            self.result_label.configure(text="")
 
     def start_video(self):
         if self.cap is not None:
@@ -51,6 +129,14 @@ class FaceRecognitionApp:
 
         self.is_running = True
         self.update_video()
+
+    def stop_video(self):
+        self.is_running = False
+        if self.cap is not None:
+            self.cap.release()
+            self.cap = None
+        self.image_label.configure(image="")
+        self.result_label.configure(text="")
 
     def update_video(self):
         if not self.is_running or self.cap is None:
@@ -157,32 +243,4 @@ class FaceRecognitionApp:
             messagebox.showerror("Error", f"Logging error: {str(e)}")
 
     def reset_ui(self):
-        self.image_label.configure(image="")
-        self.image_path = None
-        self.result_label.configure(text="")
-
-    def add_new_person(self):
-        name = tk.simpledialog.askstring("Add Person", "Enter name:")
-        if not name:
-            return
-
-        file_path = filedialog.askopenfilename()
-        if not file_path:
-            return
-
-        face = extract_face(file_path)
-        if face is None:
-            messagebox.showerror("Error", "No face detected in the image.")
-            return
-
-        emb = get_embedding(model, face)
-        if torch.cuda.is_available():
-            emb = emb.cuda().half()
-        insert_embedding(name, emb.cpu().numpy().tolist(), file_path, db_path)
-        messagebox.showinfo("Success", f"{name} has been added to the database!")
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = FaceRecognitionApp(root)
-    root.mainloop()
+        self.image_labe
