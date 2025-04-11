@@ -17,7 +17,7 @@ initialize_db(db_path)
 generate_embeddings(dataset_path, db_path)
 
 # Test recognition
-result = recognize_face("test_image_1.jpg", db_path, threshold=0.85)
+result = recognize_face("test_image.jpg", db_path, threshold=0.85)
 if result == "No face found.":
     print("No face found in the image.")
 elif result == "Unknown":
