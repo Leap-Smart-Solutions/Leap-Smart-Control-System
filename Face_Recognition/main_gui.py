@@ -1,163 +1,119 @@
-# main_gui.py
-
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageTk
-import cv2
+from tkinter import ttk
 import os
-import datetime
-import numpy as np
-
-from face_recognizer import recognize_faces_from_image
-from db_manager import fetch_all_embeddings
-from yolo_face_detector import YOLOFaceDetector
-from utils.sound import play_alarm_sound
-from utils.save import save_unknown_face
-from utils.logs import save_alert_log, get_today_logs
 
 
 class FaceRecognitionApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Leap Smart Control System")
+        self.root.title("Smart Home Face Recognition")
+        self.root.geometry("800x600")
         self.root.configure(bg="white")
 
-        self.detector = YOLOFaceDetector(confidence=0.45)
+        self.input_mode = tk.StringVar(value="image")
+        self.file_path = None
 
-        self.image_label = tk.Label(self.root, bg="white")
-        self.image_label.pack(pady=10)
+        self.setup_ui()
 
-        btn_frame = tk.Frame(self.root, bg="white")
-        btn_frame.pack(pady=10)
-
-        tk.Button(btn_frame, text="Upload Image", command=self.upload_image).grid(
-            row=0, column=0, padx=5
+    def setup_ui(self):
+        title = tk.Label(
+            self.root,
+            text="Smart Home Face Recognition System",
+            font=("Helvetica", 18, "bold"),
+            bg="white",
         )
-        tk.Button(btn_frame, text="Use Webcam", command=self.use_webcam).grid(
-            row=0, column=1, padx=5
+        title.pack(pady=20)
+
+        # Input Selection
+        mode_frame = tk.Frame(self.root, bg="white")
+        mode_frame.pack(pady=10)
+
+        tk.Radiobutton(
+            mode_frame,
+            text="Image",
+            variable=self.input_mode,
+            value="image",
+            bg="white",
+        ).pack(side="left", padx=10)
+        tk.Radiobutton(
+            mode_frame,
+            text="Video",
+            variable=self.input_mode,
+            value="video",
+            bg="white",
+        ).pack(side="left", padx=10)
+        tk.Radiobutton(
+            mode_frame,
+            text="Webcam",
+            variable=self.input_mode,
+            value="webcam",
+            bg="white",
+        ).pack(side="left", padx=10)
+
+        # File Picker Button
+        self.select_btn = tk.Button(
+            self.root, text="Select File", command=self.browse_file, bg="#f0f0f0"
         )
-        tk.Button(btn_frame, text="Upload Video", command=self.upload_video).grid(
-            row=0, column=2, padx=5
+        self.select_btn.pack(pady=10)
+
+        # Start Button
+        self.start_btn = tk.Button(
+            self.root,
+            text="Start Recognition",
+            command=self.start_recognition,
+            bg="#d1ffd1",
         )
-        tk.Button(
-            btn_frame, text="Today's Alerts", command=self.show_todays_alerts
-        ).grid(row=0, column=3, padx=5)
+        self.start_btn.pack(pady=5)
 
-        self.status_label = tk.Label(
-            self.root, text="Status: Ready", bg="white", fg="green"
+        # Alerts Button
+        self.alert_btn = tk.Button(
+            self.root,
+            text="Show Today's Alerts",
+            command=self.show_alerts,
+            bg="#d0e0ff",
         )
-        self.status_label.pack(pady=5)
+        self.alert_btn.pack(pady=5)
 
-    def show_image(self, image):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(image)
-        image = image.resize((600, 400))
-        photo = ImageTk.PhotoImage(image)
-        self.image_label.config(image=photo)
-        self.image_label.image = photo
-
-    def upload_image(self):
-        file_path = filedialog.askopenfilename(
-            filetypes=[("Image files", "*.jpg *.png *.jpeg")]
+        # Exit
+        self.exit_btn = tk.Button(
+            self.root, text="Exit", command=self.root.quit, bg="#ffcccc"
         )
-        if not file_path:
-            return
+        self.exit_btn.pack(pady=20)
 
-        image = cv2.imread(file_path)
-        face_crops, boxes = self.detector.detect_faces(image)
-
-        if not face_crops:
-            self.status_label.config(text="No face detected.", fg="red")
-            return
-
-        labels = []
-        known_embeddings = fetch_all_embeddings()
-        for i, face in enumerate(face_crops):
-            label, is_known = recognize_faces_from_image(face, known_embeddings)
-            labels.append(label)
-            if not is_known:
-                save_unknown_face(face)
-                save_alert_log(label)
-                play_alarm_sound()
-
-        image = self.detector.draw_boxes(image, boxes, labels)
-        self.show_image(image)
-        self.status_label.config(text="Detection complete.", fg="blue")
-
-    def use_webcam(self):
-        cap = cv2.VideoCapture(0)
-        if not cap.isOpened():
-            messagebox.showerror("Error", "Webcam not accessible.")
-            return
-
-        known_embeddings = fetch_all_embeddings()
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            face_crops, boxes = self.detector.detect_faces(frame)
-            labels = []
-
-            for face in face_crops:
-                label, is_known = recognize_faces_from_image(face, known_embeddings)
-                labels.append(label)
-                if not is_known:
-                    save_unknown_face(face)
-                    save_alert_log(label)
-                    play_alarm_sound()
-
-            frame = self.detector.draw_boxes(frame, boxes, labels)
-            cv2.imshow("Webcam Face Recognition", frame)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
-
-    def upload_video(self):
-        file_path = filedialog.askopenfilename(
-            filetypes=[("Video files", "*.mp4 *.avi *.mov")]
+        # Placeholder for result
+        self.result_label = tk.Label(
+            self.root, text="", font=("Helvetica", 12), bg="white"
         )
-        if not file_path:
-            return
+        self.result_label.pack()
 
-        cap = cv2.VideoCapture(file_path)
-        known_embeddings = fetch_all_embeddings()
+    def browse_file(self):
+        mode = self.input_mode.get()
+        if mode == "image":
+            self.file_path = filedialog.askopenfilename(
+                filetypes=[("Image files", "*.jpg *.jpeg *.png")]
+            )
+        elif mode == "video":
+            self.file_path = filedialog.askopenfilename(
+                filetypes=[("Video files", "*.mp4 *.avi *.mov")]
+            )
+        if self.file_path:
+            self.result_label.config(
+                text=f"Selected: {os.path.basename(self.file_path)}"
+            )
 
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
+    def start_recognition(self):
+        # Will be linked to detection logic
+        messagebox.showinfo(
+            "Recognition", f"Starting recognition in {self.input_mode.get()} mode..."
+        )
 
-            face_crops, boxes = self.detector.detect_faces(frame)
-            labels = []
-
-            for face in face_crops:
-                label, is_known = recognize_faces_from_image(face, known_embeddings)
-                labels.append(label)
-                if not is_known:
-                    save_unknown_face(face)
-                    save_alert_log(label)
-                    play_alarm_sound()
-
-            frame = self.detector.draw_boxes(frame, boxes, labels)
-            cv2.imshow("Video Face Recognition", frame)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
-
-    def show_todays_alerts(self):
-        alerts = get_today_logs()
-        if not alerts:
-            messagebox.showinfo("Today's Alerts", "No alerts today.")
-            return
-        alert_text = "\n".join(alerts)
-        messagebox.showinfo("Today's Alerts", alert_text)
+    def show_alerts(self):
+        log_path = "logs/recognition_log.csv"
+        if os.path.exists(log_path):
+            os.system(f"notepad.exe {log_path}")
+        else:
+            messagebox.showwarning("Log", "No logs found for today.")
 
 
 if __name__ == "__main__":
