@@ -20,7 +20,7 @@ LEAP-SMART-CONTROL-SYSTEM
 ├── Gesture_Recognition
 ├── Imgs
 ├── Mobile_Application
-├── Ring_Development
+├── IoT_Development
 ├── Web_Development
 └── README.md
 ```
