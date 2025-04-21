@@ -77,7 +77,6 @@ All devices leverage **Firebase** for real-time communication, data storage, and
 ```
 /Leap-IoT/
 ├── SmartRing/
-├── SmartBand/
 ├── SmartSwitch/
 ├── LiveStreamCamera/
 └── README.md
