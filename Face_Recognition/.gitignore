@@ -1,0 +1,21 @@
+<<<<<<< HEAD
+venv/ 
+=======
+>>>>>>> 24e36c39d05eb01941d3b8d1ba320056c5a57853
+dataset
+venv
+__pycache__
+unknown_faces
+<<<<<<< HEAD
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+venv/
+__pycache__/
+*.pyc
+*.pt  # Optional: exclude model files
+=======
+>>>>>>> 24e36c39d05eb01941d3b8d1ba320056c5a57853
