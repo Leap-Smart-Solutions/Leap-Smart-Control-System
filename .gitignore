@@ -1,0 +1,14 @@
+venv
+dataset
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+__pycache__
+*.so
+*.dylib
+*.dll
+*.lib
+*.exp
+*.def

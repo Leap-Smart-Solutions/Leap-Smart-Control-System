@@ -5,7 +5,7 @@ from datetime import datetime
 from playsound import playsound
 from utils.db_manager import get_all_embeddings, log_recognition_event
 from models.vggface2_model import recognize_face
-from yolo_face_detector import YOLOFaceDetector
+from Face_Recognition.Archive.yolo_face_detector import YOLOFaceDetector
 import argparse
 
 # Initialize YOLOv8 face detector

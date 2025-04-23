@@ -5,10 +5,10 @@ import cv2
 import os
 
 # The modules
-from face_detection import extract_face
+from Face_Recognition.Archive.face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import insert_embedding, initialize_db
-from recognizer import recognize_face
+from Face_Recognition.Archive.recognizer import recognize_face
 
 # Paths
 DB_PATH = "database/embeddings.db"

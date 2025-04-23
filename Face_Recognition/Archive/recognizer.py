@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-from face_detection import extract_face
+from Face_Recognition.Archive.face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 import sqlite3
 import json
