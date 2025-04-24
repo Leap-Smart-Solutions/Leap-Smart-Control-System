@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- for fonts -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- for icoons -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining"
+    />
+    <link rel="stylesheet" href="CSS/bedRoom.css" />
+    <title>Bed Room</title>
+  </head>
+  <body>
+    <header>
+      <div class="head">
+        <div class="date-menue">
+          <img
+            src="Img/menu-rectangles-component.png"
+            alt="menu"
+            class="menu"
+          />
+          <p class="date">Thu, Jan 12</p>
+        </div>
+        <nav class="">
+          <div class="nav-links">
+            <a href="bedRoom" id="active" class="bedRoom">Bed Room</a>
+            <a href="livingRoom.html">LivingRoom</a>
+            <a href="kitchen.html">Kitchen</a>
+          </div>
+        </nav>
+        <div class="user-image">
+          <img src="Img/1.jpg" alt="image" />
+        </div>
+      </div>
+    </header>
+    <div class="display-nav-links">
+      <nav class="links">
+        <a href="profile.html">Profile</a>
+        <div class="line"></div>
+        <a href="landing.html" style="color: #ff3b30">LogOut</a>
+      </nav>
+    </div>
+    <div class="content">
+      <div class="bed-section">
+        <div class="image-head">
+          <img src="Img/bedroom.png" alt="image" />
+          <h1>Bedroom</h1>
+        </div>
+        <div class="content-bed">
+          <div class="content1">
+            <div class="clock">
+              <p>⏰</p>
+
+              <div class="clock-mode">
+                <div class="vibrate">
+                  <input
+                    type="radio"
+                    id="vibrate"
+                    name="alarm"
+                    value="vibrate"
+                  />
+                  <label for="vibrate">Vibrate Only</label>
+                </div>
+
+                <div class="sound">
+                  <input type="radio" id="sound" name="alarm" value="sound" />
+                  <label for="sound">Sound Alarm</label>
+                </div>
+              </div>
+            </div>
+            <div class="chargeIO">
+              <div class="IO">
+                <img src="Img/smart-wall-socket.png" alt="IMAGE" /><br />
+                <p>I/O</p>
+              </div>
+              <div class="charge">
+                <img src="Img/wireless-charger.png" alt="IMAGE" /><br />
+                <p><span>🔋</span> Charging...</p>
+              </div>
+            </div>
+          </div>
+          <div class="content2">
+            <div class="music-container">
+              <div class="name-music">
+                <div class="name-value">
+                  <h3>Audio</h3>
+                  <p>Audio</p>
+                </div>
+                <div class="slider">
+                  <div class="line"></div>
+                  <div class="circle"></div>
+                </div>
+              </div>
+              <div class="controls">
+                <!-- <i class="fa-solid fa-caret-left"></i> -->
+                <i class="fa-solid fa-angles-left"></i>
+                <i class="fa-solid fa-play" id="play"></i>
+                <i
+                  class="fa-solid fa-pause"
+                  id="pause"
+                  style="display: none"
+                ></i>
+                <i class="fa-solid fa-angles-right"></i>
+                <!-- <i class="fa-solid fa-caret-right"></i> -->
+              </div>
+            </div>
+            <div class="air-cond">
+              <img src="Img/air-conditioner-emoji.png" alt="" />
+              <div class="air-cond-mode">
+                <div class="cool">
+                  <input type="radio" id="cool" name="condition" value="cool" />
+                  <label for="cool">Cool</label>
+                </div>
+                <div class="warm">
+                  <input type="radio" id="warm" name="condition" value="warm" />
+                  <label for="warm">Warm</label>
+                </div>
+                <div class="check-box">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="subscribe"
+                      value="newsletter"
+                    />
+                    Eco
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="devices-bed">
+        <div class="head1">
+          <h1>Devices</h1>
+          <div class="dot">
+            <p class="D">&#9679;</p>
+            <p class="active"><strong>5 /</strong>6</p>
+          </div>
+        </div>
+        <div class="door">
+          <div class="device-check">
+            <img src="Img/fan-icon-png-1-2.png" alt="" />
+            <label class="switch">
+              <input type="checkbox" />
+            </label>
+          </div>
+          <h3>Smart door</h3>
+          <div class="wifi-code">
+            <p><i class="fa-solid fa-wifi"></i> Strong</p>
+            <a href="#" class="icon"><></a>
+          </div>
+        </div>
+        <div class="alexa">
+          <div class="device-check">
+            <img src="Img/amazon-alexa.png" alt="" />
+            <label class="switch">
+              <input type="checkbox" />
+            </label>
+          </div>
+          <h3>Amazon Alexa</h3>
+          <div class="wifi-code">
+            <p><i class="fa-solid fa-wifi"></i> Strong</p>
+            <a href="#" class="icon"><></a>
+          </div>
+        </div>
+        <div class="white">
+          <div class="device-check">
+            <img src="Img/white-noise-machine.png" alt="" />
+            <label class="switch">
+              <input type="checkbox" />
+            </label>
+          </div>
+          <h3>White noise machine</h3>
+          <div class="wifi-code">
+            <p><i class="fa-solid fa-wifi"></i> Strong</p>
+            <a href="#" class="icon"><></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="rooms.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

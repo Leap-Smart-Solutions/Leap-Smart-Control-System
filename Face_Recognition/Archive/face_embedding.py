@@ -1,5 +1,5 @@
 import os
-from face_detection import extract_face
+from Face_Recognition.Archive.face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import initialize_db, insert_embedding
 

@@ -1,7 +1,8 @@
-dataset
 venv
+dataset
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
 __pycache__
-unknown_faces
-.venv
-.env
-conda_env
