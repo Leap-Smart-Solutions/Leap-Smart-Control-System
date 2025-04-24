@@ -5,7 +5,7 @@ import os
 import numpy as np
 from datetime import datetime
 import csv
-from Face_Recognition.Archive.face_detection import extract_face
+from face_detection import extract_face
 from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import insert_embedding, fetch_all_embeddings
 from sklearn.metrics.pairwise import cosine_similarity

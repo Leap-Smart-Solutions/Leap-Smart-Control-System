@@ -1,8 +1,13 @@
-venv
 dataset
+venv
+__pycache__
 *.pyc
 *.pyo
 *.pyd
 *.pyw
 *.pyz
-__pycache__
+*.pywz
+*.pyzw
+*.pywz
+.venv/
+.env

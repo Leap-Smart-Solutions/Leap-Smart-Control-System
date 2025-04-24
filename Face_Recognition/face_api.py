@@ -23,6 +23,7 @@ app = FastAPI()
 
 
 @app.post("/add-face")
+<<<<<<< HEAD
 async def add_face(images: list[UploadFile] = File(...), person_name: str = Form(...)):
     # Validate the number of images
     if len(images) != 3:
@@ -42,6 +43,21 @@ async def add_face(images: list[UploadFile] = File(...), person_name: str = Form
         insert_embedding(person_name, embedding.tolist(), image.filename, DB_PATH)
 
     return {"message": f"Three faces added for {person_name}"}
+=======
+async def add_face(image: UploadFile = File(...), person_name: str = Form(...)):
+    contents = await image.read()
+    np_img = np.frombuffer(contents, np.uint8)
+    img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+
+    face = extract_face(img)
+    if face is None:
+        return JSONResponse(content={"error": "No face found."}, status_code=400)
+
+    embedding = get_embedding(model, face)
+    insert_embedding(person_name, embedding.tolist(), image.filename, DB_PATH)
+
+    return {"message": f"Face added for {person_name}"}
+>>>>>>> Ai
 
 
 @app.post("/recognize")
@@ -53,7 +69,10 @@ async def recognize(image: UploadFile = File(...)):
     result = recognize_face(img, DB_PATH, threshold=0.85)
 
     return {"result": result}
+<<<<<<< HEAD
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("face_api:app", host="0.0.0.0", port=8000, reload=True)
+=======
+>>>>>>> Ai
