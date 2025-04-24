@@ -4,3 +4,4 @@ __pycache__
 unknown_faces
 .venv
 .env
+conda_env
