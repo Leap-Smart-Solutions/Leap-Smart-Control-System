@@ -11,7 +11,7 @@ from utils.db_manager import insert_embedding, initialize_db
 from recognizer import recognize_face
 
 # Paths
-DB_PATH = "database/embeddings.db"
+DB_PATH = os.getenv("DB_PATH", "database/embeddings.db")
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 initialize_db(DB_PATH)
 
@@ -23,19 +23,25 @@ app = FastAPI()
 
 
 @app.post("/add-face")
-async def add_face(image: UploadFile = File(...), person_name: str = Form(...)):
-    contents = await image.read()
-    np_img = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+async def add_face(images: list[UploadFile] = File(...), person_name: str = Form(...)):
+    # Validate the number of images
+    if len(images) != 3:
+        return JSONResponse(content={"error": "Exactly three images are required."}, status_code=400)
 
-    face = extract_face(img)
-    if face is None:
-        return JSONResponse(content={"error": "No face found."}, status_code=400)
+    # Process each image
+    for idx, image in enumerate(images):
+        contents = await image.read()
+        np_img = np.frombuffer(contents, np.uint8)
+        img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
 
-    embedding = get_embedding(model, face)
-    insert_embedding(person_name, embedding.tolist(), image.filename, DB_PATH)
+        face = extract_face(img)
+        if face is None:
+            return JSONResponse(content={"error": f"No face found in image {idx + 1}."}, status_code=400)
 
-    return {"message": f"Face added for {person_name}"}
+        embedding = get_embedding(model, face)
+        insert_embedding(person_name, embedding.tolist(), image.filename, DB_PATH)
+
+    return {"message": f"Three faces added for {person_name}"}
 
 
 @app.post("/recognize")
@@ -47,3 +53,7 @@ async def recognize(image: UploadFile = File(...)):
     result = recognize_face(img, DB_PATH, threshold=0.85)
 
     return {"result": result}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("face_api:app", host="0.0.0.0", port=8000, reload=True)
