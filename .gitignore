@@ -9,3 +9,5 @@ __pycache__
 *.pywz
 *.pyzw
 *.pywz
+.venv/
+.env
