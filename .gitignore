@@ -6,9 +6,3 @@ dataset
 *.pyw
 *.pyz
 __pycache__
-*.so
-*.dylib
-*.dll
-*.lib
-*.exp
-*.def

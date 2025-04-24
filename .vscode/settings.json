@@ -1,5 +1,8 @@
 {
     "cSpell.words": [
+        "frombuffer",
+        "imdecode",
+        "IMREAD",
         "pady",
         "vggface"
     ]
