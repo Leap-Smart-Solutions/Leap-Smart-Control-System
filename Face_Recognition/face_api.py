@@ -10,7 +10,7 @@ import logging
 
 # The modules
 from face_detection import extract_face
-from vggface2_model import load_vggface2_model, get_embedding
+from models.vggface2_model import load_vggface2_model, get_embedding
 from utils.db_manager import insert_embedding, initialize_db
 from recognizer import recognize_face
 
