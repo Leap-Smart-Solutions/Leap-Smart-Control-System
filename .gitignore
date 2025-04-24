@@ -2,3 +2,5 @@ dataset
 venv
 __pycache__
 unknown_faces
+.venv
+.env
