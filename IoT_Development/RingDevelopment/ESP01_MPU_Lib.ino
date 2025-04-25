@@ -125,7 +125,7 @@ void setup() {
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         Serial.print(".");
-        delay(500);
+        delay(100);
     }
     Serial.println("\nConnected.");
     Serial.print("IP Address: ");
@@ -163,5 +163,5 @@ void loop() {
         sendData();
     }
 
-    delay(500); // Adjust rate of updates
+    delay(100); // Adjust rate of updates
 }
