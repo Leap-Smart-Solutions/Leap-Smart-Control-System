@@ -5,14 +5,24 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCyleQHWfKDxUmmduFYCXUpmSTkWlC-EgU",
-  authDomain: "leap-authentication.firebaseapp.com",
-  projectId: "leap-authentication",
-  storageBucket: "leap-authentication.firebasestorage.app",
-  messagingSenderId: "817139255207",
-  appId: "1:817139255207:web:786c6d9a3d28e9411c9882"
-};
 
+  apiKey: "AIzaSyBpIQxQrQSwIO6EXwmO9rTfdKS1TuWylZM",
+
+  authDomain: "leap-smart-band.firebaseapp.com",
+
+  databaseURL: "https://leap-smart-band-default-rtdb.firebaseio.com",
+
+  projectId: "leap-smart-band",
+
+  storageBucket: "leap-smart-band.firebasestorage.app",
+
+  messagingSenderId: "766851527627",
+
+  appId: "1:766851527627:web:d58454d39f0c6ec506bc4e",
+
+  measurementId: "G-T5053F5ZLY"
+
+};
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -47,7 +57,7 @@ onAuthStateChanged(auth, async (user) => {
     }
   } else {
     // If no user is logged in, redirect to the login page (or index)
-    window.location.href = "./index.html";
+//    window.location.href = "./index.html";
   }
 });
 

@@ -5,12 +5,23 @@ import { getFirestore, initializeFirestore, doc, setDoc, getDocs, collection } f
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: "########################",
-  authDomain: "leap-authentication.firebaseapp.com",
-  projectId: "leap-authentication",
-  storageBucket: "leap-authentication.firebasestorage.app",
-  messagingSenderId: "817139255207",
-  appId: "1:817139255207:web:786c6d9a3d28e9411c9882"
+
+  apiKey: "AIzaSyBpIQxQrQSwIO6EXwmO9rTfdKS1TuWylZM",
+
+  authDomain: "leap-smart-band.firebaseapp.com",
+
+  databaseURL: "https://leap-smart-band-default-rtdb.firebaseio.com",
+
+  projectId: "leap-smart-band",
+
+  storageBucket: "leap-smart-band.firebasestorage.app",
+
+  messagingSenderId: "766851527627",
+
+  appId: "1:766851527627:web:d58454d39f0c6ec506bc4e",
+
+  measurementId: "G-T5053F5ZLY"
+
 };
 
 // Initialize Firebase
@@ -74,7 +85,8 @@ if (document.querySelector('#signup-form')) {
       })
       .then(() => {
         // Redirect the user after successful signup and data storage
-        window.location.href = "./profile.html";
+        //        window.location.href = "./profile.html";
+        window.location.assign("./profile.html");
       })
       .catch(error => {
         console.error("Error during signup or saving user data:", error);
@@ -89,7 +101,7 @@ if(document.querySelector('#logout')) {
   logoutbtn.addEventListener('click', (e) => {
     e.preventDefault();
     auth.signOut();
-    window.location.href = "./index.html";
+//    window.location.href = "./index.html";
   })
 }
 
