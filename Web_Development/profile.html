@@ -1,75 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- for fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-    <!-- for icoons -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining" />
-    <link rel="stylesheet" href="CSS/profile.css">
-    <title>Profile</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/profile.css">
+  <title>Profile</title>
 </head>
-
 <body>
-    <header>
-        <a href="#landing"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
-    </header>
-    <div class="content">
-        <h1>
-            Profile
-        </h1>
-        <div class="profile-img">
-            <img src="Img/3.jpg" alt="photo">
-            <i class="fa-solid fa-pen"></i>
-        </div>
-        <div class="profileName">
-            <h2>User Name</h2>
-            <p id="username"></p>
-        </div>
-        <div class="edit-fild">
-            <div class="email-fild">
-                <label for="email">Email Address</label>
-                <div class="email-input">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="email" >
-                    <i class="fa-solid fa-pen"></i>
-                </div>
-
-            </div>
-            <div class="phone-fild">
-                <label for="phone">Phone Number</label>
-                <div class="phone-input">
-                    <i class="fa-solid fa-phone"></i>
-                    <input type="text" id="phone" >
-                    <i class="fa-solid fa-pen"></i>
-                </div>
-
-            </div>
-            <div class="password-fild">
-                <label for="password">Password</label>
-                <div class="password-input">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" placeholder="********************">
-                    <i class="fa-solid fa-eye-slash"></i>
-                    <i class="fa-solid fa-pen"></i>
-                </div>
-
-            </div>
-        </div>
-        <div class="logout">
-            <a href="#" id="logout">Logout</a>
-        </div>
+  <header>
+    <a href="index.html"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
+  </header>
+  <div class="content">
+    <h1>Profile</h1>
+    <div class="profile-img">
+      <img id="profile-picture" src="Img/3.jpg" alt="photo">
+      <label for="upload-profile"><i class="fa-solid fa-pen"></i></label>
+      <input type="file" id="upload-profile" accept="image/*" style="display: none;" />
     </div>
-
-    <script type="module" src="./JS/firebase/profile.js"></script>
-    <script type="module" src="./JS/firebase/auth.js"></script>
+    <div class="profileName">
+      <h2>User Name</h2>
+      <p id="username"></p>
+    </div>
+    <div class="edit-fild">
+      <div class="email-fild">
+        <label for="email">Email Address</label>
+        <div class="email-input">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="email" disabled>
+          <i class="fa-solid fa-pen"></i>
+        </div>
+      </div>
+      <div class="phone-fild">
+        <label for="phone">Phone Number</label>
+        <div class="phone-input">
+          <i class="fa-solid fa-phone"></i>
+          <input type="text" id="phone" disabled>
+          <i class="fa-solid fa-pen"></i>
+        </div>
+      </div>
+      <div class="password-fild">
+        <label for="password">Password</label>
+        <div class="password-input">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" placeholder="********************" disabled>
+          <i class="fa-solid fa-eye-slash"></i>
+          <i class="fa-solid fa-pen"></i>
+        </div>
+      </div>
+    </div>
+    <div class="logout">
+      <a href="#" id="logout">Logout</a>
+    </div>
+  </div>
+  <script type="module" src="./JS/firebase/profile.js"></script>
+  <script type="module" src="./JS/firebase/auth.js"></script>
 </body>
-
 </html>
 

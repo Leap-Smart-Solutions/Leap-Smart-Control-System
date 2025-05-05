@@ -1,35 +1,13 @@
 // auth.js file
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { getFirestore, initializeFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-
-// Your Firebase configuration
-const firebaseConfig = {
-
-  apiKey: "AIzaSyBpIQxQrQSwIO6EXwmO9rTfdKS1TuWylZM",
-
-  authDomain: "leap-smart-band.firebaseapp.com",
-
-  databaseURL: "https://leap-smart-band-default-rtdb.firebaseio.com",
-
-  projectId: "leap-smart-band",
-
-  storageBucket: "leap-smart-band.firebasestorage.app",
-
-  messagingSenderId: "766851527627",
-
-  appId: "1:766851527627:web:d58454d39f0c6ec506bc4e",
-
-  measurementId: "G-T5053F5ZLY"
-
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize Authentication and Firestore using the modular functions
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { auth, db } from "./firebaseConfig.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import {
+  doc, setDoc, collection, getDocs
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 // listen for auth status changes
 auth.onAuthStateChanged(user => {

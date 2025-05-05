@@ -1,63 +1,84 @@
 // profile.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { auth, db } from "./firebaseConfig.js"; 
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-// Your Firebase configuration
-const firebaseConfig = {
+const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 
-  apiKey: "AIzaSyBpIQxQrQSwIO6EXwmO9rTfdKS1TuWylZM",
+// DOM refs
+const usernameP  = document.querySelector("#username");
+const emailInput = document.querySelector("#email");
+const phoneInput = document.querySelector("#phone");
+const profileImg = document.querySelector("#profile-picture");
+const fileInput  = document.querySelector("#upload-profile");
 
-  authDomain: "leap-smart-band.firebaseapp.com",
-
-  databaseURL: "https://leap-smart-band-default-rtdb.firebaseio.com",
-
-  projectId: "leap-smart-band",
-
-  storageBucket: "leap-smart-band.firebasestorage.app",
-
-  messagingSenderId: "766851527627",
-
-  appId: "1:766851527627:web:d58454d39f0c6ec506bc4e",
-
-  measurementId: "G-T5053F5ZLY"
-
-};
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Listen for auth state changes
+// Watch auth
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    // User is signed in, fetch their document from the "users" collection
-    try {
-      const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-
-	const usernameP = document.querySelector('#username');
-	usernameP.innerText = '#' + userData.username;
-
-	const emailInput = document.querySelector('#email');
-	emailInput.value = userData.email;
-	emailInput.setAttribute('disabled', true);
-
-	const phoneInput = document.querySelector('#phone');
-	phoneInput.value = userData.phone;
-        phoneInput.setAttribute('disabled', 'true');
-      } else {
-//        console.log("No user data found!");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  } else {
-    // If no user is logged in, redirect to the login page (or index)
-//    window.location.href = "./index.html";
+  if (!user) {
+    window.location.href = "./index.html";
+    return;
   }
+
+  // Load profile data
+  try {
+    const userRef  = doc(db, "users", user.uid);
+    const snap     = await getDoc(userRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      usernameP.innerText = "#" + (data.username || "Unnamed");
+      emailInput.value    = data.email || "";
+      phoneInput.value    = data.phone || "";
+      if (data.profilePicture) {
+        profileImg.src = data.profilePicture;
+      }
+    }
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+  }
+
+  // Handle new image uploads via ImgBB
+  fileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Convert file to base64
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64Data = reader.result.split(",")[1];
+      const formData = new FormData();
+      formData.append("key", IMGBB_API_KEY);
+      formData.append("image", base64Data);
+
+      try {
+        // 1) Upload to ImgBB
+        const res = await fetch("https://api.imgbb.com/1/upload", {
+          method: "POST",
+          body: formData
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.error.message);
+
+        // 2) Get the hosted URL
+        const downloadURL = json.data.url;
+
+        // 3) Save it in Firestore
+        await updateDoc(doc(db, "users", user.uid), {
+          profilePicture: downloadURL
+        });
+
+        // 4) Update the <img> right away
+        profileImg.src = downloadURL;
+
+      } catch (uploadErr) {
+        console.error("ImgBB upload failed:", uploadErr);
+        alert("Image upload failed. Please try again.");
+      }
+    };
+    reader.onerror = () => {
+      console.error("FileReader error:", reader.error);
+      alert("Could not read file.");
+    };
+    reader.readAsDataURL(file);
+  });
 });
 
