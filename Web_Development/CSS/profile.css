@@ -281,3 +281,187 @@ header a i {
 .content .logout:hover a {
   color: inherit;
 }
+@media (max-width: 768px) {
+  .content h1 {
+    font-size: 24px;
+  }
+
+  .content .profileName h2 {
+    font-size: 18px;
+  }
+
+  .content .edit-fild label {
+    font-size: 13px;
+  }
+
+  .content .logout a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  header a {
+    width: 40px;
+    height: 40px;
+  }
+
+  .content .profile-img img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .content .edit-fild input::placeholder {
+    font-size: 13px;
+  }
+
+  .content .logout {
+    height: 48px;
+  }
+
+  .content .logout a {
+    font-size: 13px;
+  }
+}
+@media (max-width: 360px) {
+  .content h1 {
+    font-size: 20px;
+    margin-top: 24px;
+  }
+
+  .content .profile-img img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .content .profile-img i {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    padding: 3px;
+  }
+
+  .content .profileName h2 {
+    font-size: 16px;
+  }
+
+  .content .profileName p {
+    font-size: 12px;
+  }
+
+  .content .edit-fild label {
+    font-size: 12px;
+  }
+
+  .content .edit-fild input::placeholder {
+    font-size: 12px;
+  }
+
+  .content .edit-fild .email-fild .email-input,
+  .content .edit-fild .phone-fild .phone-input,
+  .content .edit-fild .password-fild .password-input,
+  .content .logout {
+    height: 48px;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .content .edit-fild .email-fild .email-input .fa-pen,
+  .content .edit-fild .phone-fild .phone-input .fa-pen,
+  .content .edit-fild .password-fild .password-input .fa-pen {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    padding: 3px;
+  }
+
+  .content .logout a {
+    font-size: 12px;
+  }
+
+  header a {
+    width: 36px;
+    height: 36px;
+  }
+}
+@media (max-width: 300px) {
+  .content h1 {
+    font-size: 18px;
+    margin-top: 20px;
+  }
+
+  .content .profile-img img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .content .profile-img i {
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+    padding: 2px;
+    right: -6px;
+    bottom: -6px;
+  }
+
+  .content .profileName h2 {
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .content .profileName p {
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .content .edit-fild label {
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .content .edit-fild .email-fild .email-input,
+  .content .edit-fild .phone-fild .phone-input,
+  .content .edit-fild .password-fild .password-input,
+  .content .logout {
+    width: 95%;
+    height: 45px;
+    padding: 8px;
+    border-radius: 10px;
+  }
+
+  .content .edit-fild input::placeholder {
+    font-size: 11px;
+  }
+
+  .content .edit-fild input {
+    font-size: 12px;
+  }
+
+  .content .edit-fild .email-fild .email-input .fa-pen,
+  .content .edit-fild .phone-fild .phone-input .fa-pen,
+  .content .edit-fild .password-fild .password-input .fa-pen {
+    width: 16px;
+    height: 16px;
+    font-size: 8px;
+    padding: 2px;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .content .logout a {
+    font-size: 11px;
+  }
+
+  header a {
+    width: 32px;
+    height: 32px;
+    top: 15px;
+    left: 15px;
+  }
+
+  /* Optional: hide non-essential icons on tiny screens */
+  .content .profile-img i,
+  .content .edit-fild .fa-pen {
+    display: none;
+  }
+}
