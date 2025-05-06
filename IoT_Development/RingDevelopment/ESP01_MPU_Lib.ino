@@ -7,8 +7,8 @@
 #include <Adafruit_Sensor.h>
 
 // Wi-Fi credentials
-const char* ssid = "Realme";
-const char* password = "99999999";
+const char* ssid = "AMR";
+const char* password = "12345678";
 
 // MPU6050 and server instances
 Adafruit_MPU6050 mpu;
