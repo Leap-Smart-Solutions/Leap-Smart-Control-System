@@ -99,7 +99,8 @@ header a i {
   width: 100%;
   height: 50px;
   border-radius: 10px;
-  background-color: var(--light-gray);
+/*   background-color: var(--light-gray); */
+    padding-left: 10px;
 }
 
 .login-container .login-rectangle .filds input:hover {
