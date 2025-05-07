@@ -250,7 +250,7 @@ section {
   }
 
   header .sign {
-    flex-direction: column;
+/*     flex-direction: column; */
     align-items: center;
     gap: 10px;
   }
