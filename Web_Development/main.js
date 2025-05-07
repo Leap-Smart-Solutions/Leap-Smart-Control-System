@@ -62,3 +62,10 @@ document.addEventListener("DOMContentLoaded", function () {
     navLinks.classList.toggle("active");
   });
 });
+menuIcon.addEventListener("click", function () {
+  if (subMenu.style.display === "none") {
+    subMenu.style.display = "block";
+  } else {
+    subMenu.style.display = "none";
+  }
+});
