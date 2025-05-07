@@ -321,7 +321,7 @@ header .sign .signup {
   }
 
   header .sign {
-    flex-direction: row;
+/*     flex-direction: row; */
     align-items: center;
     gap: 15px;
   }
