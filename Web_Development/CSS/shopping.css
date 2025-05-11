@@ -1,0 +1,105 @@
+body {
+  margin: 0;
+  font-family: Poppins;
+}
+
+a {
+  text-decoration: none;
+  color: #2f2f2f;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  width: 900px;
+  max-width: 90vw;
+  margin: auto;
+  text-align: center;
+  padding-top: 10px;
+  transition: 0.5s;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.icon-cart {
+  position: relative;
+}
+
+.icon-cart span {
+  background-color: red;
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-size: xx-large;
+}
+
+/* cartTab */
+.cartTab {
+  background-color: #353432;
+  color: #eee;
+  width: 400px;
+  max-width: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-rows: 70px 1fr 70px;
+  right: -400px;
+  transition: 0.5s;
+}
+
+.cartTab h1 {
+  padding: 20px;
+  margin: 0;
+  font-weight: 300;
+}
+
+.cartTab .btn {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cartTab .btn button {
+  background-color: #E8BC0E;
+  border: none;
+  font-family: Poppins;
+  font-weight: 500;
+}
+
+.cartTab .btn button.close {
+  background-color: #eee;
+}
+
+.cartTab .listCart {
+  overflow: auto;
+}
+
+.cartTab .listCart::-webkit-scrollbar {
+  width: 0;
+}
+
+body.activeTabCart .cartTab {
+  right: 0;
+}
+
+body.activeTabCart .container {
+  transform: translateX(-250px);
+}

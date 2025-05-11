@@ -66,6 +66,6 @@ menuIcon.addEventListener("click", function () {
   if (subMenu.style.display === "none") {
     subMenu.style.display = "block";
   } else {
-    subMenu.style.display = "none";
+    subMenu.style.display = "none";sss
   }
 });
