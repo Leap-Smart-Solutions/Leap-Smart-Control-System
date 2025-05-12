@@ -53,6 +53,8 @@ header {
 
 .title {
   font-size: xx-large;
+  color: #ffffff;
+  margin-block: 25px;
 }
 
 /* cartTab */
@@ -132,6 +134,8 @@ body.activeTabCart .container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  margin-bottom: 10px;
 }
 
 .listProduct .item h2 {
@@ -152,6 +156,17 @@ body.activeTabCart .container {
   margin-top: 10px;
   border-radius: 20px;
 
+}
+
+.listProduct .item a {
+  text-decoration: none;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* list cart item */
@@ -221,6 +236,7 @@ body.activeTabCart .container {
   font-size: xxx-large;
   padding: 40px 0 0 0;
   margin: 0 0 10px 0;
+  color: #ffffff;
 }
 
 .detail .price {
@@ -228,6 +244,7 @@ body.activeTabCart .container {
   font-size: x-large;
   letter-spacing: 7px;
   margin-bottom: 20px;
+  color: #ffffff;
 }
 
 .detail .buttons button {
@@ -258,6 +275,8 @@ body.activeTabCart .container {
 
 .detail .description {
   font-weight: 300;
+  color: #ffffff;
+  margin-block: 25px;
 }
 
 /* responsive */
