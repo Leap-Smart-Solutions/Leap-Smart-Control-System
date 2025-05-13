@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Tracker - Leap Smart Control</title>
+    <link rel="stylesheet" href="../CSS/issues.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Issue Tracker</h1>
+            <button id="createIssueBtn" class="primary-btn">Create New Issue</button>
+        </header>
+
+        <!-- Create Issue Modal -->
+        <div id="issueModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create New Issue</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <form id="issueForm">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select id="priority" name="priority" required>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignee">Assignee</label>
+                            <input type="text" id="assignee" name="assignee" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="primary-btn">Submit Issue</button>
+                        <button type="button" class="secondary-btn" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters">
+            <div class="search-bar">
+                <input type="text" id="searchIssue" placeholder="Search issues...">
+            </div>
+            <div class="filter-options">
+                <select id="filterPriority">
+                    <option value="">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <select id="filterStatus">
+                    <option value="">All Status</option>
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Issues List -->
+        <div class="issues-container">
+            <div class="issues-header">
+                <div class="issue-col">Title</div>
+                <div class="issue-col">Assignee</div>
+                <div class="issue-col">Priority</div>
+                <div class="issue-col">Status</div>
+                <div class="issue-col">Actions</div>
+            </div>
+            <div id="issuesList" class="issues-list">
+                <!-- Issues will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/issues.js" type="module"></script>
+</body>
+</html> 

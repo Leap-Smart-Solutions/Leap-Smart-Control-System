@@ -37,11 +37,15 @@ const cart = () => {
     let listHTML = document.querySelector('.listCart');
     let totalHTML = document.querySelector('.icon-cart span');
     let totalQuantity = 0;
+    let subtotal = 0;
     listHTML.innerHTML = null;
+
+    // Add cart items
     cart.forEach(item => {
       totalQuantity = totalQuantity + item.quantity;
       let position = products.findIndex((value) => value.id == item.product_id);
       let info = products[position];
+      subtotal += info.price * item.quantity;
       let newItem = document.createElement('div');
       newItem.classList.add('item');
       newItem.innerHTML = 
@@ -61,8 +65,31 @@ const cart = () => {
       `; 
 
       listHTML.appendChild(newItem);
-    })
+    });
+
+    // Add cart summary
+    if (cart.length > 0) {
+      const cartSummary = document.createElement('div');
+      cartSummary.classList.add('cart-summary');
+      cartSummary.innerHTML = `
+        <div class="subtotal">
+          <span>Subtotal:</span>
+          <span>$${subtotal.toFixed(2)}</span>
+        </div>
+      `;
+      listHTML.appendChild(cartSummary);
+    }
+
+    // Update cart icon counter
     totalHTML.innerText = totalQuantity;
+
+    // Add event listener to the checkout button
+    const checkoutBtn = document.querySelector('.cartTab .btn .checkOut');
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener('click', () => {
+        window.location.href = '../../webpages/shopping/checkout.html';
+      });
+    }
   }
 
   // event click
