@@ -3,27 +3,44 @@ import cart from "./cart.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
+let loadingContainer = document.querySelector('.loading-container');
 
 // load template file
-const loadTemplate = () => {
-  fetch('../../webpages/shopping/template.html')
-  .then(response => response.text())
-  .then(html => {
+const loadTemplate = async () => {
+  try {
+    const response = await fetch('../../webpages/shopping/template.html');
+    const html = await response.text();
+    
     app.innerHTML = html;
     let contentTab = document.getElementById('contentTab');
+    temporaryContent.style.display = 'block';
     contentTab.innerHTML = temporaryContent.innerHTML;
     temporaryContent.innerHTML = null;
-    cart();
-    initApp();
-  })
+    
+    await cart();
+    await initApp();
+    
+    // Hide loading container after everything is loaded
+    loadingContainer.classList.add('hidden');
+  } catch (error) {
+    console.error('Error loading template:', error);
+    loadingContainer.innerHTML = `
+      <div class="loading-content">
+        <div class="loading-text">Error loading product details. Please try again.</div>
+        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #E8BC0E; border: none; border-radius: 5px; cursor: pointer;">
+          Retry
+        </button>
+      </div>
+    `;
+  }
 }
-loadTemplate();
 
-const initApp = () => {
+const initApp = async () => {
   let idProduct = new URLSearchParams(window.location.search).get('id');
   let info = products.filter((value) => value.id == idProduct)[0];
   if(!info) {
     window.location.href = "./";
+    return;
   }
 
   let detail = document.querySelector('.detail');
@@ -52,3 +69,5 @@ const initApp = () => {
     listProduct.appendChild(newProduct);
   })
 }
+
+loadTemplate();
