@@ -4,34 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- for fonts -->
+    <!-- Fonts -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- for icoons -->
+    <!-- Icons -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <link rel="stylesheet" href="CSS/contactus.css" />
-    <title>Leap</title>
+    <title>Contact Us - Leap Smart Home</title>
   </head>
 
   <body>
     <header>
       <div class="date-menue">
-        <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" />
-        <p class="date">Thu, Jan 12</p>
+        <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" id="menuToggle" />
+        <p class="date"></p>
       </div>
       <nav class="nav-links">
         <a href="index.html">Home</a>
-        <a href="aboutus.html">Aboutus</a>
-        <a href="#contactus" id="contactus">Contactus</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="#contactus" id="contactus">Contact</a>
       </nav>
       <div class="sign">
         <button class="signup" onclick="window.location.href='signup.html'">
@@ -42,28 +42,46 @@
         </button>
       </div>
     </header>
-    <div class="display-nav-links">
+
+    <div class="display-nav-links" id="mobileMenu">
       <nav class="links">
-        <a href="landing.html">Home</a>
-        <a href="aboutus.html">Aboutus</a>
-        <a href="#contactus" id="contactus">Contactus</a>
+        <a href="index.html">Home</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="#contactus">Contact</a>
       </nav>
     </div>
+
     <section>
       <div class="contactus">
-        <h1>Contact Us</h1>
+        <h1>Get in Touch</h1>
         <div class="how-contact">
           <div class="call">
             <i class="fa-solid fa-phone"></i>
-            <p>+20xxxxxxxxxx</p>
+            <p>Call Us</p>
+            <p>+20 123 456 7890</p>
           </div>
           <div class="mail">
             <i class="fa-solid fa-envelope"></i>
-            <p>companyname@example.com</p>
+            <p>Email Us</p>
+            <p>contact@leapsmart.com</p>
           </div>
         </div>
       </div>
     </section>
-    <script src="main.js"></script>
+
+    <script>
+      // Update date
+      const dateEl = document.querySelector('.date');
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateEl.textContent = new Date().toLocaleDateString('en-US', options);
+
+      // Mobile menu toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+      });
+    </script>
   </body>
 </html>

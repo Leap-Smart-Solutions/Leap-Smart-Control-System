@@ -49,12 +49,12 @@ const initApp = async () => {
     products.forEach(product => {
       let newProduct = document.createElement('div');
       newProduct.classList.add('item');
-      newProduct.innerHTML =
-      `
-        <a href="../../webpages/shopping/detail.html?id=${product.id}">
-        <img src="${product.image}"/>
-        <h2>${product.name}</h2>
-        <div class="price">$${product.price}</div>
+      newProduct.innerHTML = `
+        <div class="item-content" onclick="window.location.href='../../webpages/shopping/detail.html?id=${product.id}'">
+          <img src="${product.image}"/>
+          <h2>${product.name}</h2>
+          <div class="price">$${product.price}</div>
+        </div>
         <button class="addCart" data-id="${product.id}">
           Add To Cart
         </button>

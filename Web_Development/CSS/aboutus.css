@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Nunito", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   scroll-behavior: smooth;
   text-decoration: none;
   outline: none;
@@ -13,16 +13,14 @@
 }
 
 body {
-  background-image: url("../Img/image.jpg");
-  max-height: 100vh;
+  background: radial-gradient(circle at center, #111 0%, #000 100%);
+  min-height: 100vh;
   width: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  color: #fff;
 }
 
 header {
-  margin-top: 12px;
+  margin: 20px 20px 0 0;
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
@@ -37,27 +35,26 @@ header .date-menue {
 
 header .date-menue img {
   cursor: pointer;
-  width: 19px;
-  height: 7px;
+  width: 29px;
 }
 
 header .date-menue p {
   margin-left: 18px;
+  color: #fff;
   line-height: 20px;
-  color: #d9d9d9;
+  font-weight: 400;
 }
 
 header .nav-links {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 302px;
 }
 
 header .nav-links a {
   text-decoration: none;
   color: #fff;
-  font-size: 18px;
-  line-height: 15px;
+  line-height: 14px;
   position: relative;
 }
 
@@ -88,8 +85,8 @@ header .nav-links a:hover::after {
 }
 
 header .sign {
-  margin-left: 70px;
-  width: 171px;
+  margin-left: 50px;
+  width: 190px;
   display: flex;
   justify-content: space-between;
   height: 40px;
@@ -98,125 +95,168 @@ header .sign {
 header .sign button {
   background-color: #2c2c2c;
   color: #f5f5f5;
-  width: 84px;
+  min-width: 90px;
   border-radius: 10px;
   cursor: pointer;
+  padding: 8px 16px;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 header .sign button:hover {
-  background-color: #4b4a4a;
+  background-color: #444;
+  transform: scale(1.05);
 }
 
-header .sign .signup {
-  margin-right: 21px;
-}
 .display-nav-links {
-  margin-left: 20px;
-  width: 150px;
-  background-color: antiquewhite;
+  display: none;
+  width: 160px;
+  background-color: #2c2c2c;
   position: absolute;
-  /* position: fixed; */
-  border-radius: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 5;
+  margin-left: 20px;
+  overflow: hidden;
 }
+
 .display-nav-links nav {
   display: flex;
   flex-direction: column;
 }
+
 .display-nav-links nav a {
-  color: #2c2c2c;
-  padding: 15px;
-  border-radius: 20px;
+  color: #f5f5f5;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
 .display-nav-links nav a:hover {
-  color: #1c1a1a;
-  background-color: rgb(246, 219, 184);
+  color: #fff;
+  background-color: #444;
+  transform: scale(1.05);
 }
+
 section {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 40px 20px;
+  min-height: calc(100vh - 100px);
 }
 
 .about-content {
   width: 100%;
-  max-width: 793px;
-  margin-top: 140px;
-  border: solid 1px #949790;
-  border-radius: 25px;
-  background-color: #565853;
-  padding: 30px;
+  max-width: 800px;
+  margin-top: 40px;
+  background-color: rgba(17, 17, 17, 0.95);
+  border-radius: 24px;
+  padding: 60px 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.about-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .about-content h1 {
-  line-height: 30px;
-  font-size: 24px;
-  color: #ebedf0;
+  font-size: 42px;
+  line-height: 1.2;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.about-content h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+  border-radius: 3px;
 }
 
 .about-content p {
-  font-size: 20px;
-  line-height: 25px;
-  color: #ababab;
-  margin-top: 15px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 25px;
+  text-align: justify;
+  padding: 0 10px;
+  letter-spacing: 0.3px;
+  position: relative;
 }
 
-.hidden {
-  display: none;
-}
-.menu {
-  display: none;
+.about-content p:first-of-type {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #fff;
+  margin-bottom: 30px;
+  text-align: center;
+  padding: 0 20px;
 }
 
 @media (max-width: 768px) {
-  .menu {
+  .display-nav-links {
     display: block;
   }
+  
   header .nav-links {
     display: none;
   }
+
   .about-content {
-    margin-top: 80px;
-    padding: 20px;
+    margin-top: 20px;
+    padding: 40px 30px;
   }
 
   .about-content h1 {
-    font-size: 22px;
-    line-height: 28px;
-  }
-
-  .about-content p {
-    font-size: 18px;
-    line-height: 22px;
-  }
-}
-
-@media (max-width: 480px) {
-  header .nav-links {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  header .sign {
-/*     flex-direction: column; */
-    align-items: center;
-    gap: 10px;
-  }
-
-  .about-content {
-    margin-top: 60px;
-    padding: 15px;
-  }
-
-  .about-content h1 {
-    font-size: 20px;
-    line-height: 26px;
+    font-size: 28px;
   }
 
   .about-content p {
     font-size: 16px;
-    line-height: 20px;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 0 15px;
+    margin: 0;
+  }
+  
+  header .sign {
+    width: fit-content;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .about-content {
+    padding: 30px 20px;
+  }
+
+  .about-content h1 {
+    font-size: 24px;
+  }
+
+  .about-content p {
+    font-size: 14px;
+    line-height: 1.5;
   }
 }

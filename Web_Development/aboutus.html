@@ -4,34 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- for fonts -->
+    <!-- Fonts -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- for icoons -->
+    <!-- Icons -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <link rel="stylesheet" href="CSS/aboutus.css" />
-    <title>Leap</title>
+    <title>About Us - Leap Smart Home</title>
   </head>
 
   <body>
     <header>
       <div class="date-menue">
-        <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" />
-        <p class="date">Thu, Jan 12</p>
+        <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" id="menuToggle" />
+        <p class="date"></p>
       </div>
       <nav class="nav-links">
         <a href="index.html">Home</a>
-        <a href="#aboutus" id="aboutus">Aboutus</a>
-        <a href="contactus.html">Contactus</a>
+        <a href="#aboutus" id="aboutus">About Us</a>
+        <a href="contactus.html">Contact</a>
       </nav>
       <div class="sign">
         <button class="signup" onclick="window.location.href='signup.html'">
@@ -42,35 +42,53 @@
         </button>
       </div>
     </header>
-    <div class="display-nav-links">
+
+    <div class="display-nav-links" id="mobileMenu">
       <nav class="links">
-        <a href="landing.html">Home</a>
-        <a href="#aboutus" id="aboutus">Aboutus</a>
-        <a href="contactus.html">Contactus</a>
+        <a href="index.html">Home</a>
+        <a href="#aboutus">About Us</a>
+        <a href="contactus.html">Contact</a>
       </nav>
     </div>
+
     <section>
       <div class="about-content">
         <h1>About Us</h1>
         <p>
-          we believe in the power of technology to transform everyday living.
-          Our mission is to make your home smarter, more efficient, and
-          perfectly tailored to your lifestyle. With a passion for innovation
-          and a commitment to excellence, we design and deliver cutting-edge
-          home automation solutions that simplify and enhance how you interact
-          with your living space. From seamless lighting and climate control to
-          advanced security and entertainment systems, we empower you to command
-          your home with ease, whether you're on the couch or miles away. Our
-          team of experts works tirelessly to bring you reliable, user-friendly
-          solutions that integrate seamlessly into your home and adapt to your
-          needs. With a focus on sustainability, energy efficiency, and
-          personalization, we strive to create smarter homes that improve not
-          just your daily life but the environment as well. Join us in shaping
-          the future of living—because your home deserves to be as smart as you
-          are.
+          At Leap Smart Solutions, we believe in the power of technology to transform everyday living.
+          Our mission is to make your home smarter, more efficient, and perfectly tailored to your lifestyle.
+        </p>
+        <p>
+          With a passion for innovation and a commitment to excellence, we design and deliver cutting-edge
+          home automation solutions that simplify and enhance how you interact with your living space.
+          From seamless lighting and climate control to advanced security and entertainment systems,
+          we empower you to command your home with ease, whether you're on the couch or miles away.
+        </p>
+        <p>
+          Our team of experts works tirelessly to bring you reliable, user-friendly solutions that
+          integrate seamlessly into your home and adapt to your needs. With a focus on sustainability,
+          energy efficiency, and personalization, we strive to create smarter homes that improve not
+          just your daily life but the environment as well.
+        </p>
+        <p>
+          Join us in shaping the future of living—because your home deserves to be as smart as you are.
         </p>
       </div>
     </section>
-    <script src="main.js"></script>
+
+    <script>
+      // Update date
+      const dateEl = document.querySelector('.date');
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateEl.textContent = new Date().toLocaleDateString('en-US', options);
+
+      // Mobile menu toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+      });
+    </script>
   </body>
 </html>

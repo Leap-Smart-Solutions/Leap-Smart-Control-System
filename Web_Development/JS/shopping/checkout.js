@@ -29,7 +29,7 @@ const initCheckout = () => {
   const cartItemsContainer = document.querySelector('.cart-items');
   const subtotalElement = document.getElementById('subtotal');
   const shippingElement = document.getElementById('shipping');
-  const taxElement = document.getElementById('tax');
+  const taxElement = document.getElementById('tax');20
   const totalElement = document.getElementById('total');
   const placeOrderButton = document.getElementById('placeOrder');
 
@@ -223,4 +223,3 @@ const initCheckout = () => {
   // Add event listener to place order button
   placeOrderButton.addEventListener('click', handleOrderSubmission);
 };
-
