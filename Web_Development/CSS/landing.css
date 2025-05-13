@@ -15,11 +15,13 @@
 body {
   padding-top: 10px;
   background-image: url("../Img/image.jpg");
-  max-height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
+  background-color: #212121;
 }
 
 header {
@@ -135,7 +137,7 @@ header .sign .signup {
 }
 
 .page-content {
-  margin-top: 143px;
+  margin-top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -176,9 +178,10 @@ header .sign .signup {
 .Testimonials {
   display: flex;
   flex-direction: column;
-  margin-top: 80px;
+  margin-top: 300px;
   padding: 0 30px;
   width: 100%;
+  margin-bottom: 50px;
 }
 
 .Testimonials h1 {
