@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Nunito", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   scroll-behavior: smooth;
   text-decoration: none;
   outline: none;
@@ -14,18 +14,14 @@
 
 body {
   padding-top: 10px;
-  background-image: url("../Img/image.jpg");
+  background-color: #000;
   min-height: 100vh;
   width: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-color: #212121;
+  color: #fff;
 }
 
 header {
-  margin-top: 0px;
+  margin: 20px 20px 0 0;
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
@@ -40,27 +36,26 @@ header .date-menue {
 
 header .date-menue img {
   cursor: pointer;
-  width: 19px;
-  height: 7px;
+  width: 29px;
 }
 
 header .date-menue p {
   margin-left: 18px;
+  color: #fff;
   line-height: 20px;
-  color: #d9d9d9;
+  font-weight: 400;
 }
 
 header .nav-links {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 302px;
 }
 
 header .nav-links a {
   text-decoration: none;
   color: #fff;
-  font-size: 18px;
-  line-height: 15px;
+  line-height: 14px;
   position: relative;
 }
 
@@ -101,252 +96,201 @@ header .sign {
 header .sign button {
   background-color: #2c2c2c;
   color: #f5f5f5;
-  width: 84px;
+  min-width: 90px;
   border-radius: 10px;
   cursor: pointer;
+  padding: 8px 16px;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 header .sign button:hover {
-  background-color: #4b4a4a;
+  background-color: #444;
+  transform: scale(1.05);
 }
 
-header .sign .signup {
-  margin-right: 21px;
-}
 .display-nav-links {
-  margin-left: 20px;
-  width: 150px;
-  background-color: antiquewhite;
+  display: none;
+  width: 160px;
+  background-color: #2c2c2c;
   position: absolute;
-  /* position: fixed; */
-  border-radius: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 5;
+  margin-left: 20px;
+  overflow: hidden;
 }
+
 .display-nav-links nav {
   display: flex;
   flex-direction: column;
 }
+
 .display-nav-links nav a {
-  color: #2c2c2c;
-  padding: 15px;
-  border-radius: 20px;
+  color: #f5f5f5;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
 .display-nav-links nav a:hover {
-  color: #1c1a1a;
-  background-color: rgb(246, 219, 184);
+  color: #fff;
+  background-color: #444;
+  transform: scale(1.05);
 }
 
 .page-content {
-  margin-top: 200px;
+  margin-top: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 0 20px;
 }
 
 .page-content h1 {
-  font-size: 35px;
-  line-height: 41px;
-  font-style: italic;
+  font-size: 48px;
+  line-height: 1.2;
   color: #fff;
-  font-weight: 400;
-  position: relative;
-}
-
-.page-content h1::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 5%;
-  width: 90%;
-  height: 2px;
-  background-color: #fff;
-  margin-top: 3px;
-  border-radius: 10px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  max-width: 800px;
 }
 
 .page-content p {
-  max-width: 591px;
-  font-size: 24px;
-  line-height: 28px;
-  font-weight: 100;
-  color: #fff;
-  margin-top: 32px;
-  font-family: sans-serif;
+  max-width: 600px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #f5f5f5;
+  margin-bottom: 40px;
 }
 
 .Testimonials {
-  display: flex;
-  flex-direction: column;
-  margin-top: 300px;
-  padding: 0 30px;
-  width: 100%;
-  margin-bottom: 50px;
+  padding: 100px 30px;
+  background-color: #111;
+  margin-top: 100px;
 }
 
 .Testimonials h1 {
   color: #fff;
-  font-style: italic;
   text-align: center;
-  font-weight: 400;
-  font-size: 28px;
-  line-height: 33px;
-  position: relative;
-}
-
-.Testimonials h1::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 45%;
-  width: 10%;
-  height: 1.5px;
-  background-color: #fff;
-  margin-top: 3px;
-  border-radius: 10px;
+  font-weight: 600;
+  font-size: 36px;
+  margin-bottom: 60px;
 }
 
 .Testimonials .test {
   display: flex;
-  justify-content: space-between;
-  margin-top: 60px;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .Testimonials .test .container1,
 .Testimonials .test .container2,
 .Testimonials .test .container3 {
-  width: 260px;
-  height: 132px;
-  position: relative;
-  border: #949790 1px solid;
-  background-color: #515250;
-  border-radius: 20px;
-  padding: 20px 30px 0px 30px;
+  flex: 1;
+  min-width: 280px;
+  background-color: #2c2c2c;
+  border-radius: 16px;
+  padding: 30px;
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.Testimonials .test .container1:hover,
+.Testimonials .test .container2:hover,
+.Testimonials .test .container3:hover {
+  transform: translateY(-5px);
 }
 
 .Testimonials .test img {
-  width: 35px;
-  height: 35px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  position: absolute;
-  top: -16%;
-  left: 42%;
+  margin-bottom: 20px;
+  border: 3px solid #444;
 }
 
 .Testimonials .test p {
-  font-size: 13px;
-  color: #fff;
-  font-weight: 400;
-  line-height: 13px;
+  font-size: 16px;
+  color: #f5f5f5;
+  line-height: 1.6;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .Testimonials .test .name-jop {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  bottom: 5%;
-  position: absolute;
-}
-
-.Testimonials .test h3 {
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 15px;
   text-align: center;
-  color: #ff9500;
 }
 
-.Testimonials .test span {
+.Testimonials .test .name-jop h3 {
   color: #fff;
-  font-size: 13px;
-  line-height: 13px;
-  font-weight: 400;
+  font-size: 18px;
+  margin-bottom: 5px;
 }
 
-.hidden {
-  display: none;
-}
-.menu {
-  display: none;
+.Testimonials .test .name-jop span {
+  color: #888;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
-  .menu {
-    display: block;
+  .display-nav-links {
+    display: none;
   }
+  
   header .nav-links {
     display: none;
   }
-
+  
   .page-content h1 {
-    font-size: 28px;
-    line-height: 34px;
+    font-size: 36px;
   }
-
+  
   .page-content p {
-    font-size: 18px;
-    line-height: 22px;
-    max-width: 90%;
+    font-size: 16px;
   }
-
+  
   .Testimonials .test {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .Testimonials .test .container1,
-  .Testimonials .test .container2,
-  .Testimonials .test .container3 {
-    width: 60%;
-    margin-bottom: 40px;
+    gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
-  header .nav-links {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .menu {
-    display: block;
-  }
-
   header {
+    padding: 0 15px;
+    margin: 0;
   }
-
+  
   header .sign {
-/*     flex-direction: row; */
-    align-items: center;
-    gap: 15px;
+    width: fit-content;
+    /* margin: 20px 0 0 0; */
+    justify-content: center;
+    gap: 20px;
   }
-
-  header .sign button {
-    width: 100px;
-    padding: 10px;
+  
+  .page-content {
+    margin-top: 100px;
   }
-
+  
   .page-content h1 {
-    font-size: 24px;
-    line-height: 30px;
+    font-size: 28px;
   }
-
+  
   .page-content p {
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 14px;
   }
-
-  .Testimonials .test .container1,
-  .Testimonials .test .container2,
-  .Testimonials .test .container3 {
-    width: 100%;
+  
+  .Testimonials {
+    padding: 60px 20px;
+  }
+  
+  .Testimonials h1 {
+    font-size: 28px;
   }
 }

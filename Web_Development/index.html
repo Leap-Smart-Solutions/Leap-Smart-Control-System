@@ -4,34 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- for fonts -->
+    <!-- Fonts -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- for icoons -->
+    <!-- Icons -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <link rel="stylesheet" href="CSS/landing.css" />
-    <title>Leap</title>
+    <title>Leap Smart Home</title>
   </head>
 
   <body>
     <header>
       <div class="date-menue">
-        <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" />
-        <p class="date">Thu, Jan 12</p>
+        <img src="Img/menu-rectangles-component.png" alt="menu" class="menu" id="menuToggle" />
+        <p class="date"></p>
       </div>
       <nav class="nav-links">
         <a href="#home" id="home">Home</a>
-        <a href="aboutus.html">Aboutus</a>
-        <a href="contactus.html">Contactus</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="contactus.html">Contact</a>
       </nav>
       <div class="sign">
         <button class="signup" onclick="window.location.href='signup.html'">
@@ -42,40 +42,43 @@
         </button>
       </div>
     </header>
-    <div class="display-nav-links">
+
+    <div class="display-nav-links" id="mobileMenu">
       <nav class="links">
-        <a href="#home" id="home">Home</a>
-        <a href="aboutus.html">Aboutus</a>
-        <a href="contactus.html">Contactus</a>
+        <a href="#home">Home</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="contactus.html">Contact</a>
       </nav>
     </div>
+
     <section class="page-content">
       <h1>Effortless control. Uncompromising comfort.</h1>
       <p>
         Experience the future of home living with our intuitive and powerful
         smart home system. Manage lights, temperature, security, and
-        entertainment from a single, easy-to-use app
+        entertainment from a single, easy-to-use app.
       </p>
     </section>
+
     <section class="Testimonials">
-      <h1>Testimonials</h1>
+      <h1>What Our Users Say</h1>
       <div class="test">
         <div class="container1">
-          <img src="Img/1.jpg" alt="image" />
+          <img src="Img/1.jpg" alt="Mohamed H." />
           <p>
             "This system has completely transformed my home. It's so easy to use
             and has made my life so much more convenient."
           </p>
           <div class="name-jop">
-            <h3>Mohamed.H</h3>
-            <span>Front End Devolaper</span>
+            <h3>Mohamed H.</h3>
+            <span>Front End Developer</span>
           </div>
         </div>
         <div class="container2">
-          <img src="Img/2.jpg" alt="image" />
+          <img src="Img/2.jpg" alt="David C." />
           <p>
             "Coming home to a perfectly lit and warm house is amazing. This
-            system has simplified my life!."
+            system has simplified my life!"
           </p>
           <div class="name-jop">
             <h3>David C.</h3>
@@ -83,10 +86,10 @@
           </div>
         </div>
         <div class="container3">
-          <img src="Img/3.jpg" alt="image" />
+          <img src="Img/3.jpg" alt="Luke Mark" />
           <p>
             "Peace of mind knowing my home is secure, even when I'm away. A
-            fantastic investment.."
+            fantastic investment."
           </p>
           <div class="name-jop">
             <h3>Luke Mark</h3>
@@ -95,6 +98,20 @@
         </div>
       </div>
     </section>
-    <script src="main.js"></script>
+
+    <script>
+      // Update date
+      const dateEl = document.querySelector('.date');
+      const options = { weekday: 'short', month: 'short', day: 'numeric' };
+      dateEl.textContent = new Date().toLocaleDateString('en-US', options);
+
+      // Mobile menu toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+      });
+    </script>
   </body>
 </html>
