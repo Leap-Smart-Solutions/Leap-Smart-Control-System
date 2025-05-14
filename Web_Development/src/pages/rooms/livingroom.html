@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+  <link rel="stylesheet" href="../../assets/styles/livingroom.css" />
+  <title>Leap - Living Room</title>
+</head>
+
+<body>
+  <div class="dash-container">
+    <header>
+      <div class="head">
+        <div class="date-menue">
+          <img src="../../assets/images/menu-rectangles-component.png" alt="menu" class="menu" id="menuToggle" />
+          <p class="date"></p>
+        </div>
+        <nav>
+          <div class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="#" id="active">Living Room</a>
+            <a href="./kitchen.html">Kitchen</a>
+            <a href="./bedroom.html">Bed Room</a>
+          </div>
+        </nav>
+        <div class="user-image">
+          <img src="../../assets/images/1.jpg" alt="User" onclick="window.location.href='../auth/profile.html'" />
+        </div>
+      </div>
+    </header>
+
+    <!-- 
+      Drop-down menu (only shown on screens ≤768px) 
+      Contains Profile, LogOut, plus the other rooms
+    -->
+    <div class="display-nav-links">
+      <nav class="links">
+        <a href="../auth/profile.html">Profile</a>
+        <div class="line"></div>
+        <a href="../index.html" style="color: #ff3b30">LogOut</a>
+        <div class="line"></div>
+        <a href="./bedroom.html">Bed Room</a>
+        <a href="#">Living Room</a>
+        <a href="./kitchen.html" id="active" class="kitchen">Kitchen</a>
+      </nav>
+    </div>
+
+    <!-- Main content: 3 columns -->
+    <div class="main-content">
+      <!-- Left column -->
+      <section class="left">
+        <div class="cloud">
+          <span>&#9925;</span>
+          <div class="cloud-detailes">
+            <p>
+              <strong class="cloud-degree">31&#176;</strong>
+              <br />
+              Today Will be cloudy. Apply SPF during the day
+            </p>
+          </div>
+        </div>
+
+        <div class="music">
+          <div class="empty"></div>
+          <div class="all-song">
+            <div class="song">
+              <div class="song-details">
+                <h4 class="song-title">Never Say Never</h4>
+                <p class="artist-name">Justin Bieber</p>
+              </div>
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </div>
+            <span class="continue"></span>
+            <div class="controls">
+              <i class="fa fa-fast-backward" aria-hidden="true"></i>
+              <i class="fa fa-play-circle" aria-hidden="true"></i>
+              <i class="fa fa-fast-forward" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="electricity">
+          <div class="elec-detailes">
+            <h4 class="chart-header">Electricity</h4>
+            <select class="dropdown">
+              <option value="Month">Month</option>
+              <option value="Day">Day</option>
+              <option value="Year">Year</option>
+              <option value="Hourly">Hourly</option>
+            </select>
+          </div>
+          <div class="chart-line">
+            <svg viewBox="0 0 200 100" preserveAspectRatio="none">
+              <path
+                d="M10 80 Q 60 20, 110 70 T 210 40 T 290 70"
+                stroke="#ff6600"
+                fill="none"
+                stroke-width="4"
+              ></path>
+              <circle cx="160" cy="85" r="6" />
+            </svg>
+          </div>
+          <div class="usage-text">360kw</div>
+        </div>
+      </section>
+
+      <!-- Middle column -->
+      <section class="middle">
+        <div class="middle-section">
+          <div class="light">
+            <div class="light-head">
+              <h3>Lightning</h3>
+              <i class="fa fa-power-off" aria-hidden="true"></i>
+            </div>
+
+            <div class="lightening-components">
+              <div class="lightening-left">
+                <div class="slider-container">
+                  <div class="circle">
+                    <div class="cursor"></div>
+                    <div class="center-text">
+                      <p>Intensity</p>
+                      <h1 id="intensity-value">50%</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="lightening-center">
+                <img src="../../assets/images/lamp.png" alt="Lamp" />
+              </div>
+              <div class="lightening-right">
+                <div class="scroll-container">
+                  <div class="arrow" id="arrow-up">▲</div>
+                  <div class="list">
+                    <div class="list-item" id="item1">Reading</div>
+                    <div class="list-item active" id="item2">Working</div>
+                    <div class="list-item" id="item3">Romantic</div>
+                  </div>
+                  <div class="fade-overlay"></div>
+                  <div class="arrow" id="arrow-down">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="brightness-slider-row">
+              <span class="icon sun">☀️</span>
+              <input type="range" class="slider" min="0" max="100" value="50" />
+              <span class="icon moon">🌙</span>
+            </div>
+          </div>
+
+          <div class="mid-bot">
+            <div class="left-mid-bot">
+              <div class="camera">
+                <div class="camera-detailes">
+                  <h3>Camera</h3>
+                  <i class="fa fa-power-off" aria-hidden="true"></i>
+                </div>
+                <img src="../../assets/images/camera.png" alt="Camera" />
+              </div>
+
+              <div class="wifi">
+                <div class="wifi-detailes">
+                  <h3>Wi-Fi</h3>
+                  <i class="fa fa-power-off" aria-hidden="true"></i>
+                </div>
+                <img src="../../assets/images/wifi.png" alt="WiFi Router" />
+              </div>
+            </div>
+
+            <div class="robotic">
+              <div class="robotic-detailes">
+                <h3>Robotic Vacuum</h3>
+                <i class="fa fa-power-off" aria-hidden="true"></i>
+              </div>
+              <img src="../../assets/images/vacuum.png" alt="Vacuum" />
+              <div class="boxs">
+                <div class="m">
+                  <i class="fa-solid fa-cube"></i>
+                  <p>25 M'</p>
+                </div>
+                <div class="m">
+                  <i class="fa-solid fa-bolt"></i>
+                  <p>25 %</p>
+                </div>
+                <div class="m">
+                  <i class="fa-solid fa-clock"></i>
+                  <p>5 Mins left</p>
+                </div>
+              </div>
+              <div class="rob-btn">
+                <button class="white">Go Dock</button>
+                <button class="gray">Push</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column -->
+      <section class="rigth">
+        <div class="right-section">
+          <div class="air-head">
+            <h3>Air Conditioning</h3>
+            <i class="fa fa-power-off" aria-hidden="true"></i>
+          </div>
+
+          <img class="img1" src="../../assets/images/air-conditioner.png" alt="Air Conditioner Image" />
+
+          <div class="thermostat-container">
+            <div class="thermostat-circle">
+              <div class="thermostat-center">
+                <p id="thermostat-mode">Cooling</p>
+                <h2 id="thermostat-temp">23°C</h2>
+              </div>
+              <div class="thermostat-handle"></div>
+            </div>
+          </div>
+
+          <h3>Action</h3>
+          <div class="air-boxs">
+            <div class="m special">
+              <i class="fa-solid fa-snowflake"></i>
+              <p>Cooling</p>
+            </div>
+            <div class="m">
+              <i class="fa-solid fa-temperature-low"></i>
+              <p>Heating</p>
+            </div>
+            <div class="m">
+              <i class="fa-solid fa-wind"></i>
+              <p>AirWave</p>
+            </div>
+          </div>
+          <div class="air2-boxs">
+            <div class="time">
+              <div class="m">
+                <i class="fa-solid fa-clock"></i>
+                <p>Timer</p>
+              </div>
+              <p><strong>2</strong>Hours</p>
+            </div>
+            <div class="humidity">
+              <div class="m">
+                <i class="fas fa-tint" aria-hidden="true"></i>
+                <p>Humidity</p>
+              </div>
+              <p><strong>36</strong>%</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- 
+   scripts -->
+  <script src="../../js/pages/main.js"></script>
+  <script src="../../js/pages/rooms.js"></script>
+</body>
+</html>
+

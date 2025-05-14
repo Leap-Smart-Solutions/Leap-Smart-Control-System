@@ -1,0 +1,123 @@
+.
+├── admin
+│   ├── dashboard.html
+│   └── dashboard.html.old
+├── docs
+│   └── README.md
+├── src
+│   ├── assets
+│   │   ├── icons
+│   │   │   └── favicon.ico
+│   │   ├── images
+│   │   │   ├── 1.jpg
+│   │   │   ├── 2.jpg
+│   │   │   ├── 3.jpg
+│   │   │   ├── aeezo_digital_frame.png
+│   │   │   ├── air-conditioner-emoji.png
+│   │   │   ├── air-conditioner.png
+│   │   │   ├── amazon-alexa.png
+│   │   │   ├── apple-component.png
+│   │   │   ├── apple-component.webp
+│   │   │   ├── audio-image (1).png
+│   │   │   ├── august_lock.png
+│   │   │   ├── back.jpeg
+│   │   │   ├── bedroom.png
+│   │   │   ├── bubbles-image.png
+│   │   │   ├── camera-image.png
+│   │   │   ├── camera.png
+│   │   │   ├── door-lock-image.png
+│   │   │   ├── double-arrow-image down.png
+│   │   │   ├── double-arrow-image.png
+│   │   │   ├── echo_plus.png
+│   │   │   ├── eufy_smart_lock_s330.png
+│   │   │   ├── fan-icon-png-1-2.png
+│   │   │   ├── fan-image.png
+│   │   │   ├── google-component.png
+│   │   │   ├── google-component.webp
+│   │   │   ├── image.jpg
+│   │   │   ├── kitchen-image.png
+│   │   │   ├── lab.jpg
+│   │   │   ├── lamp.png
+│   │   │   ├── light.avif
+│   │   │   ├── menu-rectangles-component.png
+│   │   │   ├── meta-component.png
+│   │   │   ├── meta-component.webp
+│   │   │   ├── motion-sensor-image.png
+│   │   │   ├── music.png
+│   │   │   ├── nest_thermostat.png
+│   │   │   ├── philips_hue.png
+│   │   │   ├── photo.jpeg
+│   │   │   ├── png.png
+│   │   │   ├── ring_doorbell.png
+│   │   │   ├── room-temperature-image.png
+│   │   │   ├── smart-humidifier-image.png
+│   │   │   ├── smart-refrigerator-image.png
+│   │   │   ├── smart-wall-socket.png
+│   │   │   ├── sonoff_nspanel_pro.png
+│   │   │   ├── sun (1).png
+│   │   │   ├── sun.png
+│   │   │   ├── vacuum.png
+│   │   │   ├── white-noise-machine.png
+│   │   │   ├── wifi-image.png
+│   │   │   ├── wifi.png
+│   │   │   └── wireless-charger.png
+│   │   └── styles
+│   │       ├── aboutus.css
+│   │       ├── bedroom.css
+│   │       ├── contactus.css
+│   │       ├── home.css
+│   │       ├── issues.css
+│   │       ├── kitchen.css
+│   │       ├── landing.css
+│   │       ├── livingroom.css
+│   │       ├── login.css
+│   │       ├── profile.css
+│   │       ├── shopping.css
+│   │       ├── signup.css
+│   │       ├── styles.css
+│   │       └── user.css
+│   ├── js
+│   │   ├── components
+│   │   │   ├── issues
+│   │   │   │   └── issues.js
+│   │   │   └── shopping
+│   │   │       ├── cart.js
+│   │   │       ├── checkout.js
+│   │   │       ├── detail.js
+│   │   │       ├── index.js
+│   │   │       └── products.js
+│   │   ├── firebase
+│   │   │   ├── auth.js
+│   │   │   ├── cors.json
+│   │   │   ├── firebaseConfig.js
+│   │   │   ├── index.js
+│   │   │   └── profile.js
+│   │   └── pages
+│   │       ├── main.js
+│   │       └── rooms.js
+│   └── pages
+│       ├── auth
+│       │   ├── login.html
+│       │   ├── profile.html
+│       │   └── signup.html
+│       ├── index.html
+│       ├── info
+│       │   ├── aboutus.html
+│       │   └── contactus.html
+│       ├── issues
+│       │   └── issues.html
+│       ├── other
+│       │   ├── home.html
+│       │   └── user.html
+│       ├── rooms
+│       │   ├── bedroom.html
+│       │   ├── kitchen.html
+│       │   └── livingroom.html
+│       └── shopping
+│           ├── checkout.html
+│           ├── detail.html
+│           ├── index.html
+│           └── template.html
+└── tree.txt
+
+21 directories, 100 files

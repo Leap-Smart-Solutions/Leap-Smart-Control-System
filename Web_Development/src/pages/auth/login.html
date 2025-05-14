@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- for fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <!-- for icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining" />
+  <link rel="stylesheet" href="../../assets/styles/login.css">
+  <title>Login</title>
+</head>
+
+<body>
+
+  <header>
+    <a href="../index.html"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
+  </header>
+  <div class="login-container">
+    <h1>Login</h1>
+    <div class="login-rectangle">
+      <h2>Automate your daily-life</h2>
+      <p>choose one of the option to go</p>
+      <!-- Added form element here -->
+      <form action="#" id="login-form" method="post">
+        <div class="filds">
+          <input type="email" id="email" placeholder="Email address">
+          <input type="password" id="password" placeholder="Password">
+        </div>
+        <div class="submit">
+          <button type="submit">Log in</button>
+        </div>
+      </form>
+      <h3>Or continue with</h3>
+      <div class="login-buttons">
+        <button class="login-button google">
+          <img src="../../assets/images/google-component.png" alt="google">
+        </button>
+        <button class="login-button meta">
+          <img src="../../assets/images/meta-component.png" alt="meta">
+        </button>
+        <button class="login-button apple">
+          <img src="../../assets/images/apple-component.png" alt="apple">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../../js/firebase/auth.js"></script>
+</body>
+
+</html>
+

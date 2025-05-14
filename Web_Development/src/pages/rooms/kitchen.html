@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- for fonts -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- for icons -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining"
+    />
+    <link rel="stylesheet" href="../../assets/styles/kitchen.css" />
+    <title>Kitchen</title>
+  </head>
+  <body>
+    <header>
+      <div class="head">
+        <div class="date-menue">
+          <img
+            src="../../assets/images/menu-rectangles-component.png"
+            alt="menu"
+            class="menu"
+          />
+          <p class="date"></p>
+        </div>
+        <nav class="">
+          <div class="nav-links">
+            <a href="./bedroom.html">Bed Room</a>
+            <a href="./livingroom.html">Living Room</a>
+            <a href="#" id="active" class="kitchen">Kitchen</a>
+          </div>
+        </nav>
+        <div class="user-image">
+          <img src="../../assets/images/1.jpg" alt="User Profile" />
+        </div>
+      </div>
+    </header>
+    <div class="display-nav-links">
+      <nav class="links">
+        <a href="../auth/profile.html">Profile</a>
+        <div class="line"></div>
+        <a href="../index.html" style="color: #ff3b30">LogOut</a>
+      </nav>
+    </div>
+    <div class="content">
+      <div class="kit-section">
+        <div class="image-head">
+          <img src="../../assets/images/kitchen-image.png" alt="Kitchen" />
+          <h1>Kitchen</h1>
+        </div>
+        <div class="kit-content">
+          <div class="float-values">
+            <div class="one">
+              <div class="v-one">
+                <div class="v-one-content">
+                  <img src="../../assets/images/double-arrow-image.png" class="double" />
+                  <img src="../../assets/images/bubbles-image.png" class="bubbles" />
+                </div>
+              </div>
+              <div class="t-tow">
+                <div class="o1">Auto</div>
+                <div class="o2">60%</div>
+              </div>
+            </div>
+            <div class="tow">
+              <div class="v-tow">
+                <div class="v-tow-content">
+                  <img src="../../assets/images/double-arrow-image down.png" class="double" />
+                  <img src="../../assets/images/room-temperature-image.png" class="tem" />
+                </div>
+              </div>
+              <div class="s-tow">
+                <div class="o1">Warm</div>
+                <div class="o2">20°C</div>
+              </div>
+            </div>
+            <div class="three">
+              <div class="v-three">
+                <div class="v-three-content">
+                  <img src="../../assets/images/music.png" class="audio" />
+                </div>
+              </div>
+              <div class="v-three">
+                <div class="v-three-content">⬜</div>
+              </div>
+            </div>
+            <div class="four">
+              <div class="v-four">
+                <div class="v-four-content">
+                  <img src="../../assets/images/sun.png" class="sun" />
+                </div>
+              </div>
+              <div class="v-four-tow">
+                <div class="v-four-tow-content"></div>
+              </div>
+            </div>
+          </div>
+          <div class="small-devices">
+            <div class="music-container">
+              <div class="name-music">
+                <div class="name-value">
+                  <h3>Audio</h3>
+                  <p>Audio</p>
+                </div>
+                <div class="slider">
+                  <div class="line"></div>
+                  <div class="circle"></div>
+                </div>
+              </div>
+              <div class="controls">
+                <!-- <i class="fa-solid fa-caret-left"></i> -->
+                <i class="fa-solid fa-angles-left"></i>
+                <i class="fa-solid fa-play" id="play"></i>
+                <i
+                  class="fa-solid fa-pause"
+                  id="pause"
+                  style="display: none"
+                ></i>
+                <i class="fa-solid fa-angles-right"></i>
+                <!-- <i class="fa-solid fa-caret-right"></i> -->
+              </div>
+            </div>
+            <div class="small-values">
+              <div class="fan">
+                <img src="../../assets/images/fan-image.png" alt="Fan" />
+                <p>speed <strong>6</strong> / 10</p>
+              </div>
+              <div class="camira">
+                <img src="../../assets/images/camera-image.png" alt="Camera" />
+                <p>Cam is off</p>
+              </div>
+              <div class="lock">
+                <img src="../../assets/images/door-lock-image.png" alt="Door Lock" />
+                <p>Door open</p>
+              </div>
+              <div class="wifi">
+                <img src="../../assets/images/wifi-image.png" alt="WiFi" />
+                <p><span>19.7</span> mb/s</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="devices-bed">
+        <div class="head1">
+          <h1>Devices</h1>
+          <div class="dot">
+            <p class="D">&#9679;</p>
+            <p class="active"><strong>5 /</strong>6</p>
+          </div>
+        </div>
+        <div class="door">
+          <div class="device-check">
+            <img src="../../assets/images/smart-humidifier-image.png" alt="Smart Humidifier" />
+            <label class="switch">
+              <input type="checkbox" />
+            </label>
+          </div>
+          <h3>Smart humidifier</h3>
+          <div class="wifi-code">
+            <p><i class="fa-solid fa-wifi"></i> Strong</p>
+            <a href="#" class="icon"><></a>
+          </div>
+        </div>
+        <div class="alexa">
+          <div class="device-check">
+            <img src="../../assets/images/smart-refrigerator-image.png" alt="Smart Refrigerator" />
+            <label class="switch">
+              <input type="checkbox" />
+            </label>
+          </div>
+          <h3>Smart refrigerator</h3>
+          <div class="wifi-code">
+            <p><i class="fa-solid fa-wifi"></i> Strong</p>
+            <a href="#" class="icon"><></a>
+          </div>
+        </div>
+        <div class="white">
+          <div class="device-check">
+            <img src="../../assets/images/motion-sensor-image.png" alt="Motion Sensor" />
+            <label class="switch">
+              <input type="checkbox" />
+            </label>
+          </div>
+          <h3>Motion sensor</h3>
+          <div class="wifi-code">
+            <p><i class="fa-solid fa-wifi"></i> Strong</p>
+            <a href="#" class="icon"><></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../js/pages/main.js"></script>
+    <script src="../../js/pages/rooms.js"></script>
+  </body>
+</html>
