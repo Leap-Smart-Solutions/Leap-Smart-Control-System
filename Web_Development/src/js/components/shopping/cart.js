@@ -1,11 +1,18 @@
-import products from "./products.js";
+import fetchProducts from "./products.js";
 
-const cart = () => {
-
+const cart = async () => {
   let iconCart = document.querySelector('.icon-cart');
   let closeBtn = document.querySelector('.cartTab .close');
   let body = document.querySelector('body');
   let cart = [];
+  let products = [];
+
+  try {
+    products = await fetchProducts();
+  } catch (error) {
+    console.error("Error loading products for cart:", error);
+    return;
+  }
 
   iconCart.addEventListener('click', () => {
     body.classList.toggle('activeTabCart');

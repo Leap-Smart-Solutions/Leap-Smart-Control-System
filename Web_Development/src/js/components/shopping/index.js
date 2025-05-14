@@ -1,5 +1,5 @@
 import cart from "./cart.js";
-import products from "./products.js";
+import fetchProducts from "./products.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
@@ -8,7 +8,7 @@ let loadingContainer = document.querySelector('.loading-container');
 // load template file
 const loadTemplate = async () => {
   try {
-    const response = await fetch('../../../pages/shopping/template.html');
+    const response = await fetch('../../../src/pages/shopping/template.html');
     const html = await response.text();
     
     app.innerHTML = html;
@@ -17,7 +17,7 @@ const loadTemplate = async () => {
     temporaryContent.innerHTML = null;
     
     // Initialize cart
-    cart();
+    await cart();
     
     // Initialize products
     await initApp();
@@ -44,7 +44,7 @@ const initApp = async () => {
 
   try {
     // Wait for products to be loaded
-    await products;
+    const products = await fetchProducts();
     
     products.forEach(product => {
       let newProduct = document.createElement('div');

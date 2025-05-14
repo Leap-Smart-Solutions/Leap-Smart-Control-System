@@ -175,19 +175,21 @@ header a i {
   max-width: 312px;
   height: 62px;
   margin-top: 21.5px;
-  background-color: var(--blue);
-  color: #fff;
+  margin-bottom: 21.5px;
+  border: solid 1px #ee8924;
+  color: #ee8924;
+  background-color: transparent;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .signup-container .signup-rectangle .submit button:hover {
-  background-color: #0703ff;
-  scale: 1.1;
-}
-
-.signup-buttons .signup-button:hover {
-  scale: 1.1;
+  background-color: #ee8924;
+  color: #000;
 }
 
 /* Media Queries for Responsiveness */
@@ -230,4 +232,50 @@ header a i {
     height: 50px;
     font-size: 14px;
   }
+}
+
+/* Email Verification Styles */
+.verification-status {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.verification-status i {
+  font-size: 48px;
+  color: var(--blue);
+  margin-bottom: 15px;
+}
+
+.verification-status p {
+  color: var(--gray);
+  font-size: 16px;
+}
+
+.resend-section {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.resend-section p {
+  color: var(--gray);
+  margin-bottom: 10px;
+}
+
+.resend-button {
+  background: none;
+  border: none;
+  color: var(--blue);
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: underline;
+}
+
+.resend-button:hover {
+  color: #0703ff;
+}
+
+/* Remove OTP styles */
+.otp-inputs,
+.otp-input {
+  display: none;
 }

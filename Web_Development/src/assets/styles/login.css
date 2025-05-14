@@ -149,11 +149,17 @@ header a i {
   width: 100%;
   max-width: 312px;
   height: 62px;
-  margin-top: 60px;
-  background-color: var(--blue);
-  color: #fff;
+  margin-top: 21.5px;
+  margin-bottom: 21.5px;
+  border: solid 1px #ee8924;
+  color: #ee8924;
+  background-color: transparent;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .login-buttons .login-button:hover {
@@ -161,8 +167,8 @@ header a i {
 }
 
 .login-container .login-rectangle .submit button:hover {
-  background-color: #0703ff;
-  scale: 1.1;
+  background-color: #ee8924;
+  color: #000;
 }
 
 /* Media Queries for Responsive Design */
@@ -181,11 +187,6 @@ header a i {
 
   .login-container .login-rectangle .filds input {
     height: 45px;
-  }
-
-  .login-buttons .login-button {
-    width: 70px;
-    height: 70px;
   }
 
   .login-container .login-rectangle .submit button {
@@ -211,11 +212,6 @@ header a i {
 
   .login-container .login-rectangle .filds input {
     height: 40px;
-  }
-
-  .login-buttons .login-button {
-    width: 60px;
-    height: 60px;
   }
 
   .login-container .login-rectangle .submit button {

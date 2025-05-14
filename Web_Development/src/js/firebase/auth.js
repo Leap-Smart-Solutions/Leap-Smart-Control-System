@@ -99,4 +99,3 @@ if(document.querySelector('#login-form')) {
     })
   })
 }
-
