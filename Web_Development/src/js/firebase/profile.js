@@ -11,6 +11,8 @@ const emailInput = document.querySelector("#email");
 const phoneInput = document.querySelector("#phone");
 const profileImg = document.querySelector("#profile-picture");
 const fileInput  = document.querySelector("#upload-profile");
+const loadingOverlay = document.querySelector(".loading-overlay");
+const content = document.querySelector(".content");
 
 // Watch auth
 onAuthStateChanged(auth, async (user) => {
@@ -34,6 +36,10 @@ onAuthStateChanged(auth, async (user) => {
     }
   } catch (err) {
     console.error("Error fetching profile:", err);
+  } finally {
+    // Hide loading overlay and show content
+    loadingOverlay.style.display = "none";
+    content.classList.add("loaded");
   }
 
   // Handle new image uploads via ImgBB
