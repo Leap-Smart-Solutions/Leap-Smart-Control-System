@@ -59,7 +59,51 @@
       <a href="#" id="logout">Logout</a>
     </div>
   </div>
+  
+  <!-- Password Change Modal -->
+  <div id="password-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Change Password</h2>
+      <form id="change-password-form">
+        <div class="modal-input-group">
+          <label for="current-password">Current Password</label>
+          <input type="password" id="current-password" required>
+        </div>
+        <div class="modal-input-group">
+          <label for="new-password">New Password</label>
+          <input type="password" id="new-password" required>
+        </div>
+        <div class="modal-input-group">
+          <label for="confirm-password">Confirm New Password</label>
+          <input type="password" id="confirm-password" required>
+        </div>
+        <button type="submit" class="modal-btn">Update Password</button>
+      </form>
+    </div>
+  </div>
+  
   <script type="module" src="../../js/firebase/profile.js"></script>
   <script type="module" src="../../js/firebase/auth.js"></script>
+  <script>
+    // Modal functionality
+    const modal = document.getElementById("password-modal");
+    const changePasswordBtn = document.getElementById("change-password");
+    const closeBtn = document.getElementsByClassName("close")[0];
+    
+    changePasswordBtn.addEventListener("click", function() {
+      modal.style.display = "block";
+    });
+    
+    closeBtn.addEventListener("click", function() {
+      modal.style.display = "none";
+    });
+    
+    window.addEventListener("click", function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>

@@ -21,6 +21,27 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  // Check email verification status
+  if (!user.emailVerified) {
+    // Show verification notification or redirect
+    const verificationNotice = document.createElement("div");
+    verificationNotice.className = "verification-notice";
+    verificationNotice.innerHTML = `
+      <div class="verification-alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p>Your email is not verified. Some features may be limited.</p>
+        <button id="verify-email-btn">Verify Now</button>
+      </div>
+    `;
+    
+    document.body.insertBefore(verificationNotice, document.body.firstChild);
+    
+    // Add event listener for verification button
+    document.getElementById("verify-email-btn").addEventListener("click", () => {
+      window.location.href = "../../pages/auth/verify-email.html";
+    });
+  }
+
   // Load profile data
   try {
     const userRef  = doc(db, "users", user.uid);
