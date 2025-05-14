@@ -11,7 +11,7 @@ const emailInput = document.querySelector("#email");
 const phoneInput = document.querySelector("#phone");
 const profileImg = document.querySelector("#profile-picture");
 const fileInput  = document.querySelector("#upload-profile");
-const loadingOverlay = document.querySelector(".loading-overlay");
+const loadingContainer = document.querySelector(".loading-container");
 const content = document.querySelector(".content");
 
 // Watch auth
@@ -30,17 +30,43 @@ onAuthStateChanged(auth, async (user) => {
       usernameP.innerText = "#" + (data.username || "Unnamed");
       emailInput.value    = data.email || "";
       phoneInput.value    = data.phone || "";
-      if (data.profilePicture) {
-        profileImg.src = data.profilePicture;
-      }
+      
+      // Create a promise to handle image loading
+      const loadProfileImage = () => {
+        return new Promise((resolve, reject) => {
+          if (data.profilePicture) {
+            profileImg.onload = () => resolve();
+            profileImg.onerror = () => reject(new Error('Failed to load profile image'));
+            profileImg.src = data.profilePicture;
+          } else {
+            // If no profile picture, resolve immediately
+            resolve();
+          }
+        });
+      };
+
+      // Wait for the image to load before hiding loading screen
+      await loadProfileImage();
+    } else {
+      // Handle case where user document doesn't exist
+      console.warn("No user profile found");
     }
   } catch (err) {
     console.error("Error fetching profile:", err);
-  } finally {
-    // Hide loading overlay and show content
-    loadingOverlay.style.display = "none";
-    content.classList.add("loaded");
+    loadingContainer.innerHTML = `
+      <div class="loading-content">
+        <div class="loading-text">Error loading profile. Please try again.</div>
+        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #E8BC0E; border: none; border-radius: 5px; cursor: pointer;">
+          Retry
+        </button>
+      </div>
+    `;
+    return; // Don't hide loading screen on error
   }
+
+  // Only hide loading and show content if we successfully loaded the profile and image
+  loadingContainer.classList.add('hidden');
+  content.classList.add("loaded");
 
   // Handle new image uploads via ImgBB
   fileInput.addEventListener("change", (e) => {
@@ -87,4 +113,3 @@ onAuthStateChanged(auth, async (user) => {
     reader.readAsDataURL(file);
   });
 });
-

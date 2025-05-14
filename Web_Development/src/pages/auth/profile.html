@@ -8,25 +8,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/styles/profile.css">
   <style>
-    .loading-overlay {
+    .loading-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgba(33, 33, 33, 0.97);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
-    .spinner {
+    .loading-container.hidden {
+      display: none;
+    }
+    .loading-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+    }
+    .loading-spinner {
       width: 50px;
       height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #3498db;
+      border: 5px solid #353432;
+      border-top: 5px solid #E8BC0E;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+    }
+    .loading-text {
+      color: #fff;
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      font-family: Poppins;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -43,8 +58,11 @@
   <title>Profile</title>
 </head>
 <body>
-  <div class="loading-overlay">
-    <div class="spinner"></div>
+  <div class="loading-container">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading profile...</div>
+    </div>
   </div>
   <header>
     <a href="../index.html"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
@@ -95,4 +113,3 @@
   <script type="module" src="../../js/firebase/auth.js"></script>
 </body>
 </html>
-
