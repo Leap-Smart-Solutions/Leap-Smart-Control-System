@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Users.css" />
+    <!-- for fonts -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Users | Admin Dashboard</title>
+  </head>
+  <body>
+    <!-- Menu Toggle Button -->
+    <div class="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="sidebar">
+      <div class="nav-header">
+        <h1><span>L</span>eap <span>A</span>dmins</h1>
+        <button class="close-menu">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="nav-links">
+        <a href="Analytics.html">
+          <i class="fa-solid fa-chart-line" id="nav-icon"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="Users.html" class="Users">
+          <i class="fa-solid fa-users" id="nav-icon"></i>
+          <span>Users</span>
+        </a>
+        <a href="order.html" class="Orders">
+          <i class="fa-solid fa-cart-shopping" id="nav-icon"></i>
+          <span>Orders</span>
+        </a>
+        <a href="Issues.html" class="Issues">
+          <i class="fa-solid fa-triangle-exclamation" id="nav-icon"></i>
+          <span>Issues</span>
+        </a>
+        <a href="Items.html" class="Items">
+          <i class="fa-solid fa-box" id="nav-icon"></i>
+          <span>Items</span>
+        </a>
+        <a href="Inventory.html" class="Inventory">
+          <i class="fa-solid fa-warehouse" id="nav-icon"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="Setting.html" class="Setting">
+          <i class="fa-solid fa-gear" id="nav-icon"></i>
+          <span>Setting</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="main-content">
+      <!-- Header will be inserted by JS -->
+      <div class="content-wrapper">
+        <div class="users-table">
+          <div class="table-header">
+            <div class="header-cell"></div>
+            <div class="header-cell">Name</div>
+            <div class="header-cell">Email</div>
+            <div class="header-cell">City</div>
+            <div class="header-cell">Phone</div>
+            <div class="header-cell">Status</div>
+            <div class="header-cell"></div>
+          </div>
+          <div class="table-body" id="usersList">
+            <!-- Users will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="Users.js"></script>
+  </body>
+</html>
