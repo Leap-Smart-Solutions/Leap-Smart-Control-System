@@ -21,6 +21,7 @@
   --light-gray: #d0d0d0;
   --border: #b0b0b0;
   --box-shadow: 0 0.5rem 1.5rem #8080808c;
+  --orange: #ee8924; /* Adding orange color from signup.css, but using sparingly */
 }
 
 body {
@@ -175,7 +176,7 @@ header a i {
 .radio-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   margin-top: 26px;
 }
 
@@ -198,6 +199,25 @@ header a i {
   background-color: var(--black);
   cursor: pointer;
   position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.radio-container .radio-option input:checked {
+  border: 2px solid var(--orange);
+}
+
+.radio-container .radio-option input:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--orange);
 }
 
 .User-information .form-container .content .line {
@@ -226,6 +246,7 @@ header a i {
   border-radius: 10px;
   background-color: var(--light-gray);
   height: 39px;
+  padding: 10px;
 }
 
 .User-information .form-container .content .address input:hover {
@@ -252,15 +273,19 @@ header a i {
   max-width: 657px;
   height: 62px;
   margin-top: 70px;
-  background-color: var(--blue);
-  color: #fff;
+  background-color: transparent;
+  color: var(--orange);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: solid 1px var(--orange);
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .User-information .form-container .submit button:hover {
-  background-color: #0703ff;
-  scale: 1.1;
+  background-color: var(--orange);
+  color: #000;
+  scale: 1.05;
 }
 
 /* Media Queries for Responsiveness */
@@ -283,6 +308,7 @@ header a i {
   .User-information .form-container .content .personal-information .name input {
     width: 178px;
     margin-bottom: 0;
+    padding-left: 10px;
   }
 
   .User-information
@@ -306,6 +332,7 @@ header a i {
     select {
     width: 110px;
     margin-bottom: 0;
+    padding-left: 10px;
   }
 
   .User-information
@@ -314,7 +341,7 @@ header a i {
     .personal-information
     .radio-container {
     flex-direction: row !important;
-    margin-left: 50px !important;
+    width: 75%;
   }
 
   .User-information .form-container .content .line {
