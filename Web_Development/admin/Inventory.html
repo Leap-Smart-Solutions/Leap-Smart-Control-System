@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventory | Admin Dashboard</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- CSS -->
+    <link rel="stylesheet" href="Inventory.css" />
+    <!-- for fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Menu Toggle Button -->
+    <div class="menu-toggle">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Navigation -->
+    <nav class="sidebar">
+      <div class="nav-header">
+        <h1><span>L</span>eap <span>A</span>dmins</h1>
+        <button class="close-menu">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="nav-links">
+        <a href="Analytics.html" class="Analytics">
+          <i class="fa-solid fa-chart-line" id="nav-icon"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="Users.html" class="Users">
+          <i class="fa-solid fa-users" id="nav-icon"></i>
+          <span>Users</span>
+        </a>
+        <a href="order.html" class="Orders">
+          <i class="fa-solid fa-cart-shopping" id="nav-icon"></i>
+          <span>Orders</span>
+        </a>
+        <a href="Issues.html" class="Issues">
+          <i class="fa-solid fa-triangle-exclamation" id="nav-icon"></i>
+          <span>Issues</span>
+        </a>
+        <a href="Items.html" class="Items">
+          <i class="fa-solid fa-box" id="nav-icon"></i>
+          <span>Items</span>
+        </a>
+        <a href="Inventory.html" class="Inventory">
+          <i class="fa-solid fa-warehouse" id="nav-icon"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="Setting.html" class="Setting">
+          <i class="fa-solid fa-gear" id="nav-icon"></i>
+          <span>Setting</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-wrapper">
+        <!-- Component Cards Section -->
+        <div class="component-cards-section">
+          <div class="cards-grid" id="componentCards">
+            <!-- Component cards will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Add Inventory Form Section -->
+        <div class="add-inventory-section">
+          <h2>Add New Component</h2>
+          <form id="addInventoryForm" class="inventory-form">
+            <div class="form-group">
+              <label for="componentImage">Component Image</label>
+              <div class="image-upload">
+                <input
+                  type="file"
+                  id="componentImage"
+                  accept="image/*"
+                  required
+                />
+                <div class="image-preview" id="imagePreview">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <span>Upload Image</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="componentType">Component Type</label>
+              <select id="componentType" required>
+                <option value="">Select Type</option>
+                <option value="Esp-01s">Esp-01s</option>
+                <option value="Relay">Relay</option>
+                <option value="MPU-6050">MPU-6050</option>
+                <option value="Lipo battery">Lipo battery</option>
+                <option value="PCB">PCB</option>
+                <option value="Esp-32 CAM">Esp-32 CAM</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="componentPrice">Price ($)</label>
+              <input
+                type="number"
+                id="componentPrice"
+                step="0.01"
+                min="0"
+                required
+                placeholder="Enter price"
+              />
+            </div>
+            <div class="form-group">
+              <label for="componentQuantity">Quantity</label>
+              <input
+                type="number"
+                id="componentQuantity"
+                min="0"
+                required
+                placeholder="Enter quantity"
+              />
+            </div>
+            <div class="form-group">
+              <label for="componentDescription">Description</label>
+              <textarea
+                id="componentDescription"
+                required
+                placeholder="Enter component description"
+              ></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Add Component</button>
+          </form>
+        </div>
+
+        <!-- Inventory Table Section -->
+        <div class="inventory-table-section">
+          <div class="inventory-table">
+            <div class="table-header">
+              <div class="header-cell">Component ID</div>
+              <div class="header-cell">Image</div>
+              <div class="header-cell">Type</div>
+              <div class="header-cell">Price</div>
+              <div class="header-cell">Quantity</div>
+              <div class="header-cell">Description</div>
+              <div class="header-cell">Actions</div>
+            </div>
+            <div class="table-body" id="inventoryList">
+              <!-- Inventory items will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Description Modal -->
+    <div id="descriptionModal" class="description-modal">
+      <div class="description-modal-content">
+        <div class="description-modal-header">
+          <h3 class="description-modal-title">Component Description</h3>
+          <span class="description-modal-close">&times;</span>
+        </div>
+        <div class="description-modal-body" id="descriptionModalBody"></div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="Inventory.js"></script>
+  </body>
+</html>

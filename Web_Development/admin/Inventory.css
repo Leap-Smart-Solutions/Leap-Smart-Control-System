@@ -1,0 +1,608 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  transition: all 0.15s linear;
+}
+
+body {
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  background-color: #292929;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Menu Toggle Button */
+.menu-toggle {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1002;
+  background: rgba(24, 24, 24, 0.9);
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.menu-toggle:hover {
+  background: rgb(24, 24, 24);
+  transform: scale(1.05);
+}
+
+.menu-toggle i {
+  color: rgb(212, 130, 30);
+  font-size: 22px;
+}
+
+/* Hide menu toggle when sidebar is active */
+.sidebar.active ~ .menu-toggle,
+.sidebar.active + .menu-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Sidebar Navigation */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(24, 24, 24);
+  width: 280px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1001;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.close-menu {
+  display: none;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.close-menu:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 0;
+}
+
+nav h1 {
+  color: #f1efef;
+  letter-spacing: 2px;
+  font-size: 22px;
+  margin: 0;
+}
+
+nav h1 span {
+  font-weight: 900;
+  color: rgb(212, 130, 30);
+}
+
+nav a {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(243, 235, 235);
+  position: relative;
+  margin: 4px 10px;
+  border-radius: 8px;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+nav a i {
+  margin-right: 15px;
+  width: 20px;
+  text-align: center;
+  font-size: 18px;
+}
+
+nav .Inventory {
+  background-color: rgba(212, 130, 30, 0.2);
+  color: rgb(212, 130, 30);
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 280px;
+  padding: 20px;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Component Cards Section */
+.component-cards-section {
+  margin-bottom: 30px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.component-card {
+  background-color: rgb(24, 24, 24);
+  padding: 20px;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.component-card h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: rgb(212, 130, 30);
+}
+
+.component-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Add Inventory Form Section */
+.add-inventory-section {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.add-inventory-section h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.inventory-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #fff;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #292929;
+  color: #fff;
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: rgb(212, 130, 30);
+}
+
+.image-upload {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  border: 2px dashed #333;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.image-upload input[type="file"] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.image-preview i {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Inventory Table Section */
+.inventory-table-section {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-table {
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1fr 0.8fr 0.8fr 1.5fr 1.2fr;
+  background-color: #292929;
+  padding: 10px;
+  font-weight: bold;
+  color: #fff;
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table-body {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.table-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.table-body::-webkit-scrollbar-thumb {
+  background: rgb(212, 130, 30);
+  border-radius: 3px;
+}
+
+.table-body::-webkit-scrollbar-thumb:hover {
+  background: rgb(232, 150, 50);
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1fr 0.8fr 0.8fr 1.5fr 1.2fr;
+  padding: 8px 10px;
+  align-items: center;
+  border-bottom: 1px solid rgb(212, 130, 30);
+  color: #fff;
+  font-size: 13px;
+}
+
+.header-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.edit-btn,
+.delete-btn,
+.quantity-btn {
+  border: none;
+  padding: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn {
+  background: rgb(212, 130, 30);
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background: rgb(232, 150, 50);
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background: #e4505f;
+}
+
+.quantity-btn.add {
+  background: #28a745;
+  color: #fff;
+}
+
+.quantity-btn.add:hover {
+  background: #34ce57;
+}
+
+.quantity-btn.subtract {
+  background: #dc3545;
+  color: #fff;
+}
+
+.quantity-btn.subtract:hover {
+  background: #e4505f;
+}
+
+/* Description Modal */
+.description-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.description-modal-content {
+  background-color: #1e1e1e;
+  margin: 10% auto;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.description-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.description-modal-title {
+  color: rgb(212, 130, 30);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.description-modal-close {
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.2s ease;
+}
+
+.description-modal-close:hover {
+  color: rgb(212, 130, 30);
+}
+
+.description-modal-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #e0e0e0;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+  cursor: default;
+}
+
+.description-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.description-modal-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.description-modal-body::-webkit-scrollbar-thumb {
+  background: rgb(212, 130, 30);
+  border-radius: 3px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .sidebar {
+    width: 250px;
+  }
+
+  .main-content {
+    margin-left: 250px;
+  }
+
+  .inventory-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .menu-toggle {
+    display: flex;
+  }
+
+  .close-menu {
+    display: block;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+    padding-top: 75px;
+  }
+
+  .table-body {
+    overflow-x: auto;
+  }
+
+  .table-header,
+  .table-row {
+    min-width: 1000px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-header,
+  .table-row {
+    font-size: 12px;
+  }
+
+  .description-modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .table-header,
+  .table-row {
+    min-width: 800px;
+    font-size: 11px;
+  }
+
+  .edit-btn,
+  .delete-btn,
+  .quantity-btn {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Update submit button style */
+.submit-btn {
+  background: rgb(212, 130, 30);
+  color: white;
+  border: none;
+  padding: 12px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  width: 45%;
+  height: 45%;
+  margin-top: 30px;
+}
+
+.submit-btn:hover {
+  background: rgb(232, 150, 50);
+  transform: translateY(-2px);
+}
+
+.description-cell {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.description-cell:hover {
+  color: rgb(212, 130, 30);
+}
