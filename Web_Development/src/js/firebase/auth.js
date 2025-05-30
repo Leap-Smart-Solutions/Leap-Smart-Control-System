@@ -13,6 +13,7 @@ import {
 import {
   doc, setDoc, collection, getDocs
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import phoneInputValidator from "../utils/phoneInputValidator.js";
 
 // listen for auth status changes
 auth.onAuthStateChanged(user => {
@@ -45,6 +46,16 @@ auth.onAuthStateChanged(user => {
 // Signing up the users
 if (document.querySelector('#signup-form')) {
   const signupForm = document.querySelector('#signup-form');
+  
+  // Initialize phone input validation
+  const phoneInput = document.querySelector('#phone');
+  if (phoneInput) {
+    phoneInputValidator.init(phoneInput, {
+      maxLength: 16,  // Increased to accommodate + symbol for country codes
+      autoFormat: false
+    });
+  }
+  
   signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
   

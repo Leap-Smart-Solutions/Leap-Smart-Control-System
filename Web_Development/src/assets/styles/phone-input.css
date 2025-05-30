@@ -1,0 +1,350 @@
+/* Phone Input Styles */
+/* Enhanced styling for telephone input fields */
+
+/* Base styles for all telephone inputs */
+input[type="tel"] {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #2d3748;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+/* Focus state */
+input[type="tel"]:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    background-color: #f7fafc;
+}
+
+/* Hover state */
+input[type="tel"]:hover:not(:focus) {
+    border-color: #cbd5e0;
+}
+
+/* Disabled state */
+input[type="tel"]:disabled {
+    background-color: #f7fafc;
+    border-color: #e2e8f0;
+    color: #a0aec0;
+    cursor: not-allowed;
+}
+
+/* Valid state */
+input[type="tel"]:valid {
+    border-color: #48bb78;
+}
+
+input[type="tel"]:valid:focus {
+    border-color: #48bb78;
+    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
+
+/* Invalid state */
+input[type="tel"]:invalid:not(:placeholder-shown) {
+    border-color: #f56565;
+}
+
+input[type="tel"]:invalid:not(:placeholder-shown):focus {
+    border-color: #f56565;
+    box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1);
+}
+
+/* Placeholder styling */
+input[type="tel"]::placeholder {
+    color: #a0aec0;
+    opacity: 1;
+    font-style: italic;
+}
+
+/* Phone input with icon container */
+.phone-input-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.phone-input-container input[type="tel"] {
+    padding-left: 45px;
+}
+
+.phone-input-container::before {
+    content: "📞";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #a0aec0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.phone-input-container:focus-within::before {
+    color: #4299e1;
+}
+
+/* Alternative icon using CSS */
+.phone-input-icon {
+    position: relative;
+}
+
+.phone-input-icon input[type="tel"] {
+    padding-left: 45px;
+}
+
+.phone-input-icon::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0aec0'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.phone-input-icon:focus-within::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234299e1'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
+}
+
+/* Validation message styles */
+.phone-validation-message {
+    font-size: 14px;
+    margin-top: 5px;
+    padding: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.phone-validation-message.success {
+    color: #48bb78;
+}
+
+.phone-validation-message.error {
+    color: #f56565;
+}
+
+.phone-validation-message.info {
+    color: #4299e1;
+}
+
+/* WhatsApp verification note styles */
+.phone-note {
+    display: block;
+    font-size: 13px;
+    color: #16a085;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #e8f8f5;
+    border: 1px solid #a7e0d4;
+    border-radius: 6px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.phone-note::before {
+    content: "ℹ️ ";
+    margin-right: 5px;
+}
+
+/* Hover effect for phone note */
+.phone-note:hover {
+    background-color: #d5f4ed;
+    border-color: #85c7b3;
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Loading state for phone validation */
+.phone-input-loading {
+    position: relative;
+}
+
+.phone-input-loading::after {
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e2e8f0;
+    border-top: 2px solid #4299e1;
+    border-radius: 50%;
+    animation: phone-input-spin 1s linear infinite;
+}
+
+@keyframes phone-input-spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Success checkmark */
+.phone-input-success::after {
+    content: "✓";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #48bb78;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Error cross */
+.phone-input-error::after {
+    content: "✗";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #f56565;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    input[type="tel"] {
+        font-size: 16px; /* Prevent zoom on iOS */
+        padding: 14px 16px;
+    }
+    
+    .phone-input-container input[type="tel"],
+    .phone-input-icon input[type="tel"] {
+        padding-left: 45px;
+    }
+    
+    /* Mobile phone note adjustments */
+    .phone-note {
+        font-size: 12px;
+        padding: 6px 10px;
+        margin-bottom: 8px;
+    }
+}
+</edits>
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    input[type="tel"] {
+        background-color: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    input[type="tel"]:focus {
+        background-color: #1a202c;
+        border-color: #63b3ed;
+        box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
+    }
+    
+    input[type="tel"]:hover:not(:focus) {
+        border-color: #718096;
+    }
+    
+    input[type="tel"]:disabled {
+        background-color: #1a202c;
+        border-color: #4a5568;
+        color: #718096;
+    }
+    
+    input[type="tel"]::placeholder {
+        color: #718096;
+    }
+    
+    .phone-input-container::before {
+        color: #718096;
+    }
+    
+    .phone-input-container:focus-within::before {
+        color: #63b3ed;
+    }
+    
+    /* Dark mode phone note */
+    .phone-note {
+        color: #68d391;
+        background-color: #1a2f23;
+        border-color: #2d5a3d;
+    }
+    
+    .phone-note:hover {
+        background-color: #22543d;
+        border-color: #38a169;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    input[type="tel"] {
+        border-width: 3px;
+    }
+    
+    input[type="tel"]:focus {
+        border-width: 3px;
+        box-shadow: 0 0 0 2px currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    input[type="tel"] {
+        transition: none;
+    }
+    
+    .phone-validation-message {
+        transition: none;
+    }
+    
+    @keyframes phone-input-spin {
+        0%, 100% { transform: translateY(-50%) rotate(0deg); }
+    }
+}
+
+/* Form group styling for better integration */
+.form-group .phone-input-container,
+.form-group .phone-input-icon {
+    margin-bottom: 0;
+}
+
+.form-group label + .phone-input-container,
+.form-group label + .phone-input-icon {
+    margin-top: 5px;
+}
+
+/* Integration with popular form frameworks */
+.input-group .phone-input-container,
+.input-group .phone-input-icon {
+    flex: 1;
+}
+
+/* Bootstrap integration */
+.form-control[type="tel"] {
+    padding: 12px 16px;
+}
+
+.input-group .form-control[type="tel"] {
+    border-radius: 0;
+}
+
+.input-group .form-control[type="tel"]:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.input-group .form-control[type="tel"]:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}

@@ -1,5 +1,6 @@
 import cart from "./cart.js";
 import products from "./products.js";
+import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
@@ -42,6 +43,14 @@ const initCheckout = () => {
   const zipCodeInput = document.getElementById('zipCode');
   const phoneInput = document.getElementById('phone');
   const cardNameInput = document.getElementById('cardName');
+
+  // Initialize phone input validation
+  if (phoneInput) {
+    phoneInputValidator.init(phoneInput, {
+      maxLength: 16,  // Increased to accommodate + symbol for country codes
+      autoFormat: false
+    });
+  }
   const cardNumberInput = document.getElementById('cardNumber');
   const expiryInput = document.getElementById('expiry');
   const cvvInput = document.getElementById('cvv');
