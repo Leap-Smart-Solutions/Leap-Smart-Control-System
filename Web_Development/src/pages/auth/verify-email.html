@@ -29,6 +29,7 @@
                 <h2>Check your inbox</h2>
                 <p>We've sent a verification link to your email address.</p>
                 <p>Please click the link to verify your account.</p>
+                <p>After email verification, you'll need to verify your phone number.</p>
             </div>
             
             <div class="resend-section">
@@ -37,11 +38,28 @@
             </div>
             
             <div class="submit">
-                <button id="continue-to-login" onclick="window.location.href='login.html'">Continue to Login</button>
+                <button id="continue-to-phone-verification">Continue to Phone Verification</button>
+            </div>
+            
+            <div class="submit">
+                <button id="skip-to-login" class="skip-button" onclick="window.location.href='login.html'">Skip and Login</button>
             </div>
         </div>
     </div>
 
     <script type="module" src="../../js/firebase/auth.js"></script>
+    <script type="module">
+        import emailVerificationChecker from "../../js/utils/emailVerificationChecker.js";
+        
+        // Initialize email verification checker when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            emailVerificationChecker.init();
+        });
+        
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', () => {
+            emailVerificationChecker.destroy();
+        });
+    </script>
 </body>
-</html> 
+</html>

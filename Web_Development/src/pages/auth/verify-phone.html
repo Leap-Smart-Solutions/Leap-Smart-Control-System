@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/src/assets/icons/favicon.ico" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- for fonts -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" as="style"onload="this.rel='stylesheet'">
+    <link rel="stylesheet" href="../../assets/styles/signup.css">
+    <title>Verify Phone Number</title>
+</head>
+
+<body>
+    <header>
+        <a href="verify-email.html"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
+    </header>
+
+    <div class="signup-container">
+        <h1>Phone Verification</h1>
+        <div class="signup-rectangle">
+            <div class="verification-status">
+                <i class="fa-solid fa-mobile-screen"></i>
+                <h2>Enter verification code</h2>
+                <p>We've sent a verification code to your phone number via WhatsApp.</p>
+                <p id="phone-display"></p>
+            </div>
+            
+            <form id="verify-phone-form">
+                <div class="input-group">
+                    <label for="otp-code">Verification Code</label>
+                    <input type="text" id="otp-code" name="otp-code" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]{6}" required>
+                </div>
+                
+                <div class="submit">
+                    <button type="submit">Verify Phone Number</button>
+                </div>
+            </form>
+            
+            <div class="resend-section">
+                <p>Didn't receive the code?</p>
+                <button id="resend-otp" class="resend-button">Resend verification code</button>
+            </div>
+            
+            <div class="submit">
+                <button id="skip-verification" class="skip-button" onclick="window.location.href='profile.html'">Skip for now</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../../js/firebase/auth.js"></script>
+</body>
+</html>

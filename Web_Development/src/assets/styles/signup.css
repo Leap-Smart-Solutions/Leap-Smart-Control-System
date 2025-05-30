@@ -274,8 +274,74 @@ header a i {
   color: #0703ff;
 }
 
+/* Phone Verification Styles */
+.input-group {
+  margin: 20px 0;
+}
+
+.input-group label {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.input-group input {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  background-color: var(--light-gray);
+  padding: 0 15px;
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 2px;
+  color: var(--black);
+  font-weight: 600;
+}
+
+.input-group input:focus {
+  background-color: #fff;
+  box-shadow: 0 0 8px rgba(3, 102, 255, 0.3);
+}
+
+.input-group input::placeholder {
+  color: var(--gray);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-align: center;
+}
+
+.skip-button {
+  width: 100%;
+  max-width: 312px;
+  height: 50px;
+  margin-top: 10px;
+  border: solid 1px var(--gray);
+  color: var(--gray);
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.skip-button:hover {
+  background-color: var(--gray);
+  color: #fff;
+}
+
+#phone-display {
+  font-weight: 600;
+  color: var(--blue) !important;
+  font-size: 16px !important;
+}
+
 /* Remove OTP styles */
 .otp-inputs,
 .otp-input {
   display: none;
 }
+</edits>

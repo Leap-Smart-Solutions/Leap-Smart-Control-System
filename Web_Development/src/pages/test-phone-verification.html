@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Verification Test</title>
+    <link rel="stylesheet" href="../assets/styles/signup.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+    <style>
+        .test-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: var(--gray);
+            border-radius: 15px;
+            box-shadow: var(--box-shadow);
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .test-section h3 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        .test-result {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 40px;
+        }
+        .success {
+            background-color: #28a745;
+            color: white;
+        }
+        .error {
+            background-color: #dc3545;
+            color: white;
+        }
+        .info {
+            background-color: #0366ff;
+            color: white;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .status-online {
+            background-color: #28a745;
+        }
+        .status-offline {
+            background-color: #dc3545;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: var(--blue);
+            color: white;
+            font-weight: 600;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background-color: var(--light-gray);
+            color: var(--black);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 style="text-align: center; color: #fff;">Phone Verification API Test</h1>
+        
+        <!-- Service Status -->
+        <div class="test-section">
+            <h3><i class="fa-solid fa-server"></i> Service Status</h3>
+            <div id="service-status">
+                <span class="status-indicator status-offline"></span>
+                <span>Checking service status...</span>
+            </div>
+            <button onclick="checkServiceStatus()">Refresh Status</button>
+        </div>
+
+        <!-- Send OTP Test -->
+        <div class="test-section">
+            <h3><i class="fa-solid fa-paper-plane"></i> Send OTP Test</h3>
+            <input type="tel" id="phone-input" placeholder="Enter phone number (e.g., 201234567890)" maxlength="15">
+            <button onclick="sendOTPTest()">Send OTP</button>
+            <div id="send-result" class="test-result"></div>
+        </div>
+
+        <!-- Verify OTP Test -->
+        <div class="test-section">
+            <h3><i class="fa-solid fa-shield-check"></i> Verify OTP Test</h3>
+            <input type="text" id="otp-input" placeholder="Enter 6-digit OTP code" maxlength="6">
+            <button onclick="verifyOTPTest()">Verify OTP</button>
+            <div id="verify-result" class="test-result"></div>
+        </div>
+
+        <!-- Test Logs -->
+        <div class="test-section">
+            <h3><i class="fa-solid fa-list"></i> Test Logs</h3>
+            <div id="test-logs" style="background-color: var(--black); padding: 15px; border-radius: 5px; color: var(--light-gray); font-family: monospace; max-height: 300px; overflow-y: auto;"></div>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import phoneVerificationService from "../js/utils/phoneVerification.js";
+
+        let lastPhoneNumber = '';
+        
+        function log(message, type = 'info') {
+            const logs = document.getElementById('test-logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #888;">[${timestamp}]</span> <span style="color: ${type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#339af0'};">${message}</span>`;
+            logs.appendChild(logEntry);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `test-result ${type}`;
+        }
+
+        window.checkServiceStatus = async function() {
+            log('Checking service status...');
+            const statusElement = document.getElementById('service-status');
+            
+            try {
+                const result = await phoneVerificationService.checkServiceStatus();
+                
+                if (result.success) {
+                    const isOnline = result.clientReady;
+                    const statusText = isOnline ? 'Service Online ✓' : 'Service Offline (WhatsApp not connected)';
+                    const statusClass = isOnline ? 'status-online' : 'status-offline';
+                    
+                    statusElement.innerHTML = `
+                        <span class="status-indicator ${statusClass}"></span>
+                        <span>${statusText}</span>
+                        <br><small>Client Ready: ${result.clientReady}, QR Available: ${result.qrAvailable}</small>
+                    `;
+                    
+                    log(`Service status: ${statusText}`, isOnline ? 'success' : 'error');
+                } else {
+                    statusElement.innerHTML = `
+                        <span class="status-indicator status-offline"></span>
+                        <span>Service Unavailable</span>
+                    `;
+                    log(`Service check failed: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                statusElement.innerHTML = `
+                    <span class="status-indicator status-offline"></span>
+                    <span>Connection Error</span>
+                `;
+                log(`Service check error: ${error.message}`, 'error');
+            }
+        };
+
+        window.sendOTPTest = async function() {
+            const phoneInput = document.getElementById('phone-input');
+            const phoneNumber = phoneInput.value.trim();
+            
+            if (!phoneNumber) {
+                showResult('send-result', 'Please enter a phone number', 'error');
+                log('Send OTP failed: No phone number provided', 'error');
+                return;
+            }
+
+            // Validate phone number format
+            const validation = phoneVerificationService.validatePhoneNumber(phoneNumber);
+            if (!validation.valid) {
+                showResult('send-result', validation.message, 'error');
+                log(`Send OTP failed: ${validation.message}`, 'error');
+                return;
+            }
+
+            log(`Attempting to send OTP to: ${phoneNumber}`);
+            showResult('send-result', 'Sending OTP...', 'info');
+
+            try {
+                const result = await phoneVerificationService.sendOTP(phoneNumber);
+                
+                if (result.success) {
+                    lastPhoneNumber = phoneNumber;
+                    showResult('send-result', `OTP sent successfully to ${result.phoneNumber}`, 'success');
+                    log(`OTP sent successfully to: ${result.phoneNumber}`, 'success');
+                } else {
+                    showResult('send-result', `Failed to send OTP: ${result.message}`, 'error');
+                    log(`Send OTP failed: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showResult('send-result', `Error: ${error.message}`, 'error');
+                log(`Send OTP error: ${error.message}`, 'error');
+            }
+        };
+
+        window.verifyOTPTest = async function() {
+            const otpInput = document.getElementById('otp-input');
+            const otpCode = otpInput.value.trim();
+            
+            if (!otpCode) {
+                showResult('verify-result', 'Please enter the OTP code', 'error');
+                log('Verify OTP failed: No OTP code provided', 'error');
+                return;
+            }
+
+            if (!lastPhoneNumber) {
+                showResult('verify-result', 'Please send an OTP first', 'error');
+                log('Verify OTP failed: No phone number available', 'error');
+                return;
+            }
+
+            // Validate OTP format
+            const validation = phoneVerificationService.validateOTP(otpCode);
+            if (!validation.valid) {
+                showResult('verify-result', validation.message, 'error');
+                log(`Verify OTP failed: ${validation.message}`, 'error');
+                return;
+            }
+
+            log(`Attempting to verify OTP: ${otpCode} for phone: ${lastPhoneNumber}`);
+            showResult('verify-result', 'Verifying OTP...', 'info');
+
+            try {
+                const result = await phoneVerificationService.verifyOTP(lastPhoneNumber, otpCode);
+                
+                if (result.success) {
+                    showResult('verify-result', 'OTP verified successfully! ✓', 'success');
+                    log('OTP verified successfully!', 'success');
+                } else {
+                    showResult('verify-result', `Verification failed: ${result.message}`, 'error');
+                    log(`Verify OTP failed: ${result.message}`, 'error');
+                }
+            } catch (error) {
+                showResult('verify-result', `Error: ${error.message}`, 'error');
+                log(`Verify OTP error: ${error.message}`, 'error');
+            }
+        };
+
+        window.clearLogs = function() {
+            document.getElementById('test-logs').innerHTML = '';
+            log('Logs cleared');
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Phone Verification Test Page Loaded');
+            checkServiceStatus();
+        });
+    </script>
+</body>
+</html>

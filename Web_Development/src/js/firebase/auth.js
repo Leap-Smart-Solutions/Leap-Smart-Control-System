@@ -11,9 +11,10 @@ import {
   EmailAuthProvider
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import {
-  doc, setDoc, collection, getDocs
+  doc, setDoc, collection, getDocs, getDoc
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import phoneInputValidator from "../utils/phoneInputValidator.js";
+import phoneVerificationService from "../utils/phoneVerification.js";
 
 // listen for auth status changes
 auth.onAuthStateChanged(user => {
@@ -87,7 +88,8 @@ if (document.querySelector('#signup-form')) {
         });
       })
       .then(() => {
-        // Redirect to verification page
+        // Store phone number for verification and redirect to verification page
+        sessionStorage.setItem('pendingPhoneVerification', phone);
         window.location.assign("../../pages/auth/verify-email.html");
       })
       .catch(error => {
@@ -118,7 +120,7 @@ if(document.querySelector('#login-form')) {
     const email = loginForm['email'].value;
     const password = loginForm['password'].value;
 
-    signInWithEmailAndPassword(auth, email, password).then((cred) => {
+    signInWithEmailAndPassword(auth, email, password).then(async (cred) => {
       // Check if email is verified
       if (!cred.user.emailVerified) {
         alert("Please verify your email before signing in.");
@@ -126,8 +128,27 @@ if(document.querySelector('#login-form')) {
         return;
       }
       
-      loginForm.reset();
-      window.location.href = "../../pages/auth/profile.html";
+      try {
+        // Check if phone verification is completed
+        const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
+        const userData = userDoc.data();
+        
+        if (userData && userData.phone && !userData.phoneVerified) {
+          // User has a phone number but hasn't verified it
+          sessionStorage.setItem('pendingPhoneVerification', userData.phone);
+          loginForm.reset();
+          window.location.href = "../../pages/auth/verify-phone.html";
+          return;
+        }
+        
+        loginForm.reset();
+        window.location.href = "../../pages/auth/profile.html";
+      } catch (error) {
+        console.error("Error checking user verification status:", error);
+        // If there's an error, proceed to profile page
+        loginForm.reset();
+        window.location.href = "../../pages/auth/profile.html";
+      }
     }).catch(error => {
       console.error("Login error:", error);
       alert("Login failed: " + error.message);
@@ -210,6 +231,135 @@ if(document.querySelector('#resend-verification')) {
         });
     } else {
       alert("You need to be logged in to request a verification email");
+    }
+  });
+}
+
+// Phone verification functionality
+if(document.querySelector('#verify-phone-form')) {
+  const verifyPhoneForm = document.querySelector('#verify-phone-form');
+  const phoneDisplay = document.querySelector('#phone-display');
+  
+  // Display the phone number being verified
+  const pendingPhone = sessionStorage.getItem('pendingPhoneVerification');
+  if(pendingPhone && phoneDisplay) {
+    phoneDisplay.textContent = `Phone: ${pendingPhone}`;
+  }
+  
+  // Send OTP when page loads
+  if(pendingPhone) {
+    phoneVerificationService.sendOTP(pendingPhone)
+      .then(result => {
+        if(result.success) {
+          console.log("OTP sent successfully");
+        } else {
+          console.error("Failed to send OTP:", result.message);
+          alert("Failed to send verification code: " + result.message);
+        }
+      });
+  }
+  
+  verifyPhoneForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const otpCode = verifyPhoneForm['otp-code'].value;
+    const phoneNumber = sessionStorage.getItem('pendingPhoneVerification');
+    
+    if(!phoneNumber) {
+      alert("Phone number not found. Please restart the verification process.");
+      window.location.href = "signup.html";
+      return;
+    }
+    
+    // Validate OTP format
+    const otpValidation = phoneVerificationService.validateOTP(otpCode);
+    if(!otpValidation.valid) {
+      alert(otpValidation.message);
+      return;
+    }
+    
+    // Show loading state
+    const submitBtn = verifyPhoneForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Verifying...";
+    submitBtn.disabled = true;
+    
+    try {
+      const result = await phoneVerificationService.verifyOTP(phoneNumber, otpCode);
+      
+      if(result.success) {
+        // Update user document with phone verification status
+        const user = auth.currentUser;
+        if(user) {
+          await setDoc(doc(db, 'users', user.uid), {
+            phoneVerified: true,
+            phoneVerifiedAt: new Date().toISOString()
+          }, { merge: true });
+        }
+        
+        // Clear pending phone verification
+        sessionStorage.removeItem('pendingPhoneVerification');
+        
+        alert("Phone number verified successfully!");
+        window.location.href = "profile.html";
+      } else {
+        alert("Verification failed: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      alert("Verification error: " + error.message);
+    } finally {
+      // Restore button state
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  });
+}
+
+// Resend phone OTP
+if(document.querySelector('#resend-otp')) {
+  const resendOtpBtn = document.querySelector('#resend-otp');
+  resendOtpBtn.addEventListener('click', async () => {
+    const phoneNumber = sessionStorage.getItem('pendingPhoneVerification');
+    
+    if(!phoneNumber) {
+      alert("Phone number not found. Please restart the verification process.");
+      return;
+    }
+    
+    // Show loading state
+    const originalText = resendOtpBtn.textContent;
+    resendOtpBtn.textContent = "Sending...";
+    resendOtpBtn.disabled = true;
+    
+    try {
+      const result = await phoneVerificationService.sendOTP(phoneNumber);
+      
+      if(result.success) {
+        alert("Verification code sent again!");
+      } else {
+        alert("Failed to resend code: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error resending OTP:", error);
+      alert("Error resending code: " + error.message);
+    } finally {
+      // Restore button state
+      resendOtpBtn.textContent = originalText;
+      resendOtpBtn.disabled = false;
+    }
+  });
+}
+
+// Continue to phone verification from email verification page
+if(document.querySelector('#continue-to-phone-verification')) {
+  const continueBtn = document.querySelector('#continue-to-phone-verification');
+  continueBtn.addEventListener('click', () => {
+    const user = auth.currentUser;
+    if(user && user.emailVerified) {
+      window.location.href = "verify-phone.html";
+    } else {
+      alert("Please verify your email first before proceeding to phone verification.");
     }
   });
 }
