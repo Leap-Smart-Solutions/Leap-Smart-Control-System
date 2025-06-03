@@ -44,7 +44,6 @@ const initCheckout = async () => {
   const stateInput = document.getElementById('state');
   const zipCodeInput = document.getElementById('zipCode');
   const phoneInput = document.getElementById('phone');
-  const cardNameInput = document.getElementById('cardName');
 
   // Initialize phone input validation
   if (phoneInput) {
@@ -53,9 +52,6 @@ const initCheckout = async () => {
       autoFormat: false
     });
   }
-  const cardNumberInput = document.getElementById('cardNumber');
-  const expiryInput = document.getElementById('expiry');
-  const cvvInput = document.getElementById('cvv');
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -130,27 +126,6 @@ const initCheckout = async () => {
       return false;
     }
 
-    // Card number validation (basic)
-    const cardNumberRegex = /^\d{16}$/;
-    if (!cardNumberRegex.test(cardNumberInput.value.replace(/\D/g, ''))) {
-      alert('Please enter a valid 16-digit card number');
-      return false;
-    }
-
-    // Expiry date validation (MM/YY format)
-    const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-    if (!expiryRegex.test(expiryInput.value)) {
-      alert('Please enter a valid expiry date (MM/YY)');
-      return false;
-    }
-
-    // CVV validation
-    const cvvRegex = /^\d{3,4}$/;
-    if (!cvvRegex.test(cvvInput.value)) {
-      alert('Please enter a valid CVV');
-      return false;
-    }
-
     // Check if all required fields are filled
     const requiredInputs = document.querySelectorAll('input[required]');
     for (const input of requiredInputs) {
@@ -183,9 +158,7 @@ const initCheckout = async () => {
       },
       items: cartItems,
       payment: {
-        cardName: cardNameInput.value,
-        cardNumber: cardNumberInput.value.slice(-4), // Only store last 4 digits
-        expiry: expiryInput.value
+        method: 'Cash on Delivery'
       },
       summary: {
         subtotal,
@@ -205,29 +178,13 @@ const initCheckout = async () => {
       localStorage.removeItem('cart');
       
       // Show success message and redirect
-      alert('Order placed successfully! Thank you for your purchase.');
+      alert('Order placed successfully! Thank you for your purchase. You will receive a WhatsApp message to confirm your order.');
       window.location.href = '../../../pages/shopping/index.html';
     } catch (error) {
       console.error('Error placing order:', error);
       alert('There was an error processing your order. Please try again.');
     }
   };
-
-  // Format card number input
-  cardNumberInput.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{4})/g, '$1 ').trim();
-    e.target.value = value;
-  });
-
-  // Format expiry date input
-  expiryInput.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length >= 2) {
-      value = value.slice(0, 2) + '/' + value.slice(2);
-    }
-    e.target.value = value;
-  });
 
   // Initialize page
   await renderCartItems();
