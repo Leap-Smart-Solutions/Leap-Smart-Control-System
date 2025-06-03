@@ -1,27 +1,29 @@
 import cart from "./cart.js";
-import products from "./products.js";
+import fetchProducts from "./products.js";
 import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
 
 // Load template file
-const loadTemplate = () => {
-  fetch('../../../pages/shopping/template.html')
-    .then(response => response.text())
-    .then(html => {
-      app.innerHTML = html;
-      let contentTab = document.getElementById('contentTab');
-      contentTab.innerHTML = temporaryContent.innerHTML;
-      temporaryContent.innerHTML = null;
-      cart();
-      initCheckout();
-    });
+const loadTemplate = async () => {
+  try {
+    const response = await fetch('../../pages/shopping/template.html');
+    const html = await response.text();
+    app.innerHTML = html;
+    let contentTab = document.getElementById('contentTab');
+    contentTab.innerHTML = temporaryContent.innerHTML;
+    temporaryContent.innerHTML = null;
+    await cart();
+    await initCheckout();
+  } catch (error) {
+    console.error('Error loading template:', error);
+  }
 };
 
 loadTemplate();
 
-const initCheckout = () => {
+const initCheckout = async () => {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
   const TAX_RATE = 0.08; // 8% tax rate
   const SHIPPING_RATE = 10.00; // Flat rate shipping
@@ -30,7 +32,7 @@ const initCheckout = () => {
   const cartItemsContainer = document.querySelector('.cart-items');
   const subtotalElement = document.getElementById('subtotal');
   const shippingElement = document.getElementById('shipping');
-  const taxElement = document.getElementById('tax');20
+  const taxElement = document.getElementById('tax');
   const totalElement = document.getElementById('total');
   const placeOrderButton = document.getElementById('placeOrder');
 
@@ -64,8 +66,9 @@ const initCheckout = () => {
   };
 
   // Calculate and update order summary
-  const updateOrderSummary = () => {
+  const updateOrderSummary = async () => {
     let subtotal = 0;
+    const products = await fetchProducts();
     
     cartItems.forEach(item => {
       const product = products.find(p => p.id === item.product_id);
@@ -87,8 +90,9 @@ const initCheckout = () => {
   };
 
   // Render cart items
-  const renderCartItems = () => {
+  const renderCartItems = async () => {
     cartItemsContainer.innerHTML = '';
+    const products = await fetchProducts();
     
     cartItems.forEach(item => {
       const product = products.find(p => p.id === item.product_id);
@@ -165,7 +169,7 @@ const initCheckout = () => {
       return;
     }
 
-    const { subtotal, shipping, tax, total } = updateOrderSummary();
+    const { subtotal, shipping, tax, total } = await updateOrderSummary();
 
     const order = {
       customer: {
@@ -226,8 +230,8 @@ const initCheckout = () => {
   });
 
   // Initialize page
-  renderCartItems();
-  updateOrderSummary();
+  await renderCartItems();
+  await updateOrderSummary();
 
   // Add event listener to place order button
   placeOrderButton.addEventListener('click', handleOrderSubmission);

@@ -142,12 +142,12 @@ if(document.querySelector('#login-form')) {
         }
         
         loginForm.reset();
-        window.location.href = "../../pages/auth/profile.html";
+        window.location.href = "../../pages/shopping/index.html";
       } catch (error) {
         console.error("Error checking user verification status:", error);
         // If there's an error, proceed to profile page
         loginForm.reset();
-        window.location.href = "../../pages/auth/profile.html";
+        window.location.href = "../../pages/shopping/index.html";
       }
     }).catch(error => {
       console.error("Login error:", error);

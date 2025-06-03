@@ -6,6 +6,8 @@
     <title>Leap Shopping</title>
     <link rel="stylesheet" href="../../assets/styles/shopping.css">
     <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/src/assets/icons/favicon.ico" />
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="product.jpg" type="image/webp">
   </head>
 
   <body>
@@ -19,7 +21,23 @@
     <div id="app"></div>
     <div id="temporaryContent">
       <div class="listProduct">
-        
+        <div class="image-wrapper">
+          <picture>
+            <source srcset="product.webp" type="image/webp">
+            <source srcset="product.jpg" type="image/jpeg">
+            <img
+              src="product.jpg"
+              alt="Product"
+              loading="lazy"
+              width="200"
+              height="200"
+              decoding="async"
+              style="opacity:0; transition: opacity 0.3s;"
+              onload="this.style.opacity=1"
+            />
+          </picture>
+          <div class="img-placeholder"></div>
+        </div>
       </div>
     </div>
 

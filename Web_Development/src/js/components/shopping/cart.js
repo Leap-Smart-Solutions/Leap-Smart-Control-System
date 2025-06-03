@@ -94,7 +94,7 @@ const cart = async () => {
     const checkoutBtn = document.querySelector('.cartTab .btn .checkOut');
     if (checkoutBtn) {
       checkoutBtn.addEventListener('click', () => {
-        window.location.href = '../../../pages/shopping/checkout.html';
+        window.location.href = '../../pages/shopping/checkout.html';
       });
     }
   }
