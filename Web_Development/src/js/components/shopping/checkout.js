@@ -2,7 +2,7 @@ import cart from "./cart.js";
 import fetchProducts from "./products.js";
 import { auth, db } from "../../firebase/firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
 let app = document.getElementById('app');
@@ -166,40 +166,67 @@ const initCheckout = async () => {
     return true;
   };
 
+  // Save order to Firestore
+  const saveOrderToFirestore = async (orderData) => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      // Add user ID and timestamp to order data
+      const orderWithMetadata = {
+        ...orderData,
+        userId: user.uid,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+
+      // Add order to Firestore
+      const ordersRef = collection(db, 'orders');
+      const docRef = await addDoc(ordersRef, orderWithMetadata);
+      
+      return docRef.id; // Return the order ID
+    } catch (error) {
+      console.error('Error saving order to Firestore:', error);
+      throw error;
+    }
+  };
+
   // Handle order submission
   const handleOrderSubmission = async () => {
     if (!validateForm()) {
       return;
     }
 
-    const { subtotal, shipping, tax, total } = await updateOrderSummary();
-
-    const order = {
-      customer: {
-        fullName: fullNameInput.value,
-        email: emailInput.value,
-        address: addressInput.value,
-        city: cityInput.value,
-        state: stateInput.value,
-        phone: phoneInput.value
-      },
-      items: cartItems,
-      payment: {
-        method: 'Cash on Delivery'
-      },
-      summary: {
-        subtotal,
-        shipping,
-        tax,
-        total
-      },
-      orderDate: new Date().toISOString(),
-      status: 'pending'
-    };
-
     try {
-      // Here you would typically send the order to your backend
-      console.log('Order placed:', order);
+      const { subtotal, shipping, tax, total } = await updateOrderSummary();
+
+      const order = {
+        customer: {
+          fullName: fullNameInput.value,
+          email: emailInput.value,
+          address: addressInput.value,
+          city: cityInput.value,
+          state: stateInput.value,
+          phone: phoneInput.value
+        },
+        items: cartItems,
+        payment: {
+          method: 'Cash on Delivery'
+        },
+        summary: {
+          subtotal,
+          shipping,
+          tax,
+          total
+        },
+        status: 'pending'
+      };
+
+      // Save order to Firestore
+      const orderId = await saveOrderToFirestore(order);
+      console.log('Order placed successfully with ID:', orderId);
       
       // Clear cart
       localStorage.removeItem('cart');
