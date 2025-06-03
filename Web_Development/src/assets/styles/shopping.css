@@ -437,7 +437,7 @@ body.activeTabCart .container {
 .place-order-btn {
   width: 100%;
   padding: 1rem;
-  background-color: #E8BC0E;
+  background-color: #ff6600;
   border: none;
   border-radius: 10px;
   color: #000;
@@ -448,7 +448,7 @@ body.activeTabCart .container {
 }
 
 .place-order-btn:hover {
-  background-color: #d4ab0d;
+  background-color: #E8BC0E;
 }
 
 /* Checkout Page Responsive Styles */
@@ -551,7 +551,7 @@ body.activeTabCart .container {
 
 .cart-item .price {
   font-weight: 500;
-  color: #E8BC0E;
+  color: #ff6600;
 }
 
 /* Loading Styles */
