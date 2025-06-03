@@ -25,7 +25,7 @@ loadTemplate();
 
 const initCheckout = async () => {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-  const TAX_RATE = 0.08; // 8% tax rate
+  const TAX_RATE = 0.14; // 14% value-added tax rate
   const SHIPPING_RATE = 10.00; // Flat rate shipping
 
   // Get DOM elements
