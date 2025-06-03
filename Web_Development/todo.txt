@@ -1,0 +1,5 @@
+- Mobile responsive design for index.html [Signin, Signup buttons are not correctly positioned]
+- Sign in is leading to living room [Feature: If the user ordered previously then go to living room, either go to shopping/index.html]
+- Add some Loading splash screens
+
+macew52323@cigidea.com
