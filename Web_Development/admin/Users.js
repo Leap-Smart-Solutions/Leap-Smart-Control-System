@@ -1,128 +1,38 @@
+import { 
+  getAllUsers, 
+  getUserById, 
+  updateUser, 
+  deleteUser, 
+  searchUsers 
+} from "../src/js/firebase/userOperations.js";
+import { EditUserModal } from "./components/EditUserModal.js";
+
 // Admin data
 const admin = {
   userName: "Mohamed Hassan",
   image: "Img/mo.jpg",
 };
 
-// Users Data
-const users = [
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0121212112",
-    status: "Active",
-    image: "Img/mo.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0121211212",
-    status: "UnActive",
-    image: "Img/mo4.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0121212122",
-    status: "UnActive",
-    image: "Img/mo2.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0112121212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0121212122",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0121221212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "0121121212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "012121212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "012121212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "012121212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "1212121212",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-  {
-    userName: "Mohamed Hassan",
-    email: "mo@example.com",
-    city: "Alexandria",
-    phone: "012121",
-    status: "Active",
-    image: "Img/mo3.jpg",
-  },
-];
+// Initialize edit modal
+const editModal = new EditUserModal();
 
-// Function to create a user row
+// Function to create a user rowe
 function createUserRow(user, index) {
   return `
     <div class="table-row">
       <div class="user-image-cell">
-        <img src="${user.image}" alt="${user.userName}" class="user-image" />
+        <img src="${user.profilePicture || 'Img/default-avatar.jpg'}" alt="${user.fullName || user.username || user.name}" class="user-image" />
       </div>
-      <div class="name-cell">${user.userName}</div>
+      <div class="name-cell">${user.fullName || user.username || user.name}</div>
       <div class="email-cell">${user.email}</div>
-      <div class="city-cell">${user.city}</div>
-      <div class="phone-cell">${user.phone}</div>
-      <div class="status-cell status-${user.status.toLowerCase()}">${
-    user.status
-  }</div>
+      <div class="city-cell">${user.city || '         -         '}</div>
+      <div class="phone-cell">${user.phone || '         -         '}</div>
+      <div class="status-cell status-${user.phoneVerified || 'inactive'}">${user.phoneVerified || 'Inactive'}</div>
       <div class="manage-cell">
-        <button class="manage-btn" data-index="${index}">Manage ▾</button>
-        <ul class="dropdown-menu hidden" id="dropdown-${index}">
-          <li>Edit</li>
-          <li>Delete</li>
+        <button class="manage-btn" data-user-id="${user.id}">Manage ▾</button>
+        <ul class="dropdown-menu hidden" id="dropdown-${user.id}">
+          <li class="edit-user" data-user-id="${user.id}">Edit</li>
+          <li class="delete-user" data-user-id="${user.id}">Delete</li>
         </ul>
       </div>
     </div>
@@ -130,22 +40,25 @@ function createUserRow(user, index) {
 }
 
 // Function to render users
-function renderUsers(usersToRender) {
+async function renderUsers(usersToRender) {
   const usersList = document.getElementById("usersList");
   usersList.innerHTML = usersToRender
     .map((user, index) => createUserRow(user, index))
     .join("");
   initDropdowns();
+  initUserActions();
 }
 
 // Function to filter users
-function filterUsers(searchTerm) {
+async function filterUsers(searchTerm) {
   searchTerm = searchTerm.toLowerCase();
-  return users.filter(
+  const allUsers = await getAllUsers();
+  return allUsers.filter(
     (user) =>
-      user.phone.toLowerCase().includes(searchTerm) ||
-      user.userName.toLowerCase().includes(searchTerm) ||
-      user.email.toLowerCase().includes(searchTerm)
+      (user.phone?.toLowerCase().includes(searchTerm)) ||
+      (user.fullName?.toLowerCase().includes(searchTerm)) ||
+      (user.username?.toLowerCase().includes(searchTerm)) ||
+      (user.email?.toLowerCase().includes(searchTerm))
   );
 }
 
@@ -183,8 +96,8 @@ function initDropdowns() {
   buttons.forEach((btn) => {
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
-      const index = btn.dataset.index;
-      const dropdown = document.getElementById(`dropdown-${index}`);
+      const userId = btn.dataset.userId;
+      const dropdown = document.getElementById(`dropdown-${userId}`);
 
       // Close other dropdowns
       closeAllDropdowns();
@@ -196,6 +109,41 @@ function initDropdowns() {
 
   // Close dropdowns when clicking outside
   document.addEventListener("click", closeAllDropdowns);
+}
+
+// Initialize user actions (edit/delete)
+function initUserActions() {
+  // Edit user
+  document.querySelectorAll('.edit-user').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const userId = e.target.dataset.userId;
+      try {
+        const user = await getUserById(userId);
+        editModal.openModal(user);
+      } catch (error) {
+        console.error('Error fetching user for edit:', error);
+        alert('Error fetching user details');
+      }
+    });
+  });
+
+  // Delete user
+  document.querySelectorAll('.delete-user').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const userId = e.target.dataset.userId;
+      if (confirm('Are you sure you want to delete this user?')) {
+        try {
+          await deleteUser(userId);
+          // Refresh the user list
+          const users = await getAllUsers();
+          renderUsers(users);
+        } catch (error) {
+          console.error('Error deleting user:', error);
+          alert('Error deleting user');
+        }
+      }
+    });
+  });
 }
 
 // Navigation elements
@@ -235,17 +183,32 @@ window.addEventListener("resize", () => {
 });
 
 // Initialize the page
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // Create edit modal
+  editModal.createModal();
+
+  // Listen for user updates
+  document.addEventListener('userUpdated', async () => {
+    const users = await getAllUsers();
+    renderUsers(users);
+  });
+
   // Display admin header
   displayAdmin(admin);
 
-  // Initial render
-  renderUsers(users);
+  try {
+    // Initial render
+    const users = await getAllUsers();
+    renderUsers(users);
 
-  // Search functionality
-  const searchInput = document.getElementById("search-input");
-  searchInput.addEventListener("input", (e) => {
-    const filteredUsers = filterUsers(e.target.value);
-    renderUsers(filteredUsers);
-  });
+    // Search functionality
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", async (e) => {
+      const filteredUsers = await filterUsers(e.target.value);
+      renderUsers(filteredUsers);
+    });
+  } catch (error) {
+    console.error("Error initializing users page:", error);
+    alert("Error loading users. Please refresh the page.");
+  }
 });
