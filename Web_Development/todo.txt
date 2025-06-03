@@ -1,6 +1,9 @@
 - Mobile responsive design for index.html [Signin, Signup buttons are not correctly positioned]
 - Sign in is leading to living room [Feature: If the user ordered previously then go to living room, either go to shopping/index.html]
 - Add some Loading splash screens
+- Adding status to orders
+- For the previous point, if the user had orders with confirmed status then, enter the livingroom is enabled
 
 macew52323@cigidea.com
 #ff6600
+47 W 13th St, New York, NY 10011, USA

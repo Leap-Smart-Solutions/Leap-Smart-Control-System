@@ -1,5 +1,8 @@
 import cart from "./cart.js";
 import fetchProducts from "./products.js";
+import { auth, db } from "../../firebase/firebaseConfig.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
 let app = document.getElementById('app');
@@ -26,7 +29,7 @@ loadTemplate();
 const initCheckout = async () => {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
   const TAX_RATE = 0.14; // 14% value-added tax rate
-  const SHIPPING_RATE = 10.00; // Flat rate shipping
+  const BASE_SHIPPING_RATE = 10.00; // Base shipping rate
 
   // Get DOM elements
   const cartItemsContainer = document.querySelector('.cart-items');
@@ -42,7 +45,6 @@ const initCheckout = async () => {
   const addressInput = document.getElementById('address');
   const cityInput = document.getElementById('city');
   const stateInput = document.getElementById('state');
-  const zipCodeInput = document.getElementById('zipCode');
   const phoneInput = document.getElementById('phone');
 
   // Initialize phone input validation
@@ -52,6 +54,31 @@ const initCheckout = async () => {
       autoFormat: false
     });
   }
+
+  // Fetch and populate user data
+  const populateUserData = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        // Get user document from Firestore
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          
+          // Populate the form fields
+          fullNameInput.value = userData.fullName || `${userData.firstName} ${userData.lastName}` || '';
+          emailInput.value = userData.email || user.email || '';
+          phoneInput.value = userData.phone || '';
+          
+          // Make email and phone readonly since they're verified
+          emailInput.readOnly = true;
+          phoneInput.readOnly = true;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -73,7 +100,8 @@ const initCheckout = async () => {
       }
     });
 
-    const shipping = SHIPPING_RATE;
+    // Calculate shipping rate based on cart items
+    const shipping = cartItems.length > 0 ? BASE_SHIPPING_RATE : 0;
     const tax = subtotal * TAX_RATE;
     const total = subtotal + shipping + tax;
 
@@ -120,9 +148,9 @@ const initCheckout = async () => {
     }
 
     // Phone validation
-    const phoneRegex = /^\d{10}$/;
+    const phoneRegex = /^\d{12}$/;
     if (!phoneRegex.test(phoneInput.value.replace(/\D/g, ''))) {
-      alert('Please enter a valid 10-digit phone number');
+      alert('Please enter a valid 12-digit phone number with the country code');
       return false;
     }
 
@@ -153,7 +181,6 @@ const initCheckout = async () => {
         address: addressInput.value,
         city: cityInput.value,
         state: stateInput.value,
-        zipCode: zipCodeInput.value,
         phone: phoneInput.value
       },
       items: cartItems,
@@ -178,8 +205,8 @@ const initCheckout = async () => {
       localStorage.removeItem('cart');
       
       // Show success message and redirect
-      alert('Order placed successfully! Thank you for your purchase. You will receive a WhatsApp message to confirm your order.');
-      window.location.href = '../../../pages/shopping/index.html';
+      alert('Order placed successfully! Thank you for your purchase. You will receive an email with the invoice.');
+      window.location.href = '../../pages/shopping/index.html';
     } catch (error) {
       console.error('Error placing order:', error);
       alert('There was an error processing your order. Please try again.');
@@ -187,6 +214,7 @@ const initCheckout = async () => {
   };
 
   // Initialize page
+  await populateUserData(); // Populate user data first
   await renderCartItems();
   await updateOrderSummary();
 
