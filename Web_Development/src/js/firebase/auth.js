@@ -63,10 +63,17 @@ if (document.querySelector('#signup-form')) {
     // get user info 
     const email = signupForm['email'].value;
     const username = signupForm['username'].value;
+    const firstName = signupForm['firstName'].value;
+    const lastName = signupForm['lastName'].value;
     const phone = signupForm['phone'].value;
     const password = signupForm['password'].value;
+    const confirmPassword = signupForm['confirm-password'].value;
 
-//    console.log(email, username, phone, password);
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
 
     // sign up the user
     createUserWithEmailAndPassword(auth, email, password).then(cred => {
@@ -82,8 +89,12 @@ if (document.querySelector('#signup-form')) {
         // Use the user's UID to create a document in the "users" collection
         return setDoc(doc(db, 'users', cred.user.uid), {
           username: username,
+          firstName: firstName,
+          lastName: lastName,
           email: email,
-          phone: phone
+          phone: phone,
+          fullName: `${firstName} ${lastName}`,
+          createdAt: new Date().toISOString()
           // Do not store the password here!
         });
       })
@@ -98,7 +109,8 @@ if (document.querySelector('#signup-form')) {
       });
 
     signupForm.reset();
-  });}
+  });
+}
 
 // Signing out the users
 if(document.querySelector('#logout')) {
@@ -301,7 +313,7 @@ if(document.querySelector('#verify-phone-form')) {
         sessionStorage.removeItem('pendingPhoneVerification');
         
         alert("Phone number verified successfully!");
-        window.location.href = "profile.html";
+        window.location.href = "../shopping/index.html";
       } else {
         alert("Verification failed: " + result.message);
       }

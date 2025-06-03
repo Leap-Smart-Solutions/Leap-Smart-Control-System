@@ -69,6 +69,7 @@ onAuthStateChanged(auth, async (user) => {
       // Wait for the image to load before hiding loading screen
       await loadProfileImage();
     } else {
+      window.location.href = "../../pages/auth/signup.html";
       // Handle case where user document doesn't exist
       console.warn("No user profile found");
     }

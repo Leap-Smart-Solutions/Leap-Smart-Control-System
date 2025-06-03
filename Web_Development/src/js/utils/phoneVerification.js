@@ -6,10 +6,10 @@ class PhoneVerificationService {
     this.config = phoneVerificationConfig;
     this.whatsappApiBase = 'https://whatsapp-otp-production.up.railway.app';
     this.corsProxies = [
-      'https://api.allorigins.win/raw?url=',
       'https://corsproxy.io/?',
       'https://cors-anywhere.herokuapp.com/',
-      'https://proxy.cors.sh/'
+      'https://proxy.cors.sh/',
+      'https://api.allorigins.win/raw?url='
     ];
     this.currentProxyIndex = 0;
   }
