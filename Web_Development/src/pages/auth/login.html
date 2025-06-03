@@ -49,6 +49,33 @@
   </div>
 
   <script type="module" src="../../js/firebase/auth.js"></script>
+  <script>
+    function checkCompletedOrders() {
+      // Implementation of checkCompletedOrders function
+      // This is a placeholder and should be replaced with actual implementation
+      return false; // Placeholder return, actual implementation needed
+    }
+
+    async function populateUserData() {
+      // Implementation of populateUserData function
+      // This is a placeholder and should be replaced with actual implementation
+      const hasCompletedOrders = await checkCompletedOrders();
+      if (hasCompletedOrders) {
+        // User has at least one completed order
+      }
+    }
+
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+        ordersRef,
+        where('userId', '==', auth.currentUser.uid),
+        where('status', '==', 'completed')
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(doc => {
+        console.log('Completed order:', doc.id, doc.data());
+    });
+  </script>
 </body>
 
 </html>

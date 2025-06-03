@@ -11,7 +11,7 @@ import {
   EmailAuthProvider
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import {
-  doc, setDoc, collection, getDocs, getDoc
+  doc, setDoc, collection, getDocs, getDoc, query, where
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import phoneInputValidator from "../utils/phoneInputValidator.js";
 import phoneVerificationService from "../utils/phoneVerification.js";
@@ -152,12 +152,27 @@ if(document.querySelector('#login-form')) {
           window.location.href = "../../pages/auth/verify-phone.html";
           return;
         }
+
+        // Check for completed orders
+        const ordersRef = collection(db, 'orders');
+        const q = query(
+          ordersRef,
+          where('userId', '==', cred.user.uid),
+          where('status', '==', 'completed')
+        );
+        const querySnapshot = await getDocs(q);
         
         loginForm.reset();
-        window.location.href = "../../pages/shopping/index.html";
+        
+        // Redirect based on whether user has completed orders
+        if (!querySnapshot.empty) {
+          window.location.href = "../../pages/rooms/livingroom.html";
+        } else {
+          window.location.href = "../../pages/shopping/index.html";
+        }
       } catch (error) {
         console.error("Error checking user verification status:", error);
-        // If there's an error, proceed to profile page
+        // If there's an error, proceed to shopping page
         loginForm.reset();
         window.location.href = "../../pages/shopping/index.html";
       }
