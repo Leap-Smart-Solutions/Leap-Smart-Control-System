@@ -337,6 +337,7 @@ nav .Users {
   padding: 8px 15px;
   cursor: pointer;
   color: #fff;
+  list-style-type: none;
 }
 
 .dropdown-menu li:hover {

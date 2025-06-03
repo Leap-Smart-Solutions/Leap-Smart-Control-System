@@ -158,6 +158,7 @@ nav .Inventory {
 /* Component Cards Section */
 .component-cards-section {
   margin-bottom: 30px;
+  width: 140%;
 }
 
 .cards-grid {
@@ -209,6 +210,7 @@ nav .Inventory {
   border-radius: 8px;
   margin-bottom: 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  width: 140%;
 }
 
 .add-inventory-section h2 {
@@ -301,6 +303,7 @@ nav .Inventory {
   height: calc(100vh - 200px);
   display: flex;
   flex-direction: column;
+  width: 140%;
 }
 
 .inventory-table {
@@ -544,11 +547,20 @@ nav .Inventory {
   .table-row {
     min-width: 1000px;
   }
+
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 0.1fr));
+    gap: 15px;
+  }
+
+  .component-cards-section {
+    width: 85%;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .cards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 0.43fr;
   }
 
   .table-header,
@@ -563,6 +575,14 @@ nav .Inventory {
 }
 
 @media screen and (max-width: 480px) {
+  .cards-grid {
+    grid-template-columns: 0.40fr;
+  }
+
+  .add-inventory-section {
+    width: 40%;
+  }
+
   .table-header,
   .table-row {
     min-width: 800px;
@@ -574,6 +594,14 @@ nav .Inventory {
   .quantity-btn {
     width: 20px;
     height: 20px;
+  }
+
+  .component-cards-section {
+    width: 110%;
+  }
+
+  .add-inventory-section {
+    width: 44%;
   }
 }
 
