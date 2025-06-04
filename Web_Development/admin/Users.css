@@ -304,6 +304,17 @@ nav .Users {
   font-weight: 600;
 }
 
+/* Add new status styles */
+.status-cell:contains('true') {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.status-cell:contains('false') {
+  color: #f44336;
+  font-weight: 600;
+}
+
 .manage-cell {
   position: relative;
 }

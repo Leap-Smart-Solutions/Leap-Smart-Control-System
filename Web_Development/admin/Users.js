@@ -18,6 +18,7 @@ const editModal = new EditUserModal();
 
 // Function to create a user rowe
 function createUserRow(user, index) {
+  const statusClass = user.phoneVerified === true ? 'status-active' : 'status-unactive';
   return `
     <div class="table-row">
       <div class="user-image-cell">
@@ -27,7 +28,7 @@ function createUserRow(user, index) {
       <div class="email-cell">${user.email}</div>
       <div class="city-cell">${user.username || '-'}</div>
       <div class="phone-cell">${user.phone || '-'}</div>
-      <div class="status-cell status-${user.phoneVerified || 'false'}">${user.phoneVerified || 'false'}</div>
+      <div class="status-cell ${statusClass}">${user.phoneVerified === true ? 'true' : 'false'}</div>
       <div class="manage-cell">
         <button class="manage-btn" data-user-id="${user.id}">Manage ▾</button>
         <ul class="dropdown-menu hidden" id="dropdown-${user.id}">
