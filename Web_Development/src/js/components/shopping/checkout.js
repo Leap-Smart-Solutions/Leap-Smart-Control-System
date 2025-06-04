@@ -44,7 +44,7 @@ const initCheckout = async () => {
   const emailInput = document.getElementById('email');
   const addressInput = document.getElementById('address');
   const cityInput = document.getElementById('city');
-  const stateInput = document.getElementById('state');
+  const townInput = document.getElementById('town');
   const phoneInput = document.getElementById('phone');
 
   // Initialize phone input validation
@@ -208,7 +208,7 @@ const initCheckout = async () => {
           email: emailInput.value,
           address: addressInput.value,
           city: cityInput.value,
-          state: stateInput.value,
+          town: townInput.value,
           phone: phoneInput.value
         },
         items: cartItems,
