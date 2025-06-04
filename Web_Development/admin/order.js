@@ -12,7 +12,8 @@ import {
   getDoc, 
   doc, 
   query, 
-  orderBy 
+  orderBy, 
+  updateDoc 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 // Function to format date
@@ -92,14 +93,19 @@ async function createOrderRow(order) {
   const truncatedReason = truncateText(order.reason || '-', 15);
   const truncatedOrderId = truncateText(order.id, 15);
   const truncatedDetails = truncateText(orderDetails, 15);
-  
+  const statusOptions = ['pending', 'completed', 'canceled'];
+  const statusSelect = `
+    <select class="status-select status-${order.status.toLowerCase()}" data-order-id="${order.id}">
+      ${statusOptions.map(opt => `<option value="${opt}" ${order.status === opt ? 'selected' : ''}>${opt.charAt(0).toUpperCase() + opt.slice(1)}</option>`).join('')}
+    </select>
+  `;
   return `
     <div class="table-row" data-order-id="${order.id}" data-reason="${order.reason || '-'}" data-details='${JSON.stringify(fullDetails)}'>
       <div class="order-id">#${truncatedOrderId}</div>
       <div class="details">${truncatedDetails}</div>
       <div class="email">${userEmail}</div>
       <div class="date">${formatDate(order.createdAt)}</div>
-      <div class="status-badge status-${order.status.toLowerCase()}">${order.status}</div>
+      <div class="status-cell">${statusSelect}</div>
       <div class="reason">${truncatedReason}</div>
       <div class="arrow">›</div>
     </div>
@@ -235,8 +241,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   displayAdmin(admin);
 
   // Fetch and render initial orders
-  const orders = await fetchOrders();
-  renderOrders(orders);
+  let orders = await fetchOrders();
+  await renderOrders(orders);
 
   // Add event delegation for order ID, details, and reason clicks
   const ordersList = document.getElementById("ordersList");
@@ -325,4 +331,37 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   };
+
+  // Event delegation for status change
+  document.getElementById("ordersList").addEventListener("change", async (e) => {
+    if (e.target.classList.contains("status-select")) {
+      const row = e.target.closest(".table-row");
+      const orderId = e.target.dataset.orderId;
+      const newStatus = e.target.value;
+      let newReason = row.dataset.reason;
+      if (newStatus === "canceled") {
+        newReason = prompt("Please enter the reason for cancellation:", newReason !== '-' ? newReason : '');
+        if (!newReason) {
+          // If no reason entered, revert to previous status
+          e.target.value = orders.find(o => o.id === orderId).status;
+          return;
+        }
+      } else {
+        newReason = '-';
+      }
+      // Update Firestore
+      try {
+        await updateDoc(doc(db, 'orders', orderId), {
+          status: newStatus,
+          reason: newReason
+        });
+        // Update local orders array and re-render
+        orders = orders.map(o => o.id === orderId ? { ...o, status: newStatus, reason: newReason } : o);
+        await renderOrders(orders);
+      } catch (err) {
+        alert("Failed to update order status. Please try again.");
+        e.target.value = orders.find(o => o.id === orderId).status;
+      }
+    }
+  });
 });

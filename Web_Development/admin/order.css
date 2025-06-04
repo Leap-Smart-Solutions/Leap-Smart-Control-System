@@ -647,3 +647,33 @@ body {
   visibility: hidden;
   opacity: 0;
 }
+
+.status-cell {
+  display: flex;
+  align-items: center;
+}
+
+.status-select {
+  background: rgba(255,255,255,0.05);
+  color: #ffc107;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.status-select.status-completed {
+  color: #28a745;
+}
+.status-select.status-pending {
+  color: #ffc107;
+}
+.status-select.status-canceled {
+  color: #dc3545;
+}
+.status-select:focus {
+  background: rgba(212,130,30,0.1);
+}
