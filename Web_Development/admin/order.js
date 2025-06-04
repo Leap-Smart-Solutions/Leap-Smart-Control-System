@@ -74,7 +74,7 @@ async function createOrderRow(order) {
           price: productDetails.price,
           quantity: item.quantity,
           totalPrice: totalPrice,
-          summary: order.summary || 'No summary available'
+          summary: order.summary || null
         };
       }
       return null;
@@ -167,22 +167,39 @@ function showDetails(details) {
     const detailsArray = JSON.parse(details);
     
     // Format the details with proper styling
-    const formattedDetails = detailsArray.map(item => `
-      <div class="detail-item">
-        <div class="detail-header">
-          <img src="${item.image}" alt="${item.name}" class="detail-image">
-          <div class="detail-info">
-            <div class="detail-name">${item.name}</div>
-            <div class="detail-price">
-              <span>Price: $${item.price}</span>
-              <span>Quantity: ${item.quantity}</span>
-              <span>Total: $${item.totalPrice}</span>
+    const formattedDetails = detailsArray.map(item => {
+      let summaryHtml = '';
+      if (item.summary && typeof item.summary === 'object') {
+        summaryHtml = `
+          <div class="summary-table">
+            <div><span>Shipping:</span> $${item.summary.shipping ?? '-'}</div>
+            <div><span>Subtotal:</span> $${item.summary.subtotal ?? '-'}</div>
+            <div><span>Tax:</span> $${item.summary.tax ?? '-'}</div>
+            <div><span>Total:</span> $${item.summary.total ?? '-'}</div>
+          </div>
+        `;
+      } else if (item.summary) {
+        summaryHtml = `<div class="detail-summary">${item.summary}</div>`;
+      } else {
+        summaryHtml = `<div class="detail-summary">No summary available</div>`;
+      }
+      return `
+        <div class="detail-item">
+          <div class="detail-header">
+            <img src="${item.image}" alt="${item.name}" class="detail-image">
+            <div class="detail-info">
+              <div class="detail-name">${item.name}</div>
+              <div class="detail-price">
+                <span>Price: $${item.price}</span>
+                <span>Quantity: ${item.quantity}</span>
+                <span>Total: $${item.totalPrice}</span>
+              </div>
             </div>
           </div>
+          ${summaryHtml}
         </div>
-        <div class="detail-summary">${item.summary}</div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
     
     modalText.innerHTML = formattedDetails;
     modal.style.display = "block";

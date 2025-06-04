@@ -510,6 +510,30 @@ body {
   color: rgb(212, 130, 30);
 }
 
+.summary-table {
+  margin-top: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #fff;
+}
+.summary-table div {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(212,130,30,0.07);
+}
+.summary-table div:last-child {
+  border-bottom: none;
+}
+.summary-table span {
+  color: rgb(212, 130, 30);
+  font-weight: 600;
+  min-width: 80px;
+  display: inline-block;
+}
+
 /* Responsive Design */
 @media screen and (max-width: 1200px) {
   .sidebar {
