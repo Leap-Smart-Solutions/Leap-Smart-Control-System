@@ -227,7 +227,7 @@ nav .Users {
 
 .table-header {
   display: grid;
-  grid-template-columns: 60px 1fr 1.2fr 0.8fr 0.8fr 0.8fr 100px;
+  grid-template-columns: 60px 1fr 1.2fr 0.8fr 0.8fr 0.8fr 1fr 100px;
   padding: 15px;
   background-color: #1a1a1a;
   border-bottom: 1px solid #333;
@@ -251,7 +251,7 @@ nav .Users {
 
 .table-row {
   display: grid;
-  grid-template-columns: 60px 1fr 1.2fr 0.8fr 0.8fr 0.8fr 100px;
+  grid-template-columns: 60px 1fr 1.2fr 0.8fr 0.8fr 0.8fr 1fr 100px;
   padding: 15px;
   border-bottom: 1px solid #333;
   align-items: center;
@@ -297,11 +297,13 @@ nav .Users {
 .status-active {
   color: #4caf50;
   font-weight: 600;
+  padding-left: 20px;
 }
 
 .status-unactive {
   color: #f44336;
   font-weight: 600;
+  padding-left: 20px;
 }
 
 /* Add new status styles */
@@ -529,4 +531,87 @@ nav .Users {
   .close-menu {
     display: none !important;
   }
+}
+
+/* Address styles */
+.address-cell {
+  cursor: pointer;
+  color: rgb(212, 130, 30);
+  font-weight: 500;
+}
+
+.address-cell:hover {
+  text-decoration: underline;
+}
+
+.address-modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-width: 500px;
+  width: 90%;
+}
+
+.address-modal.active {
+  display: block;
+}
+
+.address-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.address-modal-header h3 {
+  color: #f1f1f1;
+  margin: 0;
+}
+
+.address-modal-close {
+  background: none;
+  border: none;
+  color: #f1f1f1;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.address-modal-content {
+  color: #f1f1f1;
+  line-height: 1.6;
+}
+
+.address-modal-content p {
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.address-modal-content span:first-child {
+  color: #888;
+  min-width: 100px;
+}
+
+.address-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.address-modal-overlay.active {
+  display: block;
 }
