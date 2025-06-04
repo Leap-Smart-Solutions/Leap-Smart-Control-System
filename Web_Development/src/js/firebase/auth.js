@@ -94,7 +94,8 @@ if (document.querySelector('#signup-form')) {
           email: email,
           phone: phone,
           fullName: `${firstName} ${lastName}`,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          profilePicture: "https://i.ibb.co/277hTSg8/generic-profile.jpg" 
           // Do not store the password here!
         });
       })

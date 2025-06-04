@@ -27,7 +27,7 @@ function createUserRow(user, index) {
       <div class="email-cell">${user.email}</div>
       <div class="city-cell">${user.city || '         -         '}</div>
       <div class="phone-cell">${user.phone || '         -         '}</div>
-      <div class="status-cell status-${user.phoneVerified || 'inactive'}">${user.phoneVerified || 'Inactive'}</div>
+      <div class="status-cell status-${user.phoneVerified || 'false'}">${user.phoneVerified || 'false'}</div>
       <div class="manage-cell">
         <button class="manage-btn" data-user-id="${user.id}">Manage ▾</button>
         <ul class="dropdown-menu hidden" id="dropdown-${user.id}">

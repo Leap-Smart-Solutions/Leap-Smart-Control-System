@@ -6,8 +6,8 @@ class PhoneVerificationService {
     this.config = phoneVerificationConfig;
     this.whatsappApiBase = 'https://whatsapp-otp-production.up.railway.app';
     this.corsProxies = [
-      'https://corsproxy.io/?',
       'https://cors-anywhere.herokuapp.com/',
+      'https://corsproxy.io/?',
       'https://proxy.cors.sh/',
       'https://api.allorigins.win/raw?url='
     ];

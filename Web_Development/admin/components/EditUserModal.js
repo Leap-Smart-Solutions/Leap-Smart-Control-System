@@ -39,8 +39,8 @@ export class EditUserModal {
               <div class="form-group">
                 <label for="status">Status</label>
                 <select id="status" name="status">
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="false">Active</option>
+                  <option value="true">Inactive</option>
                 </select>
               </div>
               <div class="form-actions">
