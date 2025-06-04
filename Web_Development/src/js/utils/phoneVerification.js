@@ -8,8 +8,7 @@ class PhoneVerificationService {
     this.corsProxies = [
       'https://cors-anywhere.herokuapp.com/',
       'https://corsproxy.io/?',
-      'https://proxy.cors.sh/',
-      'https://api.allorigins.win/raw?url='
+      'https://proxy.cors.sh/'
     ];
     this.currentProxyIndex = 0;
   }
