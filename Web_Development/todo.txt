@@ -20,3 +20,5 @@ kefosa4511@eduhed.com -> not ordered
 
 sihidir201@eduhed.com -> not ordered
 )bcw7L$9e#72SbJ
+
+in the orderid add the functioaltiy of the max char length 15 ... and show up a window with all of the oredr id 

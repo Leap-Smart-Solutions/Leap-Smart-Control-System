@@ -257,7 +257,7 @@ body {
 
 .table-header {
   display: grid;
-  grid-template-columns: 0.5fr 1fr 1.2fr 0.8fr 0.8fr 1fr 40px;
+  grid-template-columns: 0.5fr 1.5fr 1.2fr 0.8fr 0.8fr 1fr 40px;
   padding: 15px;
   background-color: #1a1a1a;
   border-bottom: 1px solid #333;
@@ -279,7 +279,7 @@ body {
 
 .table-row {
   display: grid;
-  grid-template-columns: 0.5fr 1fr 1.2fr 0.8fr 0.8fr 1fr 40px;
+  grid-template-columns: 0.5fr 1.5fr 1.2fr 0.8fr 0.8fr 1fr 40px;
   padding: 15px;
   border-bottom: 1px solid #333;
   align-items: center;
@@ -295,6 +295,16 @@ body {
 .order-id {
   font-size: 12px;
   color: #999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-id:hover {
+  color: rgb(212, 130, 30);
 }
 
 .email {
@@ -307,9 +317,25 @@ body {
   color: #999;
 }
 
+.details {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.4;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.details:hover {
+  color: rgb(212, 130, 30);
+}
+
 /* Status badges */
 .status-pending,
-.status-painting {
+.status-pending {
   background-color: rgba(255, 193, 7, 0.1);
   color: #ffc107;
   padding: 5px;
@@ -384,9 +410,17 @@ body {
   max-width: 500px;
   position: relative;
   color: #fff;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-#modalText {
+.modal-content h3 {
+  color: rgb(212, 130, 30);
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+#modalText, #orderIdModalText, #detailsModalText {
   margin-top: 20px;
   padding: 15px;
   background-color: rgba(255, 255, 255, 0.05);
@@ -394,6 +428,74 @@ body {
   line-height: 1.6;
   font-size: 15px;
   border-left: 3px solid rgb(212, 130, 30);
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+#detailsModalText {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.detail-item {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-header {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.detail-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid rgba(212, 130, 30, 0.3);
+}
+
+.detail-info {
+  flex: 1;
+}
+
+.detail-name {
+  font-weight: 600;
+  color: rgb(212, 130, 30);
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.detail-price {
+  display: flex;
+  gap: 14px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.detail-price span {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.detail-summary {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  margin-top: 10px;
+  border-left: 2px solid rgba(212, 130, 30, 0.3);
 }
 
 .close {

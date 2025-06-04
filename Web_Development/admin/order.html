@@ -74,7 +74,7 @@
         <div class="orders-table">
           <div class="table-header">
             <div class="header-cell">Order ID</div>
-            <div class="header-cell">Product Name</div>
+            <div class="header-cell">Details</div>
             <div class="header-cell">Email</div>
             <div class="header-cell">Date</div>
             <div class="header-cell">Status</div>
@@ -96,6 +96,24 @@
       </div>
     </div>
 
-    <script src="order.js"></script>
+    <!-- Modal for order ID -->
+    <div id="orderIdModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Order ID</h3>
+        <p id="orderIdModalText"></p>
+      </div>
+    </div>
+
+    <!-- Modal for order details -->
+    <div id="detailsModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Order Details</h3>
+        <p id="detailsModalText"></p>
+      </div>
+    </div>
+
+    <script type="module" src="order.js"></script>
   </body>
 </html>
