@@ -21,12 +21,12 @@ function createUserRow(user, index) {
   return `
     <div class="table-row">
       <div class="user-image-cell">
-        <img src="${user.profilePicture || 'Img/default-avatar.jpg'}" alt="${user.fullName || user.username || user.name}" class="user-image" />
+        <img src="${user.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'}" alt="${user.fullName || user.username || user.name}" class="user-image" />
       </div>
       <div class="name-cell">${user.fullName || user.username || user.name}</div>
       <div class="email-cell">${user.email}</div>
-      <div class="city-cell">${user.city || '         -         '}</div>
-      <div class="phone-cell">${user.phone || '         -         '}</div>
+      <div class="city-cell">${user.username || '-'}</div>
+      <div class="phone-cell">${user.phone || '-'}</div>
       <div class="status-cell status-${user.phoneVerified || 'false'}">${user.phoneVerified || 'false'}</div>
       <div class="manage-cell">
         <button class="manage-btn" data-user-id="${user.id}">Manage ▾</button>
