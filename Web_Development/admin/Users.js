@@ -95,8 +95,53 @@ function showAddressModal(addressData) {
   overlay.classList.add('active');
 }
 
-// Function to pad text with dots if longer than 20 chars
-function padTextWithDots(text, length = 20) {
+// Function to create email display modal
+function createEmailModal() {
+  const modal = document.createElement('div');
+  modal.className = 'address-modal'; // Reusing the same modal style
+  modal.innerHTML = `
+    <div class="address-modal-header">
+      <h3>Email Details</h3>
+      <button class="address-modal-close">&times;</button>
+    </div>
+    <div class="address-modal-content">
+      <p><span>Email:</span> <span class="email-value"></span></p>
+    </div>
+  `;
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'address-modal-overlay';
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(modal);
+  
+  // Close modal when clicking close button or overlay
+  modal.querySelector('.address-modal-close').addEventListener('click', () => {
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+  
+  overlay.addEventListener('click', () => {
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+  
+  return modal;
+}
+
+// Function to show email modal
+function showEmailModal(email) {
+  const modal = document.querySelector('.email-modal') || createEmailModal();
+  const overlay = document.querySelector('.address-modal-overlay');
+  
+  modal.querySelector('.email-value').textContent = email;
+  
+  modal.classList.add('active');
+  overlay.classList.add('active');
+}
+
+// Function to pad text with dots if longer than specified length
+function padTextWithDots(text, length) {
   if (text.length <= length) return text;
   return text.slice(0, length) + '...';
 }
@@ -105,7 +150,8 @@ function padTextWithDots(text, length = 20) {
 async function createUserRow(user, index) {
   const statusClass = user.phoneVerified === true ? 'status-active' : 'status-unactive';
   const addressData = await getUserAddress(user.id);
-  const addressText = addressData ? padTextWithDots(`${addressData.address}, ${addressData.city}, ${addressData.town}`) : '-';
+  const addressText = addressData ? padTextWithDots(`${addressData.address}, ${addressData.city}, ${addressData.town}`, 20) : '-';
+  const emailText = padTextWithDots(user.email, 15);
   
   return `
     <div class="table-row">
@@ -113,7 +159,7 @@ async function createUserRow(user, index) {
         <img src="${user.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'}" alt="${user.fullName || user.username || user.name}" class="user-image" />
       </div>
       <div class="name-cell">${user.fullName || user.username || user.name}</div>
-      <div class="email-cell">${user.email}</div>
+      <div class="email-cell" data-email="${user.email}">${emailText}</div>
       <div class="city-cell">${user.username || '-'}</div>
       <div class="phone-cell">${user.phone || '-'}</div>
       <div class="status-cell ${statusClass}">${user.phoneVerified === true ? 'true' : 'false'}</div>
@@ -137,6 +183,7 @@ async function renderUsers(usersToRender) {
   initDropdowns();
   initUserActions();
   initAddressClicks();
+  initEmailClicks();
 }
 
 // Function to filter users
@@ -244,6 +291,18 @@ function initAddressClicks() {
       const addressData = await getUserAddress(userId);
       if (addressData) {
         showAddressModal(addressData);
+      }
+    });
+  });
+}
+
+// Initialize email clicks
+function initEmailClicks() {
+  document.querySelectorAll('.email-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const email = cell.dataset.email;
+      if (email) {
+        showEmailModal(email);
       }
     });
   });

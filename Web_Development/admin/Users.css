@@ -615,3 +615,14 @@ nav .Users {
 .address-modal-overlay.active {
   display: block;
 }
+
+/* Email styles */
+.email-cell {
+  cursor: pointer;
+  color: rgb(212, 130, 30);
+  font-weight: 500;
+}
+
+.email-cell:hover {
+  text-decoration: underline;
+}
