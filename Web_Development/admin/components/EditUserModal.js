@@ -39,8 +39,8 @@ export class EditUserModal {
               <div class="form-group">
                 <label for="status">Status</label>
                 <select id="status" name="status">
-                  <option value="false">Active</option>
-                  <option value="true">Inactive</option>
+                  <option value="true">true</option>
+                  <option value="false">false</option>
                 </select>
               </div>
               <div class="form-actions">
@@ -91,7 +91,7 @@ export class EditUserModal {
         email: formData.get('email'),
         phone: formData.get('phone'),
         city: formData.get('city'),
-        status: formData.get('status')
+        phoneVerified: formData.get('status')
       };
 
       await updateUser(this.currentUser.id, userData);
@@ -116,7 +116,7 @@ export class EditUserModal {
     form.email.value = user.email || '';
     form.phone.value = user.phone || '';
     form.city.value = user.city || '';
-    form.status.value = user.status?.toLowerCase() || 'inactive';
+    form.status.value = user.status?.toLowerCase() || 'false';
 
     this.modal.style.display = 'block';
   }

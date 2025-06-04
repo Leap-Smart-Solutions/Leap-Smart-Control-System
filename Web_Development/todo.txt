@@ -1,8 +1,10 @@
 - Mobile responsive design for index.html [Signin, Signup buttons are not correctly positioned]
-- Sign in is leading to living room [Feature: If the user ordered previously then go to living room, either go to shopping/index.html]
-- Add some Loading splash screens
-- Adding status to orders
-- For the previous point, if the user had orders with confirmed status then, enter the livingroom is enabled
+- Sign in is leading to living room [Feature: If the user ordered previously then go to living room, either go to shopping/index.html] ---> True
+- Add some Loading splash screens [Login, checkout, Users.html in Admin]
+- Adding status to orders ---> True
+- For the previous point, if the user had orders with confirmed status then, enter the livingroom is enabled ---> True
+
+- Receiving email with the order placed
 
 macew52323@cigidea.com -> ordered
 6rZ_Pki_)4fbP-B
@@ -15,3 +17,6 @@ boyik62572@cigidea.com -> not ordered
 
 kefosa4511@eduhed.com -> not ordered
 ')7Yd*umC=S+#Y&
+
+sihidir201@eduhed.com -> not ordered
+)bcw7L$9e#72SbJ
