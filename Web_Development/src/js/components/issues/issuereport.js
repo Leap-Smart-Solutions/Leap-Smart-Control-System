@@ -12,8 +12,8 @@ const searchInput = document.getElementById('searchIssue');
 const filterPriority = document.getElementById('filterPriority');
 const filterStatus = document.getElementById('filterStatus');
 
-// Issue data storage
-let issues = JSON.parse(localStorage.getItem('issues')) || [];
+// Store issues data
+let allIssues = [];
 
 // Event Listeners
 createIssueBtn.addEventListener('click', () => modal.style.display = 'block');
@@ -62,48 +62,45 @@ issueForm.addEventListener('submit', async (e) => {
 });
 
 // Filter and search functionality
-searchInput.addEventListener('input', renderIssues);
-filterPriority.addEventListener('change', renderIssues);
-filterStatus.addEventListener('change', renderIssues);
+searchInput.addEventListener('input', filterAndRenderIssues);
+filterPriority.addEventListener('change', filterAndRenderIssues);
+filterStatus.addEventListener('change', filterAndRenderIssues);
 
-// Save issues to localStorage
-function saveIssues() {
-    localStorage.setItem('issues', JSON.stringify(issues));
-}
+// Filter and render issues
+function filterAndRenderIssues() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const priorityFilter = filterPriority.value;
+    const statusFilter = filterStatus.value;
 
-// Filter issues based on search and filters
-function getFilteredIssues() {
-    return issues.filter(issue => {
-        const matchesSearch = issue.title.toLowerCase().includes(searchInput.value.toLowerCase()) ||
-                            issue.description.toLowerCase().includes(searchInput.value.toLowerCase());
-        const matchesPriority = !filterPriority.value || issue.priority === filterPriority.value;
-        const matchesStatus = !filterStatus.value || issue.status === filterStatus.value;
+    const filteredIssues = allIssues.filter(issue => {
+        const matchesSearch = 
+            issue.title.toLowerCase().includes(searchTerm) ||
+            issue.description.toLowerCase().includes(searchTerm) ||
+            (issue.priority && issue.priority.toLowerCase().includes(searchTerm)) ||
+            (issue.status && issue.status.toLowerCase().includes(searchTerm));
+        
+        const matchesPriority = !priorityFilter || issue.priority === priorityFilter;
+        const matchesStatus = !statusFilter || issue.status === statusFilter;
         
         return matchesSearch && matchesPriority && matchesStatus;
     });
+
+    renderIssues(filteredIssues);
 }
 
 // Render issues list
-function renderIssues() {
-    const filteredIssues = getFilteredIssues();
-    issuesList.innerHTML = filteredIssues.map(issue => `
+function renderIssues(issues) {
+    issuesList.innerHTML = issues.map(issue => `
         <div class="issue-item" data-id="${issue.id}">
-            <div class="issue-col">
+            <div class="issue-col" data-label="Title">
                 <strong>${issue.title}</strong>
-                <p class="description">${issue.description.substring(0, 50)}${issue.description.length > 50 ? '...' : ''}</p>
             </div>
-            <div class="issue-col">${issue.assignee}</div>
-            <div class="issue-col">
+            <div class="issue-col" data-label="Description">${issue.description}</div>
+            <div class="issue-col" data-label="Priority">
                 <span class="priority-tag priority-${issue.priority}">${issue.priority}</span>
             </div>
-            <div class="issue-col">
+            <div class="issue-col" data-label="Status">
                 <span class="status-tag status-${issue.status}">${issue.status}</span>
-            </div>
-            <div class="issue-col">
-                <div class="action-buttons">
-                    <button class="action-btn edit-btn" onclick="editIssue(${issue.id})">Edit</button>
-                    <button class="action-btn delete-btn" onclick="deleteIssue(${issue.id})">Delete</button>
-                </div>
             </div>
         </div>
     `).join('');
@@ -111,7 +108,7 @@ function renderIssues() {
 
 // Edit issue
 window.editIssue = function(id) {
-    const issue = issues.find(issue => issue.id === id);
+    const issue = allIssues.find(issue => issue.id === id);
     if (!issue) return;
 
     // Update status
@@ -120,18 +117,23 @@ window.editIssue = function(id) {
         issue.status = newStatus;
         issue.updatedAt = new Date().toISOString();
         saveIssues();
-        renderIssues();
+        filterAndRenderIssues();
     }
 };
 
 // Delete issue
 window.deleteIssue = function(id) {
     if (confirm('Are you sure you want to delete this issue?')) {
-        issues = issues.filter(issue => issue.id !== id);
+        allIssues = allIssues.filter(issue => issue.id !== id);
         saveIssues();
-        renderIssues();
+        filterAndRenderIssues();
     }
 };
+
+// Save issues to localStorage
+function saveIssues() {
+    localStorage.setItem('issues', JSON.stringify(allIssues));
+}
 
 // Load user's issues
 async function loadUserIssues() {
@@ -157,27 +159,21 @@ async function loadUserIssues() {
             return;
         }
 
-        // Convert to array and sort by createdAt
-        const issues = [];
+        // Convert to array and store in allIssues
+        allIssues = [];
         querySnapshot.forEach((doc) => {
-            issues.push({ id: doc.id, ...doc.data() });
+            allIssues.push({ id: doc.id, ...doc.data() });
         });
 
         // Sort issues by createdAt in descending order
-        issues.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
-
-        // Display sorted issues
-        issues.forEach((issue) => {
-            const issueElement = document.createElement('div');
-            issueElement.className = 'issue-item';
-            issueElement.innerHTML = `
-                <div class="issue-col">${issue.title}</div>
-                <div class="issue-col">${issue.description}</div>
-                <div class="issue-col">${issue.priority}</div>
-                <div class="issue-col">${issue.status}</div>
-            `;
-            issuesList.appendChild(issueElement);
+        allIssues.sort((a, b) => {
+            const dateA = a.createdAt?.toDate?.() || new Date(a.createdAt);
+            const dateB = b.createdAt?.toDate?.() || new Date(b.createdAt);
+            return dateB - dateA;
         });
+
+        // Initial render of all issues
+        filterAndRenderIssues();
     } catch (error) {
         console.error('Error loading issues:', error);
         issuesList.innerHTML = '<div class="error-message">Error loading issues. Please try again.</div>';
@@ -199,4 +195,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Initial render
-renderIssues(); 
+filterAndRenderIssues(); 
