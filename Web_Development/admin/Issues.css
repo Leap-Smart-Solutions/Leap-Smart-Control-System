@@ -556,3 +556,67 @@ body {
   visibility: hidden;
   opacity: 0;
 }
+
+/* Priority and Status select styles */
+.priority-cell,
+.status-cell {
+  width: 100%;
+  padding: 0 5px;
+}
+
+.priority-select,
+.status-select {
+  width: 100%;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.priority-select option,
+.status-select option {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+/* Priority colors */
+.priority-select option[value="High"] {
+  color: #dc3545;
+}
+
+.priority-select option[value="Medium"] {
+  color: #ffc107;
+}
+
+.priority-select option[value="Low"] {
+  color: #28a745;
+}
+
+/* Status colors */
+.status-select option[value="Open"] {
+  color: #28a745;
+}
+
+.status-select option[value="Pending"] {
+  color: #ffc107;
+}
+
+.status-select option[value="Closed"] {
+  color: #dc3545;
+}
+
+.priority-select:hover,
+.status-select:hover {
+  border-color: rgb(212, 130, 30);
+}
+
+.priority-select:focus,
+.status-select:focus {
+  outline: none;
+  border-color: rgb(212, 130, 30);
+  box-shadow: 0 0 0 2px rgba(212, 130, 30, 0.2);
+}
