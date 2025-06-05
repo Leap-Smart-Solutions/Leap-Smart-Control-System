@@ -33,6 +33,11 @@ header {
   padding: 20px 0;
 }
 
+header .issues {
+  font-size: small;
+  justify-self: left;
+}
+
 .icon-cart {
   position: relative;
 }
@@ -52,9 +57,24 @@ header {
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   font-size: xx-large;
   color: #ffffff;
   margin-block: 25px;
+}
+
+.title .issues {
+  font-size: 14px;
+  padding: 8px 16px;
+  background-color: #353432;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.title .issues:hover {
+  background-color: #ff6600;
 }
 
 /* cartTab */
