@@ -570,7 +570,6 @@ body {
   padding: 5px;
   border-radius: 4px;
   background-color: transparent;
-  color: inherit;
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   font-size: inherit;
@@ -580,31 +579,37 @@ body {
 .priority-select option,
 .status-select option {
   background-color: #1e1e1e;
-  color: #fff;
+  padding: 5px;
 }
 
 /* Priority colors */
+.priority-select[value="High"],
 .priority-select option[value="High"] {
   color: #dc3545;
 }
 
+.priority-select[value="Medium"],
 .priority-select option[value="Medium"] {
   color: #ffc107;
 }
 
+.priority-select[value="Low"],
 .priority-select option[value="Low"] {
   color: #28a745;
 }
 
 /* Status colors */
+.status-select[value="Open"],
 .status-select option[value="Open"] {
   color: #28a745;
 }
 
+.status-select[value="Pending"],
 .status-select option[value="Pending"] {
   color: #ffc107;
 }
 
+.status-select[value="Closed"],
 .status-select option[value="Closed"] {
   color: #dc3545;
 }

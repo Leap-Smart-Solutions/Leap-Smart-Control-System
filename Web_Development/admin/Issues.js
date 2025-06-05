@@ -82,12 +82,54 @@ function createIssueRow(issue) {
   `;
 }
 
+// Function to get priority color
+function getPriorityColor(priority) {
+  switch (priority) {
+    case 'High':
+      return '#dc3545';
+    case 'Medium':
+      return '#ffc107';
+    case 'Low':
+      return '#28a745';
+    default:
+      return '#fff';
+  }
+}
+
+// Function to get status color
+function getStatusColor(status) {
+  switch (status) {
+    case 'Open':
+      return '#28a745';
+    case 'Pending':
+      return '#ffc107';
+    case 'Closed':
+      return '#dc3545';
+    default:
+      return '#fff';
+  }
+}
+
 // Function to render issues
 function renderIssues(issuesToRender) {
   const issuesList = document.getElementById("issuesList");
   issuesList.innerHTML = issuesToRender
     .map((issue) => createIssueRow(issue))
     .join("");
+  
+  // Apply colors to all select elements after rendering
+  setTimeout(() => {
+    const prioritySelects = document.querySelectorAll('.priority-select');
+    const statusSelects = document.querySelectorAll('.status-select');
+    
+    prioritySelects.forEach(select => {
+      select.style.color = getPriorityColor(select.value);
+    });
+    
+    statusSelects.forEach(select => {
+      select.style.color = getStatusColor(select.value);
+    });
+  }, 0);
 }
 
 // Function to fetch issues from Firestore
@@ -99,13 +141,15 @@ async function fetchIssues() {
 
     for (const issueDoc of issuesSnapshot.docs) {
       const issueData = issueDoc.data();
+      // Remove id from issueData if it exists
+      const { id, ...issueDataWithoutId } = issueData;
       
       // Check if userId exists and is valid
       if (!issueData.userId) {
         console.warn(`Issue ${issueDoc.id} has no userId`);
         issues.push({
-          id: issueDoc.id,
-          ...issueData,
+          id: issueDoc.id, // Use the document ID from the subcollection
+          ...issueDataWithoutId,
           userEmail: 'N/A'
         });
         continue;
@@ -117,15 +161,15 @@ async function fetchIssues() {
         const userData = userDoc.data();
 
         issues.push({
-          id: issueDoc.id,
-          ...issueData,
+          id: issueDoc.id, // Use the document ID from the subcollection
+          ...issueDataWithoutId,
           userEmail: userData?.email || 'N/A'
         });
       } catch (userError) {
         console.error(`Error fetching user data for issue ${issueDoc.id}:`, userError);
         issues.push({
-          id: issueDoc.id,
-          ...issueData,
+          id: issueDoc.id, // Use the document ID from the subcollection
+          ...issueDataWithoutId,
           userEmail: 'N/A'
         });
       }
@@ -143,13 +187,28 @@ async function updatePriority(issueId, newPriority) {
   try {
     const issueRef = doc(db, 'issues', issueId);
     await updateDoc(issueRef, {
-      priority: newPriority
+      priority: newPriority,
+      updatedAt: new Date()
     });
-    // Refresh the issues list
-    const issues = await fetchIssues();
-    renderIssues(issues);
+    
+    // Update the select color
+    const select = document.querySelector(`[data-issue-id="${issueId}"] .priority-select`);
+    if (select) {
+      select.style.color = getPriorityColor(newPriority);
+    }
+    
+    // Show success message
+    const row = document.querySelector(`[data-issue-id="${issueId}"]`);
+    if (row) {
+      const originalBackground = row.style.backgroundColor;
+      row.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+      setTimeout(() => {
+        row.style.backgroundColor = originalBackground;
+      }, 1000);
+    }
   } catch (error) {
     console.error("Error updating priority:", error);
+    alert("Failed to update priority. Please try again.");
   }
 }
 
@@ -158,13 +217,28 @@ async function updateStatus(issueId, newStatus) {
   try {
     const issueRef = doc(db, 'issues', issueId);
     await updateDoc(issueRef, {
-      status: newStatus
+      status: newStatus,
+      updatedAt: new Date()
     });
-    // Refresh the issues list
-    const issues = await fetchIssues();
-    renderIssues(issues);
+    
+    // Update the select color
+    const select = document.querySelector(`[data-issue-id="${issueId}"] .status-select`);
+    if (select) {
+      select.style.color = getStatusColor(newStatus);
+    }
+    
+    // Show success message
+    const row = document.querySelector(`[data-issue-id="${issueId}"]`);
+    if (row) {
+      const originalBackground = row.style.backgroundColor;
+      row.style.backgroundColor = 'rgba(40, 167, 69, 0.1)';
+      setTimeout(() => {
+        row.style.backgroundColor = originalBackground;
+      }, 1000);
+    }
   } catch (error) {
     console.error("Error updating status:", error);
+    alert("Failed to update status. Please try again.");
   }
 }
 
