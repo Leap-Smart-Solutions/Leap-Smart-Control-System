@@ -1,3 +1,6 @@
+import { auth, db } from '../../firebase/firebaseConfig.js';
+import { collection, addDoc, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js';
+
 // DOM Elements
 const modal = document.getElementById('issueModal');
 const createIssueBtn = document.getElementById('createIssueBtn');
@@ -21,25 +24,41 @@ window.addEventListener('click', (e) => {
 });
 
 // Form submission
-issueForm.addEventListener('submit', (e) => {
+issueForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const newIssue = {
-        id: Date.now(),
-        title: issueForm.title.value,
-        description: issueForm.description.value,
-        priority: issueForm.priority.value,
-        assignee: issueForm.assignee.value,
-        status: 'open',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
+    const user = auth.currentUser;
+    if (!user) {
+        alert('Please log in to create an issue');
+        return;
+    }
 
-    issues.push(newIssue);
-    saveIssues();
-    renderIssues();
-    issueForm.reset();
-    modal.style.display = 'none';
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+
+    try {
+        // Add issue to Firestore
+        const issueData = {
+            title,
+            description,
+            priority: 'null',
+            status: 'pending',
+            userId: user.uid,
+            createdAt: new Date()
+        };
+
+        await addDoc(collection(db, 'issues'), issueData);
+        
+        // Clear form and close modal
+        issueForm.reset();
+        issueModal.style.display = 'none';
+        
+        // Refresh issues list
+        await loadUserIssues();
+    } catch (error) {
+        console.error('Error creating issue:', error);
+        alert('Error creating issue. Please try again.');
+    }
 });
 
 // Filter and search functionality
@@ -113,6 +132,71 @@ window.deleteIssue = function(id) {
         renderIssues();
     }
 };
+
+// Load user's issues
+async function loadUserIssues() {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log('No user logged in');
+        return;
+    }
+
+    try {
+        console.log('Loading issues for user:', user.uid);
+        const issuesQuery = query(
+            collection(db, 'issues'),
+            where('userId', '==', user.uid)
+        );
+
+        const querySnapshot = await getDocs(issuesQuery);
+        issuesList.innerHTML = ''; // Clear existing issues
+
+        if (querySnapshot.empty) {
+            console.log('No issues found for user');
+            issuesList.innerHTML = '<div class="no-issues">No issues found</div>';
+            return;
+        }
+
+        // Convert to array and sort by createdAt
+        const issues = [];
+        querySnapshot.forEach((doc) => {
+            issues.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Sort issues by createdAt in descending order
+        issues.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
+
+        // Display sorted issues
+        issues.forEach((issue) => {
+            const issueElement = document.createElement('div');
+            issueElement.className = 'issue-item';
+            issueElement.innerHTML = `
+                <div class="issue-col">${issue.title}</div>
+                <div class="issue-col">${issue.description}</div>
+                <div class="issue-col">${issue.priority}</div>
+                <div class="issue-col">${issue.status}</div>
+            `;
+            issuesList.appendChild(issueElement);
+        });
+    } catch (error) {
+        console.error('Error loading issues:', error);
+        issuesList.innerHTML = '<div class="error-message">Error loading issues. Please try again.</div>';
+    }
+}
+
+// Listen for auth state changes
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        loadUserIssues();
+    } else {
+        issuesList.innerHTML = '<div class="auth-message">Please log in to view your issues</div>';
+    }
+});
+
+// Load issues when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadUserIssues();
+});
 
 // Initial render
 renderIssues(); 

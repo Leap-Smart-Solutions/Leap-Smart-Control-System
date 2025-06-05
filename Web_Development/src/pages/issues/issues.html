@@ -30,20 +30,6 @@
                         <label for="description">Description</label>
                         <textarea id="description" name="description" rows="4" required></textarea>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="priority">Priority</label>
-                            <select id="priority" name="priority" required>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="assignee">Assignee</label>
-                            <input type="text" id="assignee" name="assignee" required>
-                        </div>
-                    </div>
                     <div class="form-actions">
                         <button type="submit" class="primary-btn">Submit Issue</button>
                         <button type="button" class="secondary-btn" id="cancelBtn">Cancel</button>
@@ -77,10 +63,9 @@
         <div class="issues-container">
             <div class="issues-header">
                 <div class="issue-col">Title</div>
-                <div class="issue-col">Assignee</div>
+                <div class="issue-col">Description</div>
                 <div class="issue-col">Priority</div>
                 <div class="issue-col">Status</div>
-                <div class="issue-col">Actions</div>
             </div>
             <div id="issuesList" class="issues-list">
                 <!-- Issues will be dynamically added here -->
