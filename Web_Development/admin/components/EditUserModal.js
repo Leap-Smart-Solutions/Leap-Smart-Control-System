@@ -4,6 +4,7 @@ export class EditUserModal {
   constructor() {
     this.modal = null;
     this.currentUser = null;
+    this.newProfilePicture = null;
   }
 
   createModal() {
@@ -16,6 +17,11 @@ export class EditUserModal {
           </div>
           <div class="modal-body">
             <form id="editUserForm">
+              <div class="form-group" style="text-align:center;">
+                <img id="edit-profile-picture" src="https://i.ibb.co/277hTSg8/generic-profile.jpg" alt="Profile" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #333;display:block;margin:0 auto 10px auto;" />
+                <input type="file" id="edit-upload-profile" accept="image/*" style="display:none;" />
+                <label for="edit-upload-profile" style="cursor:pointer;color:rgb(212,130,30);display:block;">Change Photo</label>
+              </div>
               <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username">
@@ -53,6 +59,7 @@ export class EditUserModal {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     this.modal = document.getElementById('editUserModal');
     this.setupEventListeners();
+    this.setupProfileImageUpload();
   }
 
   setupEventListeners() {
@@ -78,6 +85,46 @@ export class EditUserModal {
     };
   }
 
+  setupProfileImageUpload() {
+    const fileInput = this.modal.querySelector('#edit-upload-profile');
+    const imgPreview = this.modal.querySelector('#edit-profile-picture');
+    const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64Data = reader.result.split(",")[1];
+        const formData = new FormData();
+        formData.append("key", IMGBB_API_KEY);
+        formData.append("image", base64Data);
+        try {
+          // 1) Upload to ImgBB
+          const res = await fetch("https://api.imgbb.com/1/upload", {
+            method: "POST",
+            body: formData
+          });
+          const json = await res.json();
+          if (!json.success) throw new Error(json.error.message);
+          // 2) Get the hosted URL
+          const downloadURL = json.data.url;
+          // 3) Show preview immediately
+          imgPreview.src = downloadURL;
+          // 4) Store the URL for saving on submit
+          this.newProfilePicture = downloadURL;
+        } catch (uploadErr) {
+          console.error("ImgBB upload failed:", uploadErr);
+          alert("Image upload failed. Please try again.");
+        }
+      };
+      reader.onerror = () => {
+        console.error("FileReader error:", reader.error);
+        alert("Could not read file.");
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   async handleSubmit() {
     try {
       const formData = new FormData(this.modal.querySelector('#editUserForm'));
@@ -88,13 +135,17 @@ export class EditUserModal {
         phone: formData.get('phone'),
         phoneVerified: formData.get('status')
       };
-
+      // Add profilePicture if a new one was uploaded
+      if (this.newProfilePicture) {
+        userData.profilePicture = this.newProfilePicture;
+      }
       await updateUser(this.currentUser.id, userData);
       this.closeModal();
-      
       // Dispatch custom event to notify that user was updated
       const event = new CustomEvent('userUpdated', { detail: userData });
       document.dispatchEvent(event);
+      // Reset newProfilePicture for next use
+      this.newProfilePicture = null;
     } catch (error) {
       console.error('Error updating user:', error);
       alert('Error updating user. Please try again.');
@@ -104,14 +155,17 @@ export class EditUserModal {
   openModal(user) {
     this.currentUser = user;
     const form = this.modal.querySelector('#editUserForm');
-    
     // Populate form with user data
     form.username.value = user.username || '';
     form.fullName.value = user.fullName || '';
     form.email.value = user.email || '';
     form.phone.value = user.phone || '';
     form.status.value = user.phoneVerified?.toString() || 'false';
-
+    // Set profile image preview
+    const imgPreview = this.modal.querySelector('#edit-profile-picture');
+    imgPreview.src = user.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+    // Reset newProfilePicture
+    this.newProfilePicture = null;
     this.modal.style.display = 'block';
   }
 
