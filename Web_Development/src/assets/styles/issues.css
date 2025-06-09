@@ -39,12 +39,12 @@ header {
 
 h1 {
     font-size: 2rem;
-    color: var(--primary-color);
+    color: rgb(212, 130, 30);
 }
 
 /* Button Styles */
 .primary-btn {
-    background-color: var(--primary-color);
+    background-color: rgb(212, 130, 30);
     color: var(--background-color);
     border: none;
     padding: 10px 20px;
