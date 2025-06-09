@@ -668,9 +668,35 @@ nav .Users {
 .city-cell.truncated {
   cursor: pointer;
   transition: color 0.2s ease;
+  color: #f1efef;
 }
 
 .phone-cell.truncated:hover,
 .city-cell.truncated:hover {
-  color: #ff6b00;
+  color: rgb(212, 130, 30);
+}
+
+/* Username and Phone Modal Styles */
+.username-modal,
+.phone-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1e1e1e;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  display: none;
+  min-width: 300px;
+  max-width: 500px;
+  width: 90%;
+  color: #fff;
+}
+
+.username-modal.active,
+.phone-modal.active {
+  display: block;
+  animation: modalFadeIn 0.3s ease forwards;
 }

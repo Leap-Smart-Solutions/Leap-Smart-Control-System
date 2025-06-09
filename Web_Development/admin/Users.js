@@ -119,13 +119,13 @@ function createAddressModal() {
   
   // Close modal when clicking close button or overlay
   modal.querySelector('.address-modal-close').addEventListener('click', () => {
-    modal.classList.remove('active');
-    overlay.classList.remove('active');
+    modal.remove();
+    overlay.remove();
   });
   
   overlay.addEventListener('click', () => {
-    modal.classList.remove('active');
-    overlay.classList.remove('active');
+    modal.remove();
+    overlay.remove();
   });
   
   return modal;
@@ -147,7 +147,7 @@ function showAddressModal(addressData) {
 // Function to create email display modal
 function createEmailModal() {
   const modal = document.createElement('div');
-  modal.className = 'address-modal'; // Reusing the same modal style
+  modal.className = 'address-modal email-modal';
   modal.innerHTML = `
     <div class="address-modal-header">
       <h3>Email Details</h3>
@@ -166,13 +166,13 @@ function createEmailModal() {
   
   // Close modal when clicking close button or overlay
   modal.querySelector('.address-modal-close').addEventListener('click', () => {
-    modal.classList.remove('active');
-    overlay.classList.remove('active');
+    modal.remove();
+    overlay.remove();
   });
   
   overlay.addEventListener('click', () => {
-    modal.classList.remove('active');
-    overlay.classList.remove('active');
+    modal.remove();
+    overlay.remove();
   });
   
   return modal;
@@ -184,6 +184,96 @@ function showEmailModal(email) {
   const overlay = document.querySelector('.address-modal-overlay');
   
   modal.querySelector('.email-value').textContent = email;
+  
+  modal.classList.add('active');
+  overlay.classList.add('active');
+}
+
+// Function to create username display modal
+function createUsernameModal() {
+  const modal = document.createElement('div');
+  modal.className = 'address-modal username-modal';
+  modal.innerHTML = `
+    <div class="address-modal-header">
+      <h3>Username Details</h3>
+      <button class="address-modal-close">&times;</button>
+    </div>
+    <div class="address-modal-content">
+      <p><span>Username:</span> <span class="username-value"></span></p>
+    </div>
+  `;
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'address-modal-overlay';
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(modal);
+  
+  // Close modal when clicking close button or overlay
+  modal.querySelector('.address-modal-close').addEventListener('click', () => {
+    modal.remove();
+    overlay.remove();
+  });
+  
+  overlay.addEventListener('click', () => {
+    modal.remove();
+    overlay.remove();
+  });
+  
+  return modal;
+}
+
+// Function to show username modal
+function showUsernameModal(username) {
+  const modal = document.querySelector('.username-modal') || createUsernameModal();
+  const overlay = document.querySelector('.address-modal-overlay');
+  
+  modal.querySelector('.username-value').textContent = username;
+  
+  modal.classList.add('active');
+  overlay.classList.add('active');
+}
+
+// Function to create phone display modal
+function createPhoneModal() {
+  const modal = document.createElement('div');
+  modal.className = 'address-modal phone-modal';
+  modal.innerHTML = `
+    <div class="address-modal-header">
+      <h3>Phone Details</h3>
+      <button class="address-modal-close">&times;</button>
+    </div>
+    <div class="address-modal-content">
+      <p><span>Phone Number:</span> <span class="phone-value"></span></p>
+    </div>
+  `;
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'address-modal-overlay';
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(modal);
+  
+  // Close modal when clicking close button or overlay
+  modal.querySelector('.address-modal-close').addEventListener('click', () => {
+    modal.remove();
+    overlay.remove();
+  });
+  
+  overlay.addEventListener('click', () => {
+    modal.remove();
+    overlay.remove();
+  });
+  
+  return modal;
+}
+
+// Function to show phone modal
+function showPhoneModal(phone) {
+  const modal = document.querySelector('.phone-modal') || createPhoneModal();
+  const overlay = document.querySelector('.address-modal-overlay');
+  
+  modal.querySelector('.phone-value').textContent = phone;
   
   modal.classList.add('active');
   overlay.classList.add('active');
@@ -201,6 +291,8 @@ async function createUserRow(user, index) {
   const addressData = await getUserAddress(user.id);
   const addressText = addressData ? padTextWithDots(`${addressData.address}, ${addressData.city}, ${addressData.town}`, 20) : '-';
   const emailText = padTextWithDots(user.email, 15);
+  const usernameText = padTextWithDots(user.username || '-', 11);
+  const phoneText = padTextWithDots(user.phone || '-', 12);
   
   return `
     <div class="table-row">
@@ -209,8 +301,8 @@ async function createUserRow(user, index) {
       </div>
       <div class="name-cell">${user.fullName || user.username || user.name}</div>
       <div class="email-cell" data-email="${user.email}">${emailText}</div>
-      <div class="city-cell">${user.username || '-'}</div>
-      <div class="phone-cell">${user.phone || '-'}</div>
+      <div class="city-cell truncated" data-username="${user.username || '-'}">${usernameText}</div>
+      <div class="phone-cell truncated" data-phone="${user.phone || '-'}">${phoneText}</div>
       <div class="status-cell ${statusClass}">${user.phoneVerified === true ? 'true' : 'false'}</div>
       <div class="address-cell" data-user-id="${user.id}">${addressText}</div>
       <div class="manage-cell">
@@ -233,6 +325,7 @@ async function renderUsers(usersToRender) {
   initUserActions();
   initAddressClicks();
   initEmailClicks();
+  initUsernameAndPhoneClicks();
 }
 
 // Function to filter users
@@ -375,6 +468,27 @@ function initEmailClicks() {
       const email = cell.dataset.email;
       if (email) {
         showEmailModal(email);
+      }
+    });
+  });
+}
+
+// Initialize username and phone clicks
+function initUsernameAndPhoneClicks() {
+  document.querySelectorAll('.city-cell.truncated').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const username = cell.dataset.username;
+      if (username) {
+        showUsernameModal(username);
+      }
+    });
+  });
+
+  document.querySelectorAll('.phone-cell.truncated').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const phone = cell.dataset.phone;
+      if (phone) {
+        showPhoneModal(phone);
       }
     });
   });
