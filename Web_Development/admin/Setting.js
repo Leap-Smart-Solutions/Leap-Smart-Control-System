@@ -5,6 +5,11 @@ import {
   updateDoc 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
+import {
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 // Initialize admin auth check
 initAdminAuthCheck();
@@ -193,8 +198,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
 
   // Handle password form submission
-  document.getElementById("passwordForm").addEventListener("submit", function(e) {
+  document.getElementById("passwordForm").addEventListener("submit", async function(e) {
     e.preventDefault();
+    const currentPasswordValue = currentPassword.value;
     const newPasswordValue = newPassword.value;
     const confirmPasswordValue = confirmPassword.value;
 
@@ -203,12 +209,26 @@ document.addEventListener('DOMContentLoaded', async function() {
       return;
     }
 
-    // Add your password update logic here
-    currentPassword.value = "";
-    newPassword.value = "";
-    confirmPassword.value = "";
-    alert("Password updated successfully!");
-    closePasswordModal();
+    const user = auth.currentUser;
+    if (user && user.email) {
+      try {
+        // Re-authenticate admin
+        const credential = EmailAuthProvider.credential(user.email, currentPasswordValue);
+        await reauthenticateWithCredential(user, credential);
+
+        // Update password
+        await updatePassword(user, newPasswordValue);
+
+        alert("Password updated successfully! Please log in again.");
+        await auth.signOut();
+        window.location.href = "./login.html";
+      } catch (error) {
+        console.error("Error updating password:", error);
+        alert("Error: " + error.message);
+      }
+    } else {
+      alert("No admin user is currently logged in.");
+    }
   });
 
   // Handle logout
