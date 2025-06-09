@@ -314,6 +314,7 @@ nav .Items {
 
 .form-group select,
 .form-group input[type="number"],
+.form-group input[type="text"],
 .form-group textarea {
   padding: 8px 12px;
   background: #292929;
@@ -321,6 +322,7 @@ nav .Items {
   border-radius: 4px;
   font-size: 0.9em;
   color: #fff;
+  width: 100%;
 }
 
 .form-group select option {
