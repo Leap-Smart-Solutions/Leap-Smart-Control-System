@@ -1,6 +1,17 @@
 // Import Firebase configuration
 import { db } from '../src/js/firebase/firebaseConfig.js';
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { 
+  collection, 
+  getDocs, 
+  addDoc, 
+  doc, 
+  updateDoc, 
+  deleteDoc,
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+// ImgBB API Key
+const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 
 // Initialize inventory from localStorage or use empty array if none exists
 let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
@@ -149,6 +160,9 @@ async function renderComponentCards() {
       <div class="component-description" onclick="showDescriptionModal('${component.name}', '${component.description?.replace(/'/g, "\\'") || 'No description available'}')">
         <p>${component.description ? (component.description.length > 15 ? component.description.substring(0, 15) + '...' : component.description) : 'No description available'}</p>
       </div>
+      <button class="edit-btn card-edit-btn" title="Edit Component" onclick="editComponent('${component.id}')">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </button>
     </div>
   `
     )
@@ -243,114 +257,206 @@ window.addEventListener("click", (e) => {
 });
 
 // Adjust component quantity
-function adjustQuantity(componentId, adjustment) {
-  const componentIndex = inventory.findIndex((item) => item.id === componentId);
-  if (componentIndex !== -1) {
-    const newQuantity = inventory[componentIndex].quantity + adjustment;
-    if (newQuantity >= 0) {
-      inventory[componentIndex].quantity = newQuantity;
-      saveAndRender();
+async function adjustQuantity(componentId, adjustment) {
+  try {
+    const componentRef = doc(db, "parts", componentId);
+    const componentDoc = await getDoc(componentRef);
+    
+    if (!componentDoc.exists()) {
+      alert("Component not found!");
+      return;
     }
+
+    const currentQuantity = componentDoc.data().quantity;
+    const newQuantity = currentQuantity + adjustment;
+
+    if (newQuantity >= 0) {
+      await updateDoc(componentRef, { quantity: newQuantity });
+      await renderComponentCards();
+      await renderInventoryTable();
+    } else {
+      alert("Quantity cannot be negative!");
+    }
+  } catch (error) {
+    console.error("Error adjusting quantity:", error);
+    alert("Failed to adjust quantity. Please try again.");
   }
 }
 
 // Delete component
-function deleteComponent(componentId) {
+async function deleteComponent(componentId) {
   if (confirm("Are you sure you want to delete this component?")) {
-    inventory = inventory.filter((item) => item.id !== componentId);
-    saveAndRender();
+    try {
+      await deleteDoc(doc(db, "parts", componentId));
+      alert("Component deleted successfully!");
+      
+      // If the deleted component was being edited, reset the form
+      if (editingComponentId === componentId) {
+        const addInventoryForm = document.getElementById("addInventoryForm");
+        const imagePreview = document.getElementById("imagePreview");
+        addInventoryForm.reset();
+        imagePreview.innerHTML = `
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>Upload Image</span>
+        `;
+        editingComponentId = null;
+        document.querySelector(".submit-btn").textContent = "Add Component";
+      }
+      
+      // Refresh the components list
+      await renderComponentCards();
+      await renderInventoryTable();
+    } catch (error) {
+      console.error("Error deleting component:", error);
+      alert("Failed to delete component. Please try again.");
+    }
   }
 }
 
 // Edit component
 let editingComponentId = null;
 
-function editComponent(componentId) {
-  const component = inventory.find((item) => item.id === componentId);
-  if (!component) return;
-
-  editingComponentId = componentId;
-
-  // Fill form with component data
-  document.getElementById("componentType").value = component.type;
-  document.getElementById("componentPrice").value = component.price;
-  document.getElementById("componentQuantity").value = component.quantity;
-  document.getElementById("componentDescription").value = component.description;
-
-  // Show image preview
-  document.getElementById(
-    "imagePreview"
-  ).innerHTML = `<img src="${component.image}" alt="Preview">`;
-
-  // Change submit button text
-  document.querySelector(".submit-btn").textContent = "Update Component";
-
-  // Scroll to form
-  document
-    .querySelector(".add-inventory-section")
-    .scrollIntoView({ behavior: "smooth" });
-}
-
-// Handle form submission
-inventoryForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const imageInput = document.getElementById("componentImage");
-  const typeInput = document.getElementById("componentType");
-  const priceInput = document.getElementById("componentPrice");
-  const quantityInput = document.getElementById("componentQuantity");
-  const descriptionInput = document.getElementById("componentDescription");
-
-  if (editingComponentId) {
-    // Update existing component
-    const componentIndex = inventory.findIndex(
-      (item) => item.id === editingComponentId
-    );
-    if (componentIndex !== -1) {
-      const updatedComponent = { ...inventory[componentIndex] };
-
-      if (typeInput.value) updatedComponent.type = typeInput.value;
-      if (priceInput.value)
-        updatedComponent.price = parseFloat(priceInput.value);
-      if (quantityInput.value)
-        updatedComponent.quantity = parseInt(quantityInput.value);
-      if (descriptionInput.value)
-        updatedComponent.description = descriptionInput.value;
-      if (imageInput.files[0]) {
-        updatedComponent.image = URL.createObjectURL(imageInput.files[0]);
-      }
-
-      inventory[componentIndex] = updatedComponent;
-      editingComponentId = null;
-      document.querySelector(".submit-btn").textContent = "Add Component";
-    }
-  } else {
-    // Add new component
-    if (!imageInput.files[0]) {
-      alert("Please select an image");
+async function editComponent(componentId) {
+  try {
+    // Get the component document
+    const componentDoc = await getDoc(doc(db, "parts", componentId));
+    if (!componentDoc.exists()) {
+      alert("Component not found!");
       return;
     }
 
-    const newComponent = {
-      id: generateComponentId(),
-      type: typeInput.value,
-      price: parseFloat(priceInput.value),
-      quantity: parseInt(quantityInput.value),
-      description: descriptionInput.value,
-      image: URL.createObjectURL(imageInput.files[0]),
-    };
-    inventory.push(newComponent);
+    const component = componentDoc.data();
+    editingComponentId = componentId;
+
+    // Fill form with component data
+    document.getElementById("componentName").value = component.name || '';
+    document.getElementById("componentPrice").value = component.price || '';
+    document.getElementById("componentQuantity").value = component.quantity ?? '';
+    document.getElementById("componentDescription").value = component.description || '';
+    
+    // Show image preview
+    document.getElementById("imagePreview").innerHTML = `<img src="${component.image}" alt="Preview">`;
+
+    // Change submit button text
+    document.querySelector(".submit-btn").textContent = "Update Component";
+
+    // Scroll to form
+    document.querySelector(".add-inventory-section").scrollIntoView({ behavior: "smooth" });
+
+    document.querySelector(".add-inventory-section h2").textContent = "Edit a component";
+  } catch (error) {
+    console.error("Error preparing edit:", error);
+    alert("Error preparing component for edit. Please try again.");
+  }
+}
+
+window.editComponent = editComponent;
+
+// Handle form submission
+inventoryForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const imageInput = document.getElementById("componentImage");
+  const nameInput = document.getElementById("componentName");
+  const priceInput = document.getElementById("componentPrice");
+  const quantityInput = document.getElementById("componentQuantity");
+  const descriptionInput = document.getElementById("componentDescription");
+  const submitBtn = document.querySelector(".submit-btn");
+
+  // Validate inputs
+  if (!nameInput.value || !priceInput.value || !quantityInput.value || !descriptionInput.value) {
+    alert("Please fill in all required fields");
+    return;
   }
 
-  // Save and render
-  saveAndRender();
+  // Additional validation for new items
+  if (!editingComponentId && !imageInput.files[0]) {
+    alert("Please select an image for the new component");
+    return;
+  }
 
-  // Reset form
-  e.target.reset();
-  document.getElementById("imagePreview").innerHTML = `
-    <i class="fa-solid fa-cloud-arrow-up"></i>
-    <span>Upload Image</span>
-  `;
+  try {
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = editingComponentId ? "Updating Component..." : "Adding Component...";
+
+    let imageUrl;
+    
+    // Only handle image upload if a new image is selected
+    if (imageInput.files[0]) {
+      const file = imageInput.files[0];
+      const reader = new FileReader();
+      
+      imageUrl = await new Promise((resolve, reject) => {
+        reader.onload = async () => {
+          try {
+            const base64Data = reader.result.split(",")[1];
+            const formData = new FormData();
+            formData.append("key", IMGBB_API_KEY);
+            formData.append("image", base64Data);
+
+            const res = await fetch("https://api.imgbb.com/1/upload", {
+              method: "POST",
+              body: formData
+            });
+            
+            const json = await res.json();
+            if (!json.success) throw new Error(json.error.message);
+            resolve(json.data.url);
+          } catch (error) {
+            reject(error);
+          }
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Prepare component data
+    const componentData = {
+      name: nameInput.value,
+      price: parseFloat(priceInput.value),
+      quantity: parseInt(quantityInput.value),
+      description: descriptionInput.value
+    };
+
+    // Add image URL if a new image was uploaded
+    if (imageUrl) {
+      componentData.image = imageUrl;
+    }
+
+    if (editingComponentId) {
+      // Update existing component
+      await updateDoc(doc(db, "parts", editingComponentId), componentData);
+      alert("Component updated successfully!");
+    } else {
+      // Add new component
+      await addDoc(collection(db, "parts"), componentData);
+      alert("Component added successfully!");
+    }
+
+    // Reset form and state
+    e.target.reset();
+    document.getElementById("imagePreview").innerHTML = `
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <span>Upload Image</span>
+    `;
+    editingComponentId = null;
+    submitBtn.textContent = "Add Component";
+    document.querySelector(".add-inventory-section h2").textContent = "Add New Component";
+
+    // Refresh the components list
+    await renderComponentCards();
+    await renderInventoryTable();
+
+  } catch (error) {
+    console.error("Error in form submission:", error);
+    alert("An error occurred. Please try again.");
+  } finally {
+    // Re-enable submit button
+    submitBtn.disabled = false;
+    submitBtn.textContent = editingComponentId ? "Update Component" : "Add Component";
+  }
 });
 
 // Handle image preview

@@ -84,7 +84,6 @@
                   type="file"
                   id="componentImage"
                   accept="image/*"
-                  required
                 />
                 <div class="image-preview" id="imagePreview">
                   <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -93,16 +92,8 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="componentType">Component Type</label>
-              <select id="componentType" required>
-                <option value="">Select Type</option>
-                <option value="Esp-01s">Esp-01s</option>
-                <option value="Relay">Relay</option>
-                <option value="MPU-6050">MPU-6050</option>
-                <option value="Lipo battery">Lipo battery</option>
-                <option value="PCB">PCB</option>
-                <option value="Esp-32 CAM">Esp-32 CAM</option>
-              </select>
+              <label for="componentName">Component Name</label>
+              <input type="text" id="componentName" required placeholder="Enter component name" />
             </div>
             <div class="form-group">
               <label for="componentPrice">Price ($)</label>
