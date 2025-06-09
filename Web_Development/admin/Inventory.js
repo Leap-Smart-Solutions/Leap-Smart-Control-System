@@ -1,5 +1,5 @@
 // Import Firebase configuration
-import { db } from '../src/js/firebase/firebaseConfig.js';
+import { db, auth } from '../src/js/firebase/firebaseConfig.js';
 import { 
   collection, 
   getDocs, 
@@ -7,7 +7,9 @@ import {
   doc, 
   updateDoc, 
   deleteDoc,
-  getDoc 
+  getDoc,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
@@ -52,6 +54,14 @@ const descriptionModalBody = document.getElementById("descriptionModalBody");
 const descriptionModalClose = document.querySelector(
   ".description-modal-close"
 );
+
+// Reorder Modal Elements
+const reorderModal = document.getElementById("reorderModal");
+const reorderForm = document.getElementById("reorderForm");
+const reorderComponent = document.getElementById("reorderComponent");
+const reorderQuantity = document.getElementById("reorderQuantity");
+const totalItems = document.getElementById("totalItems");
+const totalCost = document.getElementById("totalCost");
 
 // Navigation Toggle
 menuToggle.addEventListener("click", () => {
@@ -484,6 +494,30 @@ document
     }
   });
 
+// Prevent negative numbers and minus sign in quantity inputs
+const quantityInputs = ['componentQuantity', 'reorderQuantity'];
+
+quantityInputs.forEach(inputId => {
+  const input = document.getElementById(inputId);
+  
+  // Prevent typing minus sign
+  input.addEventListener('keypress', (e) => {
+    if (e.key === '-') {
+      e.preventDefault();
+    }
+  });
+  
+  // Ensure value is not negative
+  input.addEventListener('input', (e) => {
+    if (e.target.value < 0) {
+      e.target.value = 0;
+    }
+  });
+  
+  // Set min attribute
+  input.setAttribute('min', '0');
+});
+
 // Save to localStorage and render
 function saveAndRender() {
   localStorage.setItem("inventory", JSON.stringify(inventory));
@@ -496,3 +530,194 @@ renderComponentCards();
 renderInventoryTable();
 
 window.deleteComponent = deleteComponent;
+
+// Open reorder modal
+window.openReorderModal = function() {
+  reorderModal.style.display = "block";
+  populateReorderComponents();
+};
+
+// Close reorder modal
+document.querySelector(".reorder-modal-close").addEventListener("click", () => {
+  reorderModal.style.display = "none";
+});
+
+// Close modal when clicking outside
+window.addEventListener("click", (e) => {
+  if (e.target === reorderModal) {
+    reorderModal.style.display = "none";
+  }
+});
+
+// Populate reorder components dropdown
+async function populateReorderComponents() {
+  try {
+    const components = await fetchComponents();
+    reorderComponent.innerHTML = '<option value="">Select a component</option>';
+    
+    components.forEach(component => {
+      const option = document.createElement('option');
+      option.value = component.id;
+      option.textContent = component.name;
+      option.dataset.price = component.price;
+      reorderComponent.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error populating reorder components:", error);
+  }
+}
+
+// Update order summary when quantity changes
+reorderQuantity.addEventListener("input", updateOrderSummary);
+reorderComponent.addEventListener("change", updateOrderSummary);
+
+function updateOrderSummary() {
+  const quantity = parseInt(reorderQuantity.value) || 0;
+  const selectedOption = reorderComponent.options[reorderComponent.selectedIndex];
+  const price = selectedOption ? parseFloat(selectedOption.dataset.price) || 0 : 0;
+  
+  totalItems.textContent = quantity;
+  totalCost.textContent = (quantity * price).toFixed(2);
+}
+
+// Handle reorder form submission
+reorderForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  const componentId = reorderComponent.value;
+  const quantity = parseInt(reorderQuantity.value);
+  const selectedOption = reorderComponent.options[reorderComponent.selectedIndex];
+  const componentName = selectedOption.textContent;
+  
+  if (!componentId || !quantity) {
+    alert("Please select a component and quantity");
+    return;
+  }
+  
+  try {
+    // Get current user email
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to place a reorder");
+      return;
+    }
+    
+    // Get the current part document
+    const partRef = doc(db, 'parts', componentId);
+    const partDoc = await getDoc(partRef);
+    
+    if (!partDoc.exists()) {
+      alert("Component not found!");
+      return;
+    }
+    
+    const currentQuantity = partDoc.data().quantity;
+    const newQuantity = currentQuantity + quantity;
+    
+    // Update the part's quantity
+    await updateDoc(partRef, {
+      quantity: newQuantity
+    });
+    
+    // Create reorder document
+    const reorderData = {
+      name: componentName,
+      quantity: quantity,
+      reordered_by: user.email,
+      timestamp: new Date(),
+      total_cost: (quantity * parseFloat(selectedOption.dataset.price)).toFixed(2)
+    };
+    
+    // Add to reorders collection
+    await addDoc(collection(db, 'reorders'), reorderData);
+    
+    alert("Reorder placed successfully and inventory updated!");
+    reorderModal.style.display = "none";
+    reorderForm.reset();
+    updateOrderSummary();
+    
+    // Refresh the components display
+    await renderComponentCards();
+    await renderInventoryTable();
+    
+  } catch (error) {
+    console.error("Error placing reorder:", error);
+    alert("Failed to place reorder. Please try again.");
+  }
+});
+
+// Fetch reorders from Firestore
+async function fetchReorders() {
+  try {
+    const reordersCollection = collection(db, 'reorders');
+    const querySnapshot = await getDocs(reordersCollection);
+    const reorders = [];
+    
+    for (const reorderDoc of querySnapshot.docs) {
+      const reorderData = reorderDoc.data();
+      
+      // Get the corresponding part data
+      const partsCollection = collection(db, 'parts');
+      const partQuery = query(partsCollection, where('name', '==', reorderData.name));
+      const partSnapshot = await getDocs(partQuery);
+      
+      if (!partSnapshot.empty) {
+        const partData = partSnapshot.docs[0].data();
+        reorders.push({
+          id: reorderDoc.id,
+          image: partData.image,
+          name: reorderData.name,
+          timestamp: reorderData.timestamp.toDate(),
+          total_cost: reorderData.total_cost,
+          quantity: reorderData.quantity,
+          description: partData.description
+        });
+      }
+    }
+    
+    return reorders;
+  } catch (error) {
+    console.error("Error fetching reorders:", error);
+    return [];
+  }
+}
+
+// Format date to DD/MM/YYYY
+function formatDate(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Render reorders table
+async function renderReordersTable() {
+  const reorders = await fetchReorders();
+  
+  inventoryList.innerHTML = reorders
+    .map((reorder) => {
+      const shortDescription = reorder.description.length > 15 
+        ? reorder.description.substring(0, 15) + '...' 
+        : reorder.description;
+
+      return `
+        <div class="table-row">
+          <div class="image-cell">
+            <img src="${reorder.image}" alt="${reorder.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+          </div>
+          <div class="type-cell">${reorder.name}</div>
+          <div class="date-cell">${formatDate(reorder.timestamp)}</div>
+          <div class="price-cell">$${reorder.total_cost}</div>
+          <div class="quantity-cell">${reorder.quantity}</div>
+          <div class="description-cell" onclick="showDescriptionModal('${reorder.name}', '${reorder.description.replace(/'/g, "\\'")}')">
+            ${shortDescription}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+// Initial render
+renderComponentCards();
+renderReordersTable();

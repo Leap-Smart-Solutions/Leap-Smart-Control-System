@@ -133,13 +133,17 @@
           <h2>Reorders</h2>
           <div class="inventory-table">
             <div class="table-header">
-              <div class="header-cell">Component ID</div>
               <div class="header-cell">Image</div>
               <div class="header-cell">Type</div>
+              <div class="header-cell">Reorder Date &nbsp;</div>
               <div class="header-cell">Price</div>
               <div class="header-cell">Quantity</div>
               <div class="header-cell">Description</div>
-              <div class="header-cell">Actions</div>
+              <div class="header-cell">
+                <button class="reorder-btn" onclick="openReorderModal()">
+                  <i class="fas fa-shopping-cart"></i> Reorder
+                </button>
+              </div>
             </div>
             <div class="table-body" id="inventoryList">
               <!-- Inventory items will be populated by JavaScript -->
@@ -157,6 +161,38 @@
           <span class="description-modal-close">&times;</span>
         </div>
         <div class="description-modal-body" id="descriptionModalBody"></div>
+      </div>
+    </div>
+
+    <!-- Reorder Modal -->
+    <div id="reorderModal" class="reorder-modal">
+      <div class="reorder-modal-content">
+        <div class="reorder-modal-header">
+          <h3 class="reorder-modal-title">Create Reorder</h3>
+          <span class="reorder-modal-close">&times;</span>
+        </div>
+        <div class="reorder-modal-body">
+          <form id="reorderForm">
+            <div class="form-group">
+              <label for="reorderComponent">Select Component</label>
+              <select id="reorderComponent" required>
+                <option value="">Select a component</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reorderQuantity">Quantity</label>
+              <input type="number" id="reorderQuantity" min="1" required placeholder="Enter quantity">
+            </div>
+            <div class="reorder-summary">
+              <h4>Order Summary</h4>
+              <div id="reorderSummary">
+                <p>Total Items: <span id="totalItems">0</span></p>
+                <p>Total Cost: $<span id="totalCost">0.00</span></p>
+              </div>
+            </div>
+            <button type="submit" class="submit-btn">Place Reorder</button>
+          </form>
+        </div>
       </div>
     </div>
 

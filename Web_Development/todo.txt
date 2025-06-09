@@ -27,3 +27,14 @@ For this page, when the user creates an issue, remove the 'Asignee ' input field
 
 ModuleWorks
 Construct-It
+
+jenelo4399@linacit.com
+sn9#vB7kY,c85w4
+
+I want the table of 'Reorders' to fetch the data from the Firebase/Firestore and display them as following:
+- Image — the image of the part whose url is in the `image` document field in the `parts` subcollection
+- Type — the name of the part from `name` document field in the `parts` subcollection
+- Reorder Date — the data at which the reorder is reordered from `timestamp` document field in the `reorders` subcollection but with this format '06/05/2025'
+- Price  — the name of the part from `price` document field in the `parts` subcollection
+- Quantity  — the name of the part from `quantity` document field in the `reorders` subcollection which represents the number of parts reordered in the reorder
+- Description — the name of the part from `quantity` document field in the `reorders` subcollection which represents the number of parts reordered in the reorder

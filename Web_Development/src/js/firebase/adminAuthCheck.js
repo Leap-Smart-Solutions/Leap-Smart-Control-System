@@ -8,7 +8,6 @@ export async function checkAdminAuth() {
   // Check if user is logged in
   const user = auth.currentUser;
   if (!user) {
-    alert("Hanakesh");
     window.location.href = "../../../admin/login.html";
     return false;
   }

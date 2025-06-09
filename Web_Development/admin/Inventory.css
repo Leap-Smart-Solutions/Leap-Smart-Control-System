@@ -365,7 +365,7 @@ nav .Inventory {
 
 .table-header {
   display: grid;
-  grid-template-columns: 0.8fr 1fr 1fr 0.8fr 0.8fr 1.5fr 1.2fr;
+  grid-template-columns: 1fr 1fr 1fr 0.8fr 0.8fr 1.5fr 0.8fr;
   background-color: #292929;
   padding: 10px;
   font-weight: bold;
@@ -401,7 +401,7 @@ nav .Inventory {
 
 .table-row {
   display: grid;
-  grid-template-columns: 0.8fr 1fr 1fr 0.8fr 0.8fr 1.5fr 1.2fr;
+  grid-template-columns: 1fr 1fr 1fr 0.8fr 0.8fr 1.5fr 0.8fr;
   padding: 8px 10px;
   align-items: center;
   border-bottom: 1px solid rgb(212, 130, 30);
@@ -409,10 +409,22 @@ nav .Inventory {
   font-size: 13px;
 }
 
+.date-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .header-cell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.header-cell:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .actions-cell {
@@ -688,4 +700,137 @@ nav .Inventory {
   gap: 8px;
   justify-content: flex-end;
   margin-top: 4px;
+}
+
+/* Reorder Button */
+.reorder-btn {
+  background: rgb(212, 130, 30);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.reorder-btn:hover {
+  background: rgb(232, 150, 50);
+  transform: translateY(-2px);
+}
+
+.reorder-btn i {
+  font-size: 14px;
+}
+
+/* Reorder Modal */
+.reorder-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.reorder-modal-content {
+  background-color: #1e1e1e;
+  margin: 10% auto;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.reorder-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reorder-modal-title {
+  color: rgb(212, 130, 30);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.reorder-modal-close {
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.2s ease;
+}
+
+.reorder-modal-close:hover {
+  color: rgb(212, 130, 30);
+}
+
+.reorder-modal-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+.reorder-summary {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.reorder-summary h4 {
+  color: rgb(212, 130, 30);
+  margin-bottom: 10px;
+}
+
+.reorder-summary p {
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+#reorderComponent {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #292929;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+#reorderComponent:focus {
+  outline: none;
+  border-color: rgb(212, 130, 30);
+}
+
+#reorderQuantity {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #292929;
+  color: #fff;
+  font-size: 14px;
+}
+
+#reorderQuantity:focus {
+  outline: none;
+  border-color: rgb(212, 130, 30);
 }

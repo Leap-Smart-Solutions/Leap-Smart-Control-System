@@ -1,4 +1,4 @@
 Admin -> Sign up 
-Owner telephone -> Assign me as an admin
+The admin telephones the Owner -> Please Sir, Assign me as an admin
 		   Ok, I will add you to the Firestore document named "Admin"
 Admin -> Access the admin dashboard via checking if the admin email is in the Firestore document named "Admin"
