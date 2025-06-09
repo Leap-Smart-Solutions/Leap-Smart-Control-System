@@ -6,21 +6,66 @@ import {
   searchUsers 
 } from "../src/js/firebase/userOperations.js";
 import { EditUserModal } from "./components/EditUserModal.js";
-import { db } from "../src/js/firebase/firebaseConfig.js";
+import { db, auth } from "../src/js/firebase/firebaseConfig.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
-
-// Admin data
-const admin = {
-  userName: "Mohamed Hassan",
-  image: "Img/mo.jpg",
-};
 
 // Initialize edit modal
 const editModal = new EditUserModal();
 
-// Initialize admin auth check
-initAdminAuthCheck();
+// Function to get current admin data
+async function getCurrentAdminData() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        unsubscribe();
+        reject(new Error('No user logged in'));
+        return;
+      }
+
+      try {
+        // First check if user is an admin
+        const adminsRef = collection(db, 'admins');
+        const adminQuery = query(
+          adminsRef,
+          where('email', '==', user.email),
+          where('userID', '==', user.uid)
+        );
+        const adminSnapshot = await getDocs(adminQuery);
+        
+        if (adminSnapshot.empty) {
+          unsubscribe();
+          reject(new Error('No admin data found'));
+          return;
+        }
+
+        // Then get user data from users collection
+        const usersRef = collection(db, 'users');
+        const userQuery = query(
+          usersRef,
+          where('email', '==', user.email)
+        );
+        const userSnapshot = await getDocs(userQuery);
+
+        if (userSnapshot.empty) {
+          unsubscribe();
+          reject(new Error('No user data found'));
+          return;
+        }
+
+        const userData = userSnapshot.docs[0].data();
+        unsubscribe();
+        resolve({
+          userName: userData.fullName || user.displayName || 'Admin',
+          image: userData.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'
+        });
+      } catch (error) {
+        unsubscribe();
+        reject(error);
+      }
+    });
+  });
+}
 
 // Function to get user's latest order address
 async function getUserAddress(userId) {
@@ -204,22 +249,45 @@ async function filterUsers(searchTerm) {
 }
 
 // Display the top header with search and admin info
-function displayAdmin(admin) {
-  const header = `
-    <header class="dashboard-header">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search by name, email or phone..." />
-        <i class="fa fa-search"></i>
-      </div>
-      <div class="admin-info">
-        <img src="${admin.image}" alt="Admin" />
-        <span>${admin.userName}</span>
-      </div>
-    </header>
-  `;
-  document
-    .querySelector(".main-content")
-    .insertAdjacentHTML("afterbegin", header);
+async function displayAdmin() {
+  try {
+    const adminData = await getCurrentAdminData();
+    console.log('Admin data retrieved:', adminData);
+
+    // Remove existing header if it exists
+    const existingHeader = document.querySelector('.dashboard-header');
+    if (existingHeader) {
+      existingHeader.remove();
+    }
+
+    const header = `
+      <header class="dashboard-header">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search by name, email or phone..." />
+          <i class="fa fa-search"></i>
+        </div>
+        <div class="admin-info">
+          <img src="${adminData.image}" alt="Admin" />
+          <span>${adminData.userName}</span>
+        </div>
+      </header>
+    `;
+
+    const mainContent = document.querySelector(".main-content");
+    if (!mainContent) {
+      throw new Error('Main content element not found');
+    }
+
+    // Insert header at the beginning of main content
+    mainContent.insertAdjacentHTML('afterbegin', header);
+    console.log('Admin header inserted successfully');
+  } catch (error) {
+    console.error('Error displaying admin info:', error);
+    // Redirect to login if not authenticated
+    if (error.message === 'No user logged in' || error.message === 'No admin data found') {
+      window.location.href = "login.html";
+    }
+  }
 }
 
 // Initialize dropdowns
@@ -349,32 +417,40 @@ window.addEventListener("resize", () => {
 });
 
 // Initialize the page
-document.addEventListener("DOMContentLoaded", async () => {
-  // Create edit modal
-  editModal.createModal();
-
-  // Listen for user updates
-  document.addEventListener('userUpdated', async () => {
-    const users = await getAllUsers();
-    renderUsers(users);
-  });
-
-  // Display admin header
-  displayAdmin(admin);
-
+async function initializePage() {
   try {
-    // Initial render
-    const users = await getAllUsers();
-    renderUsers(users);
+    // Create edit modal
+    editModal.createModal();
 
-    // Search functionality
+    // Initialize admin auth check
+    initAdminAuthCheck();
+
+    // Display admin header
+    await displayAdmin();
+
+    // Initial render of users
+    const users = await getAllUsers();
+    await renderUsers(users);
+
+    // Set up search functionality
     const searchInput = document.getElementById("search-input");
-    searchInput.addEventListener("input", async (e) => {
-      const filteredUsers = await filterUsers(e.target.value);
-      renderUsers(filteredUsers);
+    if (searchInput) {
+      searchInput.addEventListener("input", async (e) => {
+        const filteredUsers = await filterUsers(e.target.value);
+        renderUsers(filteredUsers);
+      });
+    }
+
+    // Listen for user updates
+    document.addEventListener('userUpdated', async () => {
+      const users = await getAllUsers();
+      renderUsers(users);
     });
   } catch (error) {
     console.error("Error initializing users page:", error);
     alert("Error loading users. Please refresh the page.");
   }
-});
+}
+
+// Start the page when DOM is loaded
+document.addEventListener("DOMContentLoaded", initializePage);
