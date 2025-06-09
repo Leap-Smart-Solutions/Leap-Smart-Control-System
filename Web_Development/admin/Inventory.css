@@ -173,23 +173,39 @@ nav .Inventory {
   border-radius: 12px;
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.component-image {
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.component-image img {
+  height: 100%;
+  object-fit: cover;
 }
 
 .component-card h3 {
   font-size: 18px;
-  margin-bottom: 15px;
   color: rgb(212, 130, 30);
+  margin: 0;
 }
 
 .component-stats {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  margin-bottom: 15px;
+  margin: 0;
 }
 
 .stat-item {
   text-align: center;
+  flex: 1;
 }
 
 .stat-label {
@@ -201,6 +217,27 @@ nav .Inventory {
 .stat-value {
   font-size: 20px;
   font-weight: 600;
+  color: #fff;
+}
+
+.component-description {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.4;
+  margin-top: 5px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.component-description:hover {
+  color: rgb(212, 130, 30);
+}
+
+.component-description p {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Add Inventory Form Section */
@@ -214,6 +251,13 @@ nav .Inventory {
 }
 
 .add-inventory-section h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+
+.inventory-table-section h2 {
   color: #fff;
   margin-bottom: 20px;
   font-size: 24px;

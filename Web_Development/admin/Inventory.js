@@ -1,3 +1,7 @@
+// Import Firebase configuration
+import { db } from '../src/js/firebase/firebaseConfig.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
 // Initialize inventory from localStorage or use empty array if none exists
 let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
 
@@ -94,27 +98,56 @@ function calculateComponentStats() {
   });
 }
 
+// Fetch components from Firestore
+async function fetchComponents() {
+  try {
+    const partsCollection = collection(db, 'parts');
+    const querySnapshot = await getDocs(partsCollection);
+    const components = [];
+    
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      components.push({
+        id: doc.id,
+        name: data.name,
+        price: data.price,
+        image: data.image,
+        quantity: data.quantity,
+        description: data.description
+      });
+    });
+    
+    return components;
+  } catch (error) {
+    console.error("Error fetching components:", error);
+    return [];
+  }
+}
+
 // Render component cards
-function renderComponentCards() {
-  const stats = calculateComponentStats();
-  componentCards.innerHTML = stats
+async function renderComponentCards() {
+  const components = await fetchComponents();
+  
+  componentCards.innerHTML = components
     .map(
-      (stat) => `
+      (component) => `
     <div class="component-card">
-      <h3>${stat.type}</h3>
+      <div class="component-image">
+        <img src="${component.image}" alt="${component.name}" />
+      </div>
+      <h3>${component.name}</h3>
       <div class="component-stats">
         <div class="stat-item">
           <p class="stat-label">Quantity</p>
-          <p class="stat-value">${stat.quantity}</p>
+          <p class="stat-value">${component.quantity}</p>
         </div>
         <div class="stat-item">
-          <p class="stat-label">Total Value</p>
-          <p class="stat-value">$${stat.totalValue.toFixed(2)}</p>
+          <p class="stat-label">Price</p>
+          <p class="stat-value">$${component.price.toFixed(2)}</p>
         </div>
-        <div class="stat-item">
-          <p class="stat-label">Avg. Price</p>
-          <p class="stat-value">$${stat.averagePrice.toFixed(2)}</p>
-        </div>
+      </div>
+      <div class="component-description" onclick="showDescriptionModal('${component.name}', '${component.description?.replace(/'/g, "\\'") || 'No description available'}')">
+        <p>${component.description ? (component.description.length > 15 ? component.description.substring(0, 15) + '...' : component.description) : 'No description available'}</p>
       </div>
     </div>
   `
@@ -187,8 +220,7 @@ function showDescriptionModal(componentName, description) {
       ${description}
     </div>
   `;
-  descriptionModal.querySelector(".description-modal-content").innerHTML =
-    modalContent;
+  descriptionModal.querySelector(".description-modal-content").innerHTML = modalContent;
 
   // Reattach close button event listener
   document
