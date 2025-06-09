@@ -1,7 +1,14 @@
+// Import Firebase modules
+import { db } from '../src/js/firebase/firebaseConfig.js';
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+// Check if Firebase is properly initialized
+console.log("Firebase db instance:", db);
+
 // Admin data
 const admin = {
   userName: "Mohamed Hassan",
-  image: "Img/mo.jpg",
+  image: "../Img/mo.jpg",
 };
 // Declare Variables
 const itemPage = document.querySelector(".Items");
@@ -11,6 +18,27 @@ const menuToggle = document.querySelector(".menu-toggle");
 const sidebar = document.querySelector(".sidebar");
 const closeMenu = document.querySelector(".close-menu");
 const mainContent = document.querySelector(".main-content");
+
+// Make functions available globally
+window.showDescriptionModal = function(text, title) {
+  const modal = document.getElementById("descriptionModal");
+  const modalBody = document.getElementById("descriptionModalBody");
+  const modalTitle = document.querySelector(".description-modal-title");
+  
+  modalTitle.textContent = title;
+  modalBody.textContent = text;
+  modal.style.display = "block";
+};
+
+window.editItem = function(itemId) {
+  // Implement edit functionality
+  console.log("Edit item:", itemId);
+};
+
+window.deleteItem = function(itemId) {
+  // Implement delete functionality
+  console.log("Delete item:", itemId);
+};
 
 // Navigation Toggle
 menuToggle.addEventListener("click", () => {
@@ -60,7 +88,7 @@ function displayAdmin(admin) {
   const header = `
     <header class="dashboard-header">
       <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search by ID, Type or Description..." />
+        <input type="text" id="search-input" placeholder="Search by name or description..." />
         <i class="fa fa-search"></i>
       </div>
       <div class="admin-info">
@@ -82,96 +110,35 @@ itemPage.addEventListener("click", function (e) {
   e.preventDefault();
 });
 
-// Items array to store all items
-let items = JSON.parse(localStorage.getItem("items")) || [];
-let currentItemId = parseInt(localStorage.getItem("currentItemId")) || 1;
-let editingItemId = null;
-
-// Function to generate unique item ID
-function generateItemId() {
-  const id = `ITEM-${String(currentItemId).padStart(3, "0")}`;
-  currentItemId++;
-  localStorage.setItem("currentItemId", currentItemId);
-  return id;
-}
-
-// Function to handle image preview
-function setupImagePreview() {
-  const imageInput = document.getElementById("itemImage");
-  const imagePreview = document.getElementById("imagePreview");
-
-  imageInput.addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-}
-
-// Function to adjust item quantity
-function adjustQuantity(itemId, adjustment) {
-  const itemIndex = items.findIndex((item) => item.id === itemId);
-  if (itemIndex !== -1) {
-    const newQuantity = items[itemIndex].quantity + adjustment;
-    if (newQuantity >= 0) {
-      items[itemIndex].quantity = newQuantity;
-      localStorage.setItem("items", JSON.stringify(items));
-      renderItems();
-    }
-  }
-}
-
-// Function to show description modal
-function showDescriptionModal(description) {
-  const modal = document.getElementById("descriptionModal");
-  const modalBody = document.getElementById("descriptionModalBody");
-  modalBody.textContent = description;
-  modal.style.display = "block";
-}
-
 // Function to create an item row
 function createItemRow(item) {
-  const shortDescription =
-    item.description.length > 30
-      ? item.description.substring(0, 30) + "..."
-      : item.description;
+  // Add null checks and default values for item properties
+  const description = item.description || '';
+  const name = item.name || '';
+  const price = item.price || 0;
+  const image = item.image || '../Img/default-product.jpg';
+
+  const shortDescription = description.length > 15
+    ? description.substring(0, 15) + "..."
+    : description;
+    
+  const shortName = name.length > 15
+    ? name.substring(0, 15) + "..."
+    : name;
 
   return `
     <div class="table-row" data-id="${item.id}">
-      <div class="id-cell">${item.id}</div>
       <div class="image-cell">
-        <img src="${item.image}" alt="${item.type}" class="item-thumbnail">
+        <img src="${image}" alt="${name}" class="item-thumbnail">
       </div>
-      <div class="type-cell">${item.type}</div>
-      <div class="price-cell">$${item.price.toFixed(2)}</div>
-      <div class="quantity-cell">${item.quantity}</div>
-      <div class="description-cell" onclick="showDescriptionModal('${item.description.replace(
-        /'/g,
-        "\\'"
-      )}')">${shortDescription}</div>
+      <div class="name-cell" onclick="showDescriptionModal('${name.replace(/'/g, "\\'")}', 'Name')">${shortName}</div>
+      <div class="price-cell">$${price.toFixed(2)}</div>
+      <div class="description-cell" onclick="showDescriptionModal('${description.replace(/'/g, "\\'")}', 'Description')">${shortDescription}</div>
       <div class="actions-cell">
-        <button class="quantity-btn subtract" onclick="adjustQuantity('${
-          item.id
-        }', -1)" title="Decrease Quantity">
-          <i class="fas fa-minus"></i>
-        </button>
-        <button class="quantity-btn add" onclick="adjustQuantity('${
-          item.id
-        }', 1)" title="Increase Quantity">
-          <i class="fas fa-plus"></i>
-        </button>
-        <button class="edit-btn" onclick="editItem('${
-          item.id
-        }')" title="Edit Item">
+        <button class="edit-btn" onclick="editItem('${item.id}')" title="Edit Item">
           <i class="fa-solid fa-pen-to-square"></i>
         </button>
-        <button class="delete-btn" onclick="deleteItem('${
-          item.id
-        }')" title="Delete Item">
+        <button class="delete-btn" onclick="deleteItem('${item.id}')" title="Delete Item">
           <i class="fa-solid fa-trash"></i>
         </button>
       </div>
@@ -180,7 +147,7 @@ function createItemRow(item) {
 }
 
 // Function to render items
-function renderItems(itemsToRender = items) {
+function renderItems(itemsToRender) {
   const itemsList = document.getElementById("itemsList");
   itemsList.innerHTML = itemsToRender
     .map((item) => createItemRow(item))
@@ -188,44 +155,55 @@ function renderItems(itemsToRender = items) {
 }
 
 // Function to filter items
-function filterItems(searchTerm) {
+function filterItems(searchTerm, items) {
   searchTerm = searchTerm.toLowerCase();
   return items.filter(
     (item) =>
-      item.id.toLowerCase().includes(searchTerm) ||
-      item.type.toLowerCase().includes(searchTerm) ||
-      item.description.toLowerCase().includes(searchTerm)
+      (item.name || '').toLowerCase().includes(searchTerm) ||
+      (item.description || '').toLowerCase().includes(searchTerm)
   );
 }
 
-// Function to edit item
-function editItem(itemId) {
-  const item = items.find((item) => item.id === itemId);
-  if (!item) return;
-
-  editingItemId = itemId;
-
-  // Fill form with item data
-  document.getElementById("itemType").value = item.type || "";
-  document.getElementById("itemPrice").value = item.price || "";
-  document.getElementById("itemQuantity").value = item.quantity || "";
-  document.getElementById("itemDescription").value = item.description || "";
-
-  // Show image preview if exists
-  if (item.image) {
-    document.getElementById(
-      "imagePreview"
-    ).innerHTML = `<img src="${item.image}" alt="Preview">`;
+// Function to fetch items from Firestore
+async function fetchItems() {
+  console.log("Starting fetchItems function");
+  try {
+    const productsCollection = collection(db, "products");
+    console.log("Collection reference created");
+    
+    const querySnapshot = await getDocs(productsCollection);
+    console.log("Query snapshot received:", querySnapshot.size, "documents");
+    
+    const items = [];
+    
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      
+      // Special logging for the Eufy item
+      if (data.name === "Eufy Security Video Smart Lock S330") {
+        console.log("Found Eufy item!");
+        console.log("Raw document data:", data);
+      }
+      
+      // Ensure all required fields exist with default values
+      const item = {
+        id: doc.id,
+        name: data.name || '',
+        // Check for both "description" and " description" fields
+        description: data.description || data[" description"] || '',
+        price: data.price || 0,
+        image: data.image || '../Img/default-product.jpg'
+      };
+      
+      items.push(item);
+    });
+    
+    console.log("Final items array:", items);
+    return items;
+  } catch (error) {
+    console.error("Error fetching items:", error);
+    return [];
   }
-
-  // Change submit button text
-  const submitBtn = document.querySelector(".submit-btn");
-  submitBtn.textContent = "Update Item";
-
-  // Scroll to form
-  document
-    .querySelector(".add-item-section")
-    .scrollIntoView({ behavior: "smooth" });
 }
 
 // Function to handle form submission (both add and edit)
@@ -303,39 +281,55 @@ function handleFormSubmit(e) {
   renderItems();
 }
 
-// Function to delete item
-function deleteItem(itemId) {
-  if (confirm("Are you sure you want to delete this item?")) {
-    items = items.filter((item) => item.id !== itemId);
-    localStorage.setItem("items", JSON.stringify(items));
-    renderItems();
+// Function to generate unique item ID
+function generateItemId() {
+  const id = `ITEM-${String(currentItemId).padStart(3, "0")}`;
+  currentItemId++;
+  localStorage.setItem("currentItemId", currentItemId);
+  return id;
+}
 
-    // If the deleted item was being edited, reset the form
-    if (editingItemId === itemId) {
-      editingItemId = null;
-      document.getElementById("addItemForm").reset();
-      document.getElementById("imagePreview").innerHTML = `
-        <i class="fa-solid fa-cloud-arrow-up"></i>
-        <span>Upload Image</span>
-      `;
-      document.querySelector(".submit-btn").textContent = "Add Item";
+// Function to handle image preview
+function setupImagePreview() {
+  const imageInput = document.getElementById("itemImage");
+  const imagePreview = document.getElementById("imagePreview");
+
+  imageInput.addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+// Function to adjust item quantity
+function adjustQuantity(itemId, adjustment) {
+  const itemIndex = items.findIndex((item) => item.id === itemId);
+  if (itemIndex !== -1) {
+    const newQuantity = items[itemIndex].quantity + adjustment;
+    if (newQuantity >= 0) {
+      items[itemIndex].quantity = newQuantity;
+      localStorage.setItem("items", JSON.stringify(items));
+      renderItems();
     }
   }
 }
 
 // Initialize the page
-document.addEventListener("DOMContentLoaded", () => {
-  // Setup image preview
-  setupImagePreview();
-
-  // Setup form submission
-  const addItemForm = document.getElementById("addItemForm");
-  addItemForm.addEventListener("submit", handleFormSubmit);
-
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("DOM Content Loaded");
+  // Fetch items from Firestore
+  const items = await fetchItems();
+  console.log("Items fetched:", items);
+  
   // Setup search functionality
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (e) => {
-    const filteredItems = filterItems(e.target.value);
+    const filteredItems = filterItems(e.target.value, items);
     renderItems(filteredItems);
   });
 
@@ -353,6 +347,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Setup image preview
+  setupImagePreview();
+
+  // Setup form submission
+  const addItemForm = document.getElementById("addItemForm");
+  addItemForm.addEventListener("submit", handleFormSubmit);
+
   // Initial render
-  renderItems();
+  renderItems(items);
 });

@@ -386,7 +386,7 @@ nav .Items {
 
 .table-header {
   display: grid;
-  grid-template-columns: 0.8fr 1fr 1fr 0.8fr 0.8fr 1.5fr 1.2fr;
+  grid-template-columns: 1fr 1.5fr 1fr 2fr 1fr;
   background-color: #292929;
   padding: 10px;
   font-weight: bold;
@@ -422,7 +422,7 @@ nav .Items {
 
 .table-row {
   display: grid;
-  grid-template-columns: 0.8fr 1fr 1fr 0.8fr 0.8fr 1.5fr 1.2fr;
+  grid-template-columns: 1fr 1.5fr 1fr 2fr 1fr;
   padding: 8px 10px;
   align-items: center;
   border-bottom: 1px solid rgb(212, 130, 30);
@@ -436,14 +436,21 @@ nav .Items {
   text-overflow: ellipsis;
 }
 
-.id-cell,
-.type-cell,
-.price-cell,
-.quantity-cell {
+.name-cell,
+.price-cell {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 5px;
+}
+
+.name-cell {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.name-cell:hover {
+  color: rgb(212, 130, 30);
 }
 
 .actions-cell {
@@ -455,8 +462,7 @@ nav .Items {
 }
 
 .edit-btn,
-.delete-btn,
-.quantity-btn {
+.delete-btn {
   border: none;
   padding: 3px;
   border-radius: 3px;
@@ -487,27 +493,6 @@ nav .Items {
   background: #e4505f;
 }
 
-.quantity-btn.add {
-  background: #28a745;
-  color: #fff;
-  border: none;
-}
-
-.quantity-btn.add:hover {
-  background: #34ce57;
-}
-
-.quantity-btn.subtract {
-  background: #dc3545;
-  color: #fff;
-  border: none;
-}
-
-.quantity-btn.subtract:hover {
-  background: #e4505f;
-}
-
-.quantity-btn i,
 .edit-btn i,
 .delete-btn i {
   font-size: 11px;
