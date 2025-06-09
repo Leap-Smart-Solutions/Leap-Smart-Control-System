@@ -1,0 +1,220 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  /* text-transform: capitalize; */
+  transition: all 0.2s linear;
+}
+
+/* color variables for the all pages  */
+:root {
+  --blue: #0366ff;
+  --black: #06090a;
+  --gray: #353535;
+  --light-gray: #d0d0d0;
+  --border: #b0b0b0;
+  --box-shadow: 0 0.5rem 1.5rem #8080808c;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--light-gray);
+  height: 100vh;
+  position: relative;
+}
+
+header a {
+  position: absolute;
+  background-color: var(--gray);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  top: 30px;
+  left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header a i {
+  color: #fff;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-container h1 {
+  text-align: center;
+  width: 100%;
+  height: 29px;
+  margin-top: 45px;
+  color: #fff;
+}
+
+.login-container .login-rectangle {
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 4px 3px #8080808c;
+  width: 100%;
+  max-width: 398px;
+  height: auto;
+  border: 3px solid #b0b0b0;
+  margin-top: 25px;
+}
+
+.login-container .login-rectangle h2 {
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.login-container .login-rectangle p {
+  color: #b0b0b0;
+  font-size: 12px;
+  margin-left: 10px;
+  margin-top: 4px;
+  font-family: serif;
+}
+
+.login-container .login-rectangle .filds {
+  display: flex;
+  flex-direction: column;
+  margin: 30px 0px;
+}
+
+.login-container .login-rectangle .filds input {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+/*   background-color: var(--light-gray); */
+    padding-left: 10px;
+}
+
+.login-container .login-rectangle .filds input:hover {
+  background-color: var(--border);
+}
+
+.login-container .login-rectangle .filds input::placeholder {
+  padding-left: 10px;
+  color: var(--gray);
+  font-weight: 400;
+  font-size: 16px;
+  width: 100%;
+  height: 19px;
+}
+
+.login-container .login-rectangle .filds #password {
+  margin-top: 32px;
+}
+
+.login-container .login-rectangle h3 {
+  font-size: 16px;
+  height: 19px;
+  color: #f2f2f7;
+}
+
+.login-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.login-buttons .login-button {
+  width: 80px;
+  height: 80px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.login-container .login-rectangle .submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container .login-rectangle .submit button {
+  width: 100%;
+  max-width: 312px;
+  height: 62px;
+  margin-top: 21.5px;
+  margin-bottom: 21.5px;
+  border: solid 1px #ee8924;
+  color: #ee8924;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.login-buttons .login-button:hover {
+  scale: 1.1;
+}
+
+.login-container .login-rectangle .submit button:hover {
+  background-color: #ee8924;
+  color: #000;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .login-container .login-rectangle {
+    padding: 15px;
+  }
+
+  .login-container h1 {
+    font-size: 24px;
+  }
+
+  .login-container .login-rectangle h2 {
+    font-size: 20px;
+  }
+
+  .login-container .login-rectangle .filds input {
+    height: 45px;
+  }
+
+  .login-container .login-rectangle .submit button {
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  header a {
+    top: 15px;
+    left: 15px;
+    width: 35px;
+    height: 35px;
+  }
+
+  .login-container h1 {
+    font-size: 20px;
+  }
+
+  .login-container .login-rectangle h2 {
+    font-size: 18px;
+  }
+
+  .login-container .login-rectangle .filds input {
+    height: 40px;
+  }
+
+  .login-container .login-rectangle .submit button {
+    height: 45px;
+  }
+}

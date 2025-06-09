@@ -326,9 +326,8 @@ const displayDashboard = function () {
     const mainContent = document.querySelector(".main-content");
     if (mainContent) {
       mainContent.innerHTML = `
-        <div style="color: #dc3545; padding: 20px; text-align: center;">
-          <h2>Error Loading Dashboard</h2>
-          <p>Please try refreshing the page. If the problem persists, contact support.</p>
+        <div style="color: rgb(212, 130, 30); padding: 20px; text-align: center;">
+          <h2><span style="filter: invert(9%) sepia(80%) saturate(3916%) hue-rotate(313deg) brightness(82%) contrast(94%);">🔜</span> Coming Soon <span style="filter: invert(9%) sepia(80%) saturate(3916%) hue-rotate(313deg) brightness(82%) contrast(94%);">🔜</span></h2>
         </div>
       `;
     }

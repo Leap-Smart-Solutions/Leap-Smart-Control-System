@@ -1,211 +1,164 @@
-// Menu Toggle Functionality
-const menuToggle = document.querySelector(".menu-toggle");
-const closeMenu = document.querySelector(".close-menu");
-const sidebar = document.querySelector(".sidebar");
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Menu Toggle Functionality
+  const menuToggle = document.querySelector(".menu-toggle");
+  const closeMenu = document.querySelector(".close-menu");
+  const sidebar = document.querySelector(".sidebar");
 
-// Toggle menu - show sidebar when menu is clicked
-menuToggle.addEventListener("click", () => {
-  sidebar.classList.add("active");
-  menuToggle.style.display = "none";
-});
+  // Toggle menu - show sidebar when menu is clicked
+  menuToggle.addEventListener("click", () => {
+    sidebar.classList.add("active");
+    menuToggle.style.display = "none";
+  });
 
-// Close menu - hide sidebar when close is clicked
-closeMenu.addEventListener("click", () => {
-  sidebar.classList.remove("active");
-  menuToggle.style.display = "flex";
-});
-
-// Close menu when clicking outside
-document.addEventListener("click", (e) => {
-  if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+  // Close menu - hide sidebar when close is clicked
+  closeMenu.addEventListener("click", () => {
     sidebar.classList.remove("active");
-    if (window.innerWidth <= 992) {
+    menuToggle.style.display = "flex";
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+      sidebar.classList.remove("active");
+      if (window.innerWidth <= 992) {
+        menuToggle.style.display = "flex";
+      }
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 992) {
+      menuToggle.style.display = "none";
+      sidebar.classList.remove("active");
+    } else if (!sidebar.classList.contains("active")) {
       menuToggle.style.display = "flex";
     }
+  });
+
+  // DOM Elements
+  const loadingContainer = document.querySelector(".loading-container");
+  const adminName = document.getElementById("adminName");
+  const adminFullName = document.getElementById("adminFullName");
+  const adminProfilePic = document.getElementById("adminProfilePic");
+  const profileImagePreview = document.getElementById("profileImagePreview");
+  const profileImage = document.getElementById("profileImage");
+  const currentEmail = document.getElementById("currentEmail");
+  const currentPassword = document.getElementById("currentPassword");
+  const newPassword = document.getElementById("newPassword");
+  const confirmPassword = document.getElementById("confirmPassword");
+  const passwordModal = document.getElementById("passwordModal");
+  const changePasswordBtn = document.getElementById("changePasswordBtn");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Admin data (replace with actual data from your backend)
+  const admin = {
+    userName: "Administrator",
+    image: "Img/mo.jpg",
+    fallbackImage: "https://i.ibb.co/tptmQ9jw/admin-Photoroom.png",
+    email: "mohamed.hassan@example.com"
+  };
+
+  // Initialize the page
+  function initializePage() {
+    // Set initial values
+    adminName.textContent = getFirstName(admin.userName);
+    adminFullName.textContent = admin.userName;
+    
+    // Set profile images with fallback
+    const setProfileImage = (imgElement) => {
+      imgElement.onerror = () => {
+        imgElement.src = admin.fallbackImage;
+      };
+      imgElement.src = admin.image;
+    };
+    
+    setProfileImage(adminProfilePic);
+    setProfileImage(profileImagePreview);
+    
+    currentEmail.value = admin.email;
+
+    // Hide loading screen
+    loadingContainer.classList.add("hidden");
   }
-});
 
-// Handle window resize
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 992) {
-    menuToggle.style.display = "none";
-    sidebar.classList.remove("active");
-  } else if (!sidebar.classList.contains("active")) {
-    menuToggle.style.display = "flex";
+  // Get first name
+  function getFirstName(name) {
+    return name.split(" ")[0];
   }
-});
 
-// Admin data
-const admin = {
-  userName: "Mohamed Hassan",
-  image: "Img/mo.jpg",
-  email: "mohamed.hassan@example.com",
-  inventory: {
-    remainingItems: 150,
-    remainingParts: 300,
-  },
-};
+  // Modal functionality
+  function openPasswordModal() {
+    passwordModal.style.display = "block";
+    // Clear form fields when opening modal
+    currentPassword.value = "";
+    newPassword.value = "";
+    confirmPassword.value = "";
+  }
 
-// Functions
-// get the first name
-const getFirstName = function (name) {
-  const first = name.split(" ")[0];
-  return first;
-};
+  function closePasswordModal() {
+    passwordModal.style.display = "none";
+  }
 
-// Handle image preview
-function setupProfileImagePreview() {
-  const imageInput = document.getElementById("profileImage");
-  const imagePreview = document.getElementById("profileImagePreview");
+  // Event Listeners
+  changePasswordBtn.addEventListener("click", openPasswordModal);
+  closeModalBtn.addEventListener("click", closePasswordModal);
+  
+  // Close modal when clicking outside
+  window.addEventListener("click", function(event) {
+    if (event.target === passwordModal) {
+      closePasswordModal();
+    }
+  });
 
-  imageInput.addEventListener("change", function (e) {
+  // Handle profile image upload
+  profileImage.addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = function (e) {
-        imagePreview.src = e.target.result;
+      reader.onload = function(e) {
+        const newImageSrc = e.target.result;
+        profileImagePreview.src = newImageSrc;
+        adminProfilePic.src = newImageSrc;
+        admin.image = newImageSrc;
+      };
+      reader.onerror = () => {
+        profileImagePreview.src = admin.fallbackImage;
+        adminProfilePic.src = admin.fallbackImage;
       };
       reader.readAsDataURL(file);
     }
   });
-}
 
-// Handle form submissions
-function handleSettingsSubmit(e) {
-  e.preventDefault();
-  const formId = e.target.id;
+  // Handle password form submission
+  document.getElementById("passwordForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const newPasswordValue = newPassword.value;
+    const confirmPasswordValue = confirmPassword.value;
 
-  switch (formId) {
-    case "photoForm":
-      // Handle photo update
-      const newPhoto = document.getElementById("profileImage").files[0];
-      if (newPhoto) {
-        admin.image = URL.createObjectURL(newPhoto);
-        updateAdminDisplay();
-      }
-      break;
+    if (newPasswordValue !== confirmPasswordValue) {
+      alert("New passwords do not match!");
+      return;
+    }
 
-    case "emailForm":
-      // Handle email update
-      const newEmail = document.getElementById("newEmail").value;
-      if (newEmail) {
-        admin.email = newEmail;
-        alert("Email updated successfully!");
-      }
-      break;
+    // Add your password update logic here
+    currentPassword.value = "";
+    newPassword.value = "";
+    confirmPassword.value = "";
+    alert("Password updated successfully!");
+    closePasswordModal();
+  });
 
-    case "passwordForm":
-      // Handle password update
-      const currentPassword = document.getElementById("currentPassword").value;
-      const newPassword = document.getElementById("newPassword").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+  // Handle logout
+  logoutBtn.addEventListener("click", function() {
+    if (confirm("Are you sure you want to logout?")) {
+      // Add your logout logic here
+      window.location.href = "login.html";
+    }
+  });
 
-      if (newPassword !== confirmPassword) {
-        alert("New passwords do not match!");
-        return;
-      }
-      // Add your password validation logic here
-      alert("Password updated successfully!");
-      break;
-  }
-}
-
-// Handle logout
-function handleLogout() {
-  if (confirm("Are you sure you want to logout?")) {
-    // Add your logout logic here
-    window.location.href = "login.html"; // Redirect to login page
-  }
-}
-
-// Display the dashboard content
-const displayDashboard = function () {
-  const html = `
-    <header class="dashboard-header">
-      <div class="profile">
-        <h2>Welcome, <span>${getFirstName(admin.userName)}</span></h2>
-      </div>
-      <div class="admin-info">
-        <img src="${admin.image}" alt="Admin" />
-        <span>${admin.userName}</span>
-      </div>
-    </header>
-    
-    <div class="settings-container">
-      <!-- Photo Section -->
-      <div class="settings-section">
-        <h3>Profile Photo</h3>
-        <form id="photoForm" onsubmit="handleSettingsSubmit(event)">
-          <div class="photo-preview">
-            <img id="profileImagePreview" src="${
-              admin.image
-            }" alt="Profile Preview">
-          </div>
-          <div class="form-group">
-            <label for="profileImage">Change Photo</label>
-            <input type="file" id="profileImage" accept="image/*">
-          </div>
-          <button type="submit">Update Photo</button>
-        </form>
-      </div>
-
-      <!-- Email Section -->
-      <div class="settings-section">
-        <h3>Email Settings</h3>
-        <form id="emailForm" onsubmit="handleSettingsSubmit(event)">
-          <div class="form-group">
-            <label for="currentEmail">Current Email</label>
-            <input type="email" id="currentEmail" value="${
-              admin.email
-            }" disabled>
-          </div>
-          <div class="form-group">
-            <label for="newEmail">New Email</label>
-            <input type="email" id="newEmail" required>
-          </div>
-          <button type="submit">Update Email</button>
-        </form>
-      </div>
-
-      <!-- Password Section -->
-      <div class="settings-section">
-        <h3>Change Password</h3>
-        <form id="passwordForm" onsubmit="handleSettingsSubmit(event)">
-          <div class="form-group">
-            <label for="currentPassword">Current Password</label>
-            <input type="password" id="currentPassword" required>
-          </div>
-          <div class="form-group">
-            <label for="newPassword">New Password</label>
-            <input type="password" id="newPassword" required>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm New Password</label>
-            <input type="password" id="confirmPassword" required>
-          </div>
-          <button type="submit">Change Password</button>
-        </form>
-      </div>
-
-      <!-- Logout Section -->
-      <div class="settings-section">
-        <h3>Logout</h3>
-        <button class="logout-btn" onclick="handleLogout()">Logout</button>
-      </div>
-    </div>
-  `;
-
-  document.querySelector(".main-content").innerHTML = html;
-  setupProfileImagePreview();
-};
-
-// Function to update admin display after changes
-function updateAdminDisplay() {
-  const adminImage = document.querySelector(".admin-info img");
-  const profilePreview = document.getElementById("profileImagePreview");
-  if (adminImage) adminImage.src = admin.image;
-  if (profilePreview) profilePreview.src = admin.image;
-}
-
-// Initialize the page
-displayDashboard();
+  // Initialize the page
+  initializePage();
+});

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/src/assets/icons/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- for fonts -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" as="style" onload="this.rel='stylesheet'">
+  <!-- for icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining" />
+  <link rel="stylesheet" href="../../assets/styles/signup.css">
+  <title>Login</title>
+</head>
+
+<body>
+
+  <header>
+    <a href="../index.html"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
+  </header>
+  <div class="signup-container">
+    <h1>Login</h1>
+    <div class="signup-rectangle">
+      <h2>Welcome back</h2>
+      <p>Enter your credentials to continue</p>
+      <form id="login-form">
+        <div class="filds">
+          <input type="email" id="email" name="email" placeholder="Email address" required>
+          <input type="password" id="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="resend-section">
+          <a href="reset-password.html" class="resend-button">Forgot password?</a>
+        </div>
+        <div class="submit">
+          <button type="submit">Login</button>
+        </div>
+      </form>
+      <div class="resend-section">
+        <p>Don't have an account?</p>
+        <a href="signup.html" class="resend-button">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../../js/firebase/auth.js"></script>
+  <script>
+    function checkCompletedOrders() {
+      // Implementation of checkCompletedOrders function
+      // This is a placeholder and should be replaced with actual implementation
+      return false; // Placeholder return, actual implementation needed
+    }
+
+    async function populateUserData() {
+      // Implementation of populateUserData function
+      // This is a placeholder and should be replaced with actual implementation
+      const hasCompletedOrders = await checkCompletedOrders();
+      if (hasCompletedOrders) {
+        // User has at least one completed order
+      }
+    }
+
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+        ordersRef,
+        where('userId', '==', auth.currentUser.uid),
+        where('status', '==', 'completed')
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(doc => {
+        console.log('Completed order:', doc.id, doc.data());
+    });
+  </script>
+</body>
+
+</html>
+
