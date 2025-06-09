@@ -293,11 +293,17 @@ async function createUserRow(user, index) {
   const emailText = padTextWithDots(user.email, 15);
   const usernameText = padTextWithDots(user.username || '-', 11);
   const phoneText = padTextWithDots(user.phone || '-', 12);
+  const fallbackImage = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
   
   return `
     <div class="table-row">
       <div class="user-image-cell">
-        <img src="${user.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'}" alt="${user.fullName || user.username || user.name}" class="user-image" />
+        <img 
+          src="${user.profilePicture || fallbackImage}" 
+          alt="${user.fullName || user.username || user.name}" 
+          class="user-image"
+          onerror="this.onerror=null; this.src='${fallbackImage}';"
+        />
       </div>
       <div class="name-cell">${user.fullName || user.username || user.name}</div>
       <div class="email-cell" data-email="${user.email}">${emailText}</div>
