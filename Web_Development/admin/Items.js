@@ -1,6 +1,14 @@
 // Import Firebase modules
 import { db } from '../src/js/firebase/firebaseConfig.js';
-import { collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { 
+  collection, 
+  getDocs, 
+  addDoc, 
+  doc, 
+  updateDoc, 
+  deleteDoc,
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 // ImgBB API Key
 const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
@@ -13,8 +21,10 @@ const admin = {
   userName: "Mohamed Hassan",
   image: "../Img/mo.jpg",
 };
+
 // Declare Variables
 const itemPage = document.querySelector(".Items");
+let editingItemId = null;
 
 // Navigation elements
 const menuToggle = document.querySelector(".menu-toggle");
@@ -33,14 +43,63 @@ window.showDescriptionModal = function(text, title) {
   modal.style.display = "block";
 };
 
-window.editItem = function(itemId) {
-  // Implement edit functionality
-  console.log("Edit item:", itemId);
+window.editItem = async function(itemId) {
+  try {
+    // Get the item document
+    const itemDoc = await getDoc(doc(db, "products", itemId));
+    if (!itemDoc.exists()) {
+      alert("Item not found!");
+      return;
+    }
+
+    const item = itemDoc.data();
+    editingItemId = itemId;
+
+    // Fill form with item data
+    document.getElementById("itemName").value = item.name || '';
+    document.getElementById("itemPrice").value = item.price || '';
+    document.getElementById("itemDescription").value = item.description || '';
+    
+    // Show image preview
+    document.getElementById("imagePreview").innerHTML = `<img src="${item.image}" alt="Preview">`;
+
+    // Change submit button text
+    document.querySelector(".submit-btn").textContent = "Update Item";
+
+    // Scroll to form
+    document.querySelector(".add-item-section").scrollIntoView({ behavior: "smooth" });
+  } catch (error) {
+    console.error("Error preparing edit:", error);
+    alert("Error preparing item for edit. Please try again.");
+  }
 };
 
-window.deleteItem = function(itemId) {
-  // Implement delete functionality
-  console.log("Delete item:", itemId);
+window.deleteItem = async function(itemId) {
+  if (confirm("Are you sure you want to delete this item?")) {
+    try {
+      await deleteDoc(doc(db, "products", itemId));
+      alert("Item deleted successfully!");
+      
+      // If the deleted item was being edited, reset the form
+      if (editingItemId === itemId) {
+        const addItemForm = document.getElementById("addItemForm");
+        const imagePreview = document.getElementById("imagePreview");
+        addItemForm.reset();
+        imagePreview.innerHTML = `
+          <i class=\"fa-solid fa-cloud-arrow-up\"></i>
+          <span>Upload Image</span>
+        `;
+        editingItemId = null;
+        document.querySelector(".submit-btn").textContent = "Add Item";
+      }
+      // Refresh the items list
+      const items = await fetchItems();
+      renderItems(items);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      alert("Failed to delete item. Please try again.");
+    }
+  }
 };
 
 // Navigation Toggle
@@ -237,88 +296,97 @@ async function handleFormSubmit(e) {
   const submitBtn = document.querySelector(".submit-btn");
   const imagePreview = document.getElementById("imagePreview");
 
-  // Validate inputs
-  if (!imageInput.files[0] || !nameInput.value || !priceInput.value || !descriptionInput.value) {
-    alert("Please fill in all fields");
+  // Validate inputs - only require image for new items
+  if (!nameInput.value || !priceInput.value || !descriptionInput.value) {
+    alert("Please fill in all required fields");
+    return;
+  }
+
+  // Additional validation for new items
+  if (!editingItemId && !imageInput.files[0]) {
+    alert("Please select an image for the new item");
     return;
   }
 
   try {
     // Disable submit button and show loading state
     submitBtn.disabled = true;
-    submitBtn.textContent = "Adding Item...";
+    submitBtn.textContent = editingItemId ? "Updating Item..." : "Adding Item...";
 
-    // 1. Upload image to ImgBB
-    const file = imageInput.files[0];
-    const reader = new FileReader();
+    let imageUrl;
     
-    reader.onload = async () => {
-      try {
-        const base64Data = reader.result.split(",")[1];
-        const formData = new FormData();
-        formData.append("key", IMGBB_API_KEY);
-        formData.append("image", base64Data);
+    // Only handle image upload if a new image is selected
+    if (imageInput.files[0]) {
+      const file = imageInput.files[0];
+      const reader = new FileReader();
+      
+      imageUrl = await new Promise((resolve, reject) => {
+        reader.onload = async () => {
+          try {
+            const base64Data = reader.result.split(",")[1];
+            const formData = new FormData();
+            formData.append("key", IMGBB_API_KEY);
+            formData.append("image", base64Data);
 
-        const res = await fetch("https://api.imgbb.com/1/upload", {
-          method: "POST",
-          body: formData
-        });
-        
-        const json = await res.json();
-        if (!json.success) throw new Error(json.error.message);
-
-        // 2. Get the hosted URL
-        const imageUrl = json.data.url;
-
-        // 3. Create item in Firestore
-        const itemData = {
-          name: nameInput.value,
-          price: parseFloat(priceInput.value),
-          description: descriptionInput.value,
-          image: imageUrl
+            const res = await fetch("https://api.imgbb.com/1/upload", {
+              method: "POST",
+              body: formData
+            });
+            
+            const json = await res.json();
+            if (!json.success) throw new Error(json.error.message);
+            resolve(json.data.url);
+          } catch (error) {
+            reject(error);
+          }
         };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
 
-        const docRef = await addDoc(collection(db, "products"), itemData);
-        console.log("Item added with ID:", docRef.id);
-
-        // 4. Reset form and preview
-        e.target.reset();
-        imagePreview.innerHTML = `
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          <span>Upload Image</span>
-        `;
-
-        // 5. Refresh the items list
-        const items = await fetchItems();
-        renderItems(items);
-
-        // Show success message
-        alert("Item added successfully!");
-
-      } catch (error) {
-        console.error("Error adding item:", error);
-        alert("Failed to add item. Please try again.");
-      } finally {
-        // Re-enable submit button
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Add Item";
-      }
+    // Prepare item data
+    const itemData = {
+      name: nameInput.value,
+      price: parseFloat(priceInput.value),
+      description: descriptionInput.value
     };
 
-    reader.onerror = () => {
-      console.error("FileReader error:", reader.error);
-      alert("Could not read file.");
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Add Item";
-    };
+    // Add image URL if a new image was uploaded
+    if (imageUrl) {
+      itemData.image = imageUrl;
+    }
 
-    reader.readAsDataURL(file);
+    if (editingItemId) {
+      // Update existing item
+      await updateDoc(doc(db, "products", editingItemId), itemData);
+      alert("Item updated successfully!");
+    } else {
+      // Add new item
+      await addDoc(collection(db, "products"), itemData);
+      alert("Item added successfully!");
+    }
+
+    // Reset form and state
+    e.target.reset();
+    imagePreview.innerHTML = `
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <span>Upload Image</span>
+    `;
+    editingItemId = null;
+    submitBtn.textContent = "Add Item";
+
+    // Refresh the items list
+    const items = await fetchItems();
+    renderItems(items);
 
   } catch (error) {
     console.error("Error in form submission:", error);
     alert("An error occurred. Please try again.");
+  } finally {
+    // Re-enable submit button
     submitBtn.disabled = false;
-    submitBtn.textContent = "Add Item";
+    submitBtn.textContent = editingItemId ? "Update Item" : "Add Item";
   }
 }
 
@@ -337,6 +405,18 @@ function adjustQuantity(itemId, adjustment) {
 
 // Initialize the page
 document.addEventListener("DOMContentLoaded", async () => {
+  // Always reset the form and UI on page load
+  const addItemForm = document.getElementById("addItemForm");
+  const imagePreview = document.getElementById("imagePreview");
+  if (addItemForm) addItemForm.reset();
+  if (imagePreview) imagePreview.innerHTML = `
+    <i class=\"fa-solid fa-cloud-arrow-up\"></i>
+    <span>Upload Image</span>
+  `;
+  editingItemId = null;
+  const submitBtn = document.querySelector(".submit-btn");
+  if (submitBtn) submitBtn.textContent = "Add Item";
+
   console.log("DOM Content Loaded");
   // Fetch items from Firestore
   const items = await fetchItems();
@@ -367,8 +447,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupImagePreview();
 
   // Setup form submission
-  const addItemForm = document.getElementById("addItemForm");
-  addItemForm.addEventListener("submit", handleFormSubmit);
+  const addItemFormEl = document.getElementById("addItemForm");
+  addItemFormEl.addEventListener("submit", handleFormSubmit);
 
   // Initial render
   renderItems(items);
