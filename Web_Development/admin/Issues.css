@@ -574,12 +574,25 @@ body {
   cursor: pointer;
   font-size: inherit;
   font-family: inherit;
+  color: #f1f1f1;
+}
+
+.priority-select:not([data-placeholder]),
+.status-select:not([data-placeholder]) {
+  color: inherit;
+}
+
+.priority-select[data-placeholder],
+.status-select[data-placeholder] {
+  color: #666;
+  font-style: italic;
 }
 
 .priority-select option,
 .status-select option {
   background-color: #1e1e1e;
   padding: 5px;
+  color: #f1f1f1;
 }
 
 /* Priority colors */
@@ -624,4 +637,15 @@ body {
   outline: none;
   border-color: rgb(212, 130, 30);
   box-shadow: 0 0 0 2px rgba(212, 130, 30, 0.2);
+}
+
+.priority-select option[value=""],
+.status-select option[value=""] {
+  color: #666;
+  font-style: italic;
+}
+
+.priority-select:invalid,
+.status-select:invalid {
+  color: #666;
 }

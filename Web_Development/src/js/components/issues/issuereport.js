@@ -42,7 +42,7 @@ issueForm.addEventListener('submit', async (e) => {
             title,
             description,
             priority: 'null',
-            status: 'pending',
+            status: 'Pending',
             userId: user.uid,
             createdAt: new Date()
         };

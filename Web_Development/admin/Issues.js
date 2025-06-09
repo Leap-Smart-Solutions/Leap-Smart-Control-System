@@ -56,27 +56,41 @@ function createIssueRow(issue) {
   const truncatedId = truncateText(issue.id, 5);
   const truncatedUser = truncateText(issue.userEmail || 'N/A', 15);
   
+  // Create priority options
+  const priorityOptions = ['Low', 'Medium', 'High'];
+  if (issue.priority && !priorityOptions.includes(issue.priority)) {
+    priorityOptions.push(issue.priority);
+  }
+  const prioritySelectOptions = priorityOptions.map(priority => 
+    `<option value="${priority}" ${issue.priority === priority ? 'selected' : ''}>${priority}</option>`
+  ).join('');
+
+  // Create status options
+  const statusOptions = ['Open', 'Pending', 'Closed'];
+  if (issue.status && !statusOptions.includes(issue.status)) {
+    statusOptions.push(issue.status);
+  }
+  const statusSelectOptions = statusOptions.map(status => 
+    `<option value="${status}" ${issue.status === status ? 'selected' : ''}>${status}</option>`
+  ).join('');
+  
   return `
     <div class="table-row" data-issue-id="${issue.id}">
-      <div class="issue-id" onclick="showFullText('${issue.id}', 'Issue ID')">#${truncatedId}</div>
-      <div class="title" onclick="showDescription('${issue.title}', '${issue.description}')">${truncatedTitle}</div>
-      <div class="user" onclick="showFullText('${issue.userEmail || 'N/A'}', 'User Email')">${truncatedUser}</div>
+      <div class="issue-id" onclick="showFullText('${issue.id.replace(/'/g, "\\'")}', 'Issue ID')">#${truncatedId}</div>
+      <div class="title" onclick="showDescription('${issue.title.replace(/'/g, "\\'")}', '${issue.description.replace(/'/g, "\\'")}')">${truncatedTitle}</div>
+      <div class="user" onclick="showFullText('${(issue.userEmail || 'N/A').replace(/'/g, "\\'")}', 'User Email')">${truncatedUser}</div>
       <div class="date">${formatDate(issue.createdAt)}</div>
       <div class="priority-cell">
-        <select class="priority-select" onchange="updatePriority('${issue.id}', this.value)">
-          <option value="Low" ${issue.priority === 'Low' ? 'selected' : ''}>Low</option>
-          <option value="Medium" ${issue.priority === 'Medium' ? 'selected' : ''}>Medium</option>
-          <option value="High" ${issue.priority === 'High' ? 'selected' : ''}>High</option>
+        <select class="priority-select" onchange="updatePriority('${issue.id.replace(/'/g, "\\'")}', this.value)" ${!issue.priority ? 'data-placeholder="Select Priority"' : ''}>
+          ${prioritySelectOptions}
         </select>
       </div>
       <div class="status-cell">
-        <select class="status-select" onchange="updateStatus('${issue.id}', this.value)">
-          <option value="Open" ${issue.status === 'Open' ? 'selected' : ''}>Open</option>
-          <option value="Pending" ${issue.status === 'Pending' ? 'selected' : ''}>Pending</option>
-          <option value="Closed" ${issue.status === 'Closed' ? 'selected' : ''}>Closed</option>
+        <select class="status-select" onchange="updateStatus('${issue.id.replace(/'/g, "\\'")}', this.value)" ${!issue.status ? 'data-placeholder="Select Status"' : ''}>
+          ${statusSelectOptions}
         </select>
       </div>
-      <div class="description" onclick="showDescription('${issue.title}', '${issue.description}')">${truncatedDesc}</div>
+      <div class="description" onclick="showDescription('${issue.title.replace(/'/g, "\\'")}', '${issue.description.replace(/'/g, "\\'")}')">${truncatedDesc}</div>
       <div class="arrow">›</div>
     </div>
   `;
@@ -326,9 +340,40 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else if (tabText === "Medium Priority") {
         filteredIssues = issues.filter((issue) => issue.priority === "Medium");
       } else if (tabText === "Low Priority") {
-        filteredIssues = issues.filter((issue) => issue.priority === "Low");
+        console.log('Filtering Low Priority issues...');
+        console.log('All issues:', issues);
+        filteredIssues = issues.filter((issue) => {
+          const priority = issue.priority?.toLowerCase()?.trim();
+          console.log('Issue:', issue.id, 'Priority:', priority, 'Original:', issue.priority);
+          
+          // Include issues with no priority set (null)
+          if (!priority) {
+            console.log('Including issue with no priority:', issue.id);
+            return true;
+          }
+          
+          // Check for any variation of low priority or critical
+          const isLowPriority = priority === "low" || 
+                               priority === "low priority" || 
+                               priority === "low-priority" ||
+                               priority === "low_priority" ||
+                               priority === "critical";
+          console.log('Is low priority?', isLowPriority, 'for issue:', issue.id);
+          return isLowPriority;
+        });
+        console.log('Filtered Low Priority issues:', filteredIssues.map(i => ({ id: i.id, priority: i.priority })));
       } else if (tabText === "Open") {
-        filteredIssues = issues.filter((issue) => issue.status === "Open");
+        filteredIssues = issues.filter((issue) => {
+          const status = issue.status?.toLowerCase()?.trim();
+          return (
+            status === "open" || 
+            status === "opened" || 
+            status === "in_progress" ||
+            status === "in progress" ||
+            status === "open issue" ||
+            status === "opened issue"
+          );
+        });
       } else if (tabText === "Pending") {
         filteredIssues = issues.filter((issue) => issue.status === "Pending");
       } else if (tabText === "Closed") {
