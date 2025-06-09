@@ -9,12 +9,16 @@ import {
   deleteDoc,
   getDoc 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
 // ImgBB API Key
 const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 
 // Initialize inventory from localStorage or use empty array if none exists
 let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+// Initialize admin auth check
+initAdminAuthCheck();
 
 // Component types
 const componentTypes = [

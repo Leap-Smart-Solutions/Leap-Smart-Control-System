@@ -8,7 +8,17 @@ class PhoneVerificationService {
     this.corsProxies = [
       'https://cors-anywhere.herokuapp.com/',
       'https://corsproxy.io/?',
-      'https://proxy.cors.sh/'
+      'https://proxy.cors.sh/',
+      'https://corsproxy.io/?',
+      'https://cors-anywhere.herokuapp.com/',
+      'https://api.codetabs.com/v1/proxy?quest=',
+      'https://cors.bridged.cc/',
+      'https://cors.sh/',
+      'https://cors.zimjs.com/',
+      'https://cors-escape.herokuapp.com/',
+      'https://thingproxy.freeboard.io/fetch/',
+      'https://cors.io/?',
+      'https://crossorigin.me/'
     ];
     this.currentProxyIndex = 0;
   }

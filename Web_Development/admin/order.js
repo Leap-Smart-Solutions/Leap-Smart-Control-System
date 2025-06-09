@@ -15,6 +15,10 @@ import {
   orderBy, 
   updateDoc 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
+
+// Initialize admin auth check
+initAdminAuthCheck();
 
 // Function to format date
 function formatDate(timestamp) {

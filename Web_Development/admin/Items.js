@@ -9,6 +9,7 @@ import {
   deleteDoc,
   getDoc 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
 // ImgBB API Key
 const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
@@ -31,6 +32,9 @@ const menuToggle = document.querySelector(".menu-toggle");
 const sidebar = document.querySelector(".sidebar");
 const closeMenu = document.querySelector(".close-menu");
 const mainContent = document.querySelector(".main-content");
+
+// Initialize admin auth check
+initAdminAuthCheck();
 
 // Make functions available globally
 window.showDescriptionModal = function(text, title) {

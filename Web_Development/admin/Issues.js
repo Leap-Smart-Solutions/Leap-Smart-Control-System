@@ -1,12 +1,16 @@
 // Import Firebase modules
 import { db } from '../src/js/firebase/firebaseConfig.js';
 import { collection, getDocs, doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js';
+import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
 // Admin data
 const admin = {
   userName: "Mohamed Hassan",
   image: "Img/mo.jpg",
 };
+
+// Initialize admin auth check
+initAdminAuthCheck();
 
 // Function to format date
 function formatDate(timestamp) {

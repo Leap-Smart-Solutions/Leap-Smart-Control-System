@@ -1,3 +1,8 @@
+import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
+
+// Initialize admin auth check
+initAdminAuthCheck();
+
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Menu Toggle Functionality
@@ -155,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
   logoutBtn.addEventListener("click", function() {
     if (confirm("Are you sure you want to logout?")) {
       // Add your logout logic here
-      window.location.href = "login.html";
+      window.location.href = "./login.html";
     }
   });
 

@@ -8,6 +8,7 @@ import {
 import { EditUserModal } from "./components/EditUserModal.js";
 import { db } from "../src/js/firebase/firebaseConfig.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
 // Admin data
 const admin = {
@@ -17,6 +18,9 @@ const admin = {
 
 // Initialize edit modal
 const editModal = new EditUserModal();
+
+// Initialize admin auth check
+initAdminAuthCheck();
 
 // Function to get user's latest order address
 async function getUserAddress(userId) {

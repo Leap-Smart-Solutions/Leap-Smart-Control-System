@@ -35,6 +35,7 @@ if(document.querySelector('#login-form')) {
       const adminSnapshot = await getDocs(adminQuery);
       if (adminSnapshot.empty) {
         alert("Access denied: You are not an admin.");
+        window.location.href = "../src/pages/auth/login.html";
         auth.signOut();
         return;
       }
