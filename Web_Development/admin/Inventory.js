@@ -232,6 +232,9 @@ function showDescriptionModal(componentName, description) {
   descriptionModal.style.display = "block";
 }
 
+// Expose globally for HTML onclick
+window.showDescriptionModal = showDescriptionModal;
+
 // Close modal when clicking outside
 window.addEventListener("click", (e) => {
   if (e.target === descriptionModal) {
