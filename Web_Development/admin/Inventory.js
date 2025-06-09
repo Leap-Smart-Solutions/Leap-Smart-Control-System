@@ -160,9 +160,14 @@ async function renderComponentCards() {
       <div class="component-description" onclick="showDescriptionModal('${component.name}', '${component.description?.replace(/'/g, "\\'") || 'No description available'}')">
         <p>${component.description ? (component.description.length > 15 ? component.description.substring(0, 15) + '...' : component.description) : 'No description available'}</p>
       </div>
-      <button class="edit-btn card-edit-btn" title="Edit Component" onclick="editComponent('${component.id}')">
-        <i class="fa-solid fa-pen-to-square"></i>
-      </button>
+      <div class="card-actions" style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button class="edit-btn card-edit-btn" title="Edit Component" onclick="editComponent('${component.id}')">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+        <button class="delete-btn card-delete-btn" title="Delete Component" onclick="deleteComponent('${component.id}')">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
     </div>
   `
     )
@@ -485,3 +490,5 @@ function saveAndRender() {
 // Initial render
 renderComponentCards();
 renderInventoryTable();
+
+window.deleteComponent = deleteComponent;

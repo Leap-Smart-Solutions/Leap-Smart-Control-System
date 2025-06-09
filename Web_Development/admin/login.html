@@ -15,7 +15,8 @@
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Nunito&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" as="style" onload="this.rel='stylesheet'">
   <!-- for icons -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=local_dining" />
-  <link rel="stylesheet" href="../../assets/styles/signup.css">
+  <link rel="stylesheet" href="./login.css">
+  <link rel="stylesheet" href="../src/assets/styles/signup.css">
   <title>Login</title>
 </head>
 
@@ -24,6 +25,7 @@
   <header>
     <a href="../index.html"><i class="fa-solid fa-arrow-left-long" id="back-arrow"></i></a>
   </header>
+  <div class="admin-label">Admin Portal</div>
   <div class="signup-container">
     <h1>Login</h1>
     <div class="signup-rectangle">
@@ -48,7 +50,7 @@
     </div>
   </div>
 
-  <script type="module" src="../../js/firebase/auth.js"></script>
+  <script type="module" src="../src/js/firebase/adminAuth.js"></script>
   <script>
     function checkCompletedOrders() {
       // Implementation of checkCompletedOrders function
@@ -65,16 +67,22 @@
       }
     }
 
-    const ordersRef = collection(db, 'orders');
-    const q = query(
-        ordersRef,
-        where('userId', '==', auth.currentUser.uid),
-        where('status', '==', 'completed')
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(doc => {
-        console.log('Completed order:', doc.id, doc.data());
-    });
+    async function checkUserOrders() {
+      try {
+        const ordersRef = collection(db, 'orders');
+        const q = query(
+          ordersRef,
+          where('userId', '==', auth.currentUser.uid),
+          where('status', '==', 'completed')
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(doc => {
+          console.log('Completed order:', doc.id, doc.data());
+        });
+      } catch (error) {
+        console.error('Error checking orders:', error);
+      }
+    }
   </script>
 </body>
 

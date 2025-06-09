@@ -13,6 +13,18 @@
   transition: all 0.2s linear;
 }
 
+.admin-label {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background-color: #ff0000;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
 /* color variables for the all pages  */
 :root {
   --blue: #0366ff;
