@@ -13,6 +13,65 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
+// Function to get current admin data
+async function getCurrentAdminData() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        unsubscribe();
+        reject(new Error('No user logged in'));
+        return;
+      }
+
+      try {
+        // Get user data directly from users collection using the user's UID
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (!userDoc.exists()) {
+          unsubscribe();
+          reject(new Error('No user data found'));
+          return;
+        }
+
+        const userData = userDoc.data();
+        unsubscribe();
+        resolve({
+          userName: userData.fullName || userData.displayName || user.displayName || 'Admin',
+          image: userData.profilePicture || userData.image || user.photoURL || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'
+        });
+      } catch (error) {
+        console.error('Error fetching admin data:', error);
+        unsubscribe();
+        reject(error);
+      }
+    });
+  });
+}
+
+// Function to display admin header
+async function displayAdmin() {
+  try {
+    const adminData = await getCurrentAdminData();
+    const header = `
+      <header class="dashboard-header">
+        <div class="admin-info">
+          <img src="${adminData.image}" alt="Admin" />
+          <span>${adminData.userName}</span>
+        </div>
+      </header>
+    `;
+    document
+      .querySelector(".main-content")
+      .insertAdjacentHTML("afterbegin", header);
+  } catch (error) {
+    console.error('Error displaying admin info:', error);
+    // Redirect to login if not authenticated
+    if (error.message === 'No user logged in' || error.message === 'No admin data found') {
+      window.location.href = "login.html";
+    }
+  }
+}
+
 // ImgBB API Key
 const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 
@@ -721,3 +780,27 @@ async function renderReordersTable() {
 // Initial render
 renderComponentCards();
 renderReordersTable();
+
+// Initialize the page
+document.addEventListener("DOMContentLoaded", async () => {
+  // Display admin header
+  await displayAdmin();
+
+  // Initialize inventory from localStorage or use empty array if none exists
+  inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+  // Calculate last used ID
+  if (inventory.length > 0) {
+    lastUsedId = Math.max(...inventory.map((item) => parseInt(item.id)));
+  } else {
+    lastUsedId = 0;
+  }
+
+  // Initial render
+  await renderComponentCards();
+  renderInventoryTable();
+  await populateReorderComponents();
+  await renderReordersTable();
+
+  // ... rest of the initialization code ...
+});

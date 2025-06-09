@@ -1,5 +1,5 @@
 // Import Firebase modules
-import { db } from '../src/js/firebase/firebaseConfig.js';
+import { db, auth } from '../src/js/firebase/firebaseConfig.js';
 import { 
   collection, 
   getDocs, 
@@ -17,11 +17,40 @@ const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 // Check if Firebase is properly initialized
 console.log("Firebase db instance:", db);
 
-// Admin data
-const admin = {
-  userName: "Mohamed Hassan",
-  image: "../Img/mo.jpg",
-};
+// Function to get current admin data
+async function getCurrentAdminData() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        unsubscribe();
+        reject(new Error('No user logged in'));
+        return;
+      }
+
+      try {
+        // Get user data directly from users collection using the user's UID
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (!userDoc.exists()) {
+          unsubscribe();
+          reject(new Error('No user data found'));
+          return;
+        }
+
+        const userData = userDoc.data();
+        unsubscribe();
+        resolve({
+          userName: userData.fullName || userData.displayName || user.displayName || 'Admin',
+          image: userData.profilePicture || userData.image || user.photoURL || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'
+        });
+      } catch (error) {
+        console.error('Error fetching admin data:', error);
+        unsubscribe();
+        reject(error);
+      }
+    });
+  });
+}
 
 // Declare Variables
 const itemPage = document.querySelector(".Items");
@@ -150,26 +179,32 @@ window.addEventListener("resize", () => {
 });
 
 // Display the top header with search and admin info
-function displayAdmin(admin) {
-  const header = `
-    <header class="dashboard-header">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search by name or description..." />
-        <i class="fa fa-search"></i>
-      </div>
-      <div class="admin-info">
-        <img src="${admin.image}" alt="Admin" />
-        <span>${admin.userName}</span>
-      </div>
-    </header>
-  `;
-  document
-    .querySelector(".main-content")
-    .insertAdjacentHTML("afterbegin", header);
+async function displayAdmin() {
+  try {
+    const adminData = await getCurrentAdminData();
+    const header = `
+      <header class="dashboard-header">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search by name or description..." />
+          <i class="fa fa-search"></i>
+        </div>
+        <div class="admin-info">
+          <img src="${adminData.image}" alt="Admin" />
+          <span>${adminData.userName}</span>
+        </div>
+      </header>
+    `;
+    document
+      .querySelector(".main-content")
+      .insertAdjacentHTML("afterbegin", header);
+  } catch (error) {
+    console.error('Error displaying admin info:', error);
+    // Redirect to login if not authenticated
+    if (error.message === 'No user logged in' || error.message === 'No admin data found') {
+      window.location.href = "login.html";
+    }
+  }
 }
-
-// Initialize header
-displayAdmin(admin);
 
 // Event Handlers
 itemPage.addEventListener("click", function (e) {
@@ -409,6 +444,12 @@ function adjustQuantity(itemId, adjustment) {
 
 // Initialize the page
 document.addEventListener("DOMContentLoaded", async () => {
+  // Initialize admin auth check
+  initAdminAuthCheck();
+
+  // Display admin header
+  await displayAdmin();
+
   // Always reset the form and UI on page load
   const addItemForm = document.getElementById("addItemForm");
   const imagePreview = document.getElementById("imagePreview");

@@ -150,6 +150,44 @@ nav .Inventory {
   transition: margin-left 0.3s ease-in-out;
 }
 
+/* Dashboard Header */
+.dashboard-header {
+  background-color: rgb(24, 24, 24);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 140%;
+}
+
+body.loaded .dashboard-header {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.admin-info img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgb(212, 130, 30);
+}
+
+.admin-info span {
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
 .content-wrapper {
   max-width: 1200px;
   margin: 0 auto;

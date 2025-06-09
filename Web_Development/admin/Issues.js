@@ -1,13 +1,48 @@
 // Import Firebase modules
-import { db } from '../src/js/firebase/firebaseConfig.js';
+import { db, auth } from '../src/js/firebase/firebaseConfig.js';
 import { collection, getDocs, doc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js';
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
-// Admin data
-const admin = {
-  userName: "Mohamed Hassan",
-  image: "Img/mo.jpg",
-};
+// Remove the hardcoded admin object
+// const admin = {
+//   userName: "Mohamed Hassan",
+//   image: "Img/mo.jpg",
+// };
+
+// Function to get current admin data
+async function getCurrentAdminData() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        unsubscribe();
+        reject(new Error('No user logged in'));
+        return;
+      }
+
+      try {
+        // Get user data directly from users collection using the user's UID
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (!userDoc.exists()) {
+          unsubscribe();
+          reject(new Error('No user data found'));
+          return;
+        }
+
+        const userData = userDoc.data();
+        unsubscribe();
+        resolve({
+          userName: userData.fullName || userData.displayName || user.displayName || 'Admin',
+          image: userData.profilePicture || userData.image || user.photoURL || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'
+        });
+      } catch (error) {
+        console.error('Error fetching admin data:', error);
+        unsubscribe();
+        reject(error);
+      }
+    });
+  });
+}
 
 // Initialize admin auth check
 initAdminAuthCheck();
@@ -291,29 +326,41 @@ function filterIssues(issues, searchTerm) {
   );
 }
 
-// Display the top header with search and admin info
-function displayAdmin(admin) {
-  const header = `
-    <header class="dashboard-header">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search by ID, Title or User..." />
-        <i class="fa fa-search"></i>
-      </div>
-      <div class="admin-info">
-        <img src="${admin.image}" alt="Admin" />
-        <span>${admin.userName}</span>
-      </div>
-    </header>
-  `;
-  document
-    .querySelector(".main-content")
-    .insertAdjacentHTML("afterbegin", header);
+// Update the displayAdmin function to use async/await
+async function displayAdmin() {
+  try {
+    const adminData = await getCurrentAdminData();
+    const header = `
+      <header class="dashboard-header">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search by ID, Title or User..." />
+          <i class="fa fa-search"></i>
+        </div>
+        <div class="admin-info">
+          <img src="${adminData.image}" alt="Admin" />
+          <span>${adminData.userName}</span>
+        </div>
+      </header>
+    `;
+    document
+      .querySelector(".main-content")
+      .insertAdjacentHTML("afterbegin", header);
+  } catch (error) {
+    console.error('Error displaying admin info:', error);
+    // Redirect to login if not authenticated
+    if (error.message === 'No user logged in' || error.message === 'No user data found') {
+      window.location.href = "login.html";
+    }
+  }
 }
 
 // Initialize the page
 document.addEventListener("DOMContentLoaded", async () => {
+  // Initialize admin auth check
+  initAdminAuthCheck();
+
   // Display admin header
-  displayAdmin(admin);
+  await displayAdmin();
 
   // Fetch and render initial issues
   let issues = await fetchIssues();

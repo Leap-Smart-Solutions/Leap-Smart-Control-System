@@ -1,10 +1,52 @@
+import { db, auth } from "../src/js/firebase/firebaseConfig.js";
+import { 
+  doc, 
+  getDoc, 
+  updateDoc 
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
 // Initialize admin auth check
 initAdminAuthCheck();
 
+// Function to get current admin data
+async function getCurrentAdminData() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        unsubscribe();
+        reject(new Error('No user logged in'));
+        return;
+      }
+
+      try {
+        // Get user data directly from users collection using the user's UID
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (!userDoc.exists()) {
+          unsubscribe();
+          reject(new Error('No user data found'));
+          return;
+        }
+
+        const userData = userDoc.data();
+        unsubscribe();
+        resolve({
+          userName: userData.fullName || userData.displayName || user.displayName || 'Admin',
+          image: userData.profilePicture || userData.image || user.photoURL || 'https://i.ibb.co/277hTSg8/generic-profile.jpg',
+          email: user.email
+        });
+      } catch (error) {
+        console.error('Error fetching admin data:', error);
+        unsubscribe();
+        reject(error);
+      }
+    });
+  });
+}
+
 // Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // Menu Toggle Functionality
   const menuToggle = document.querySelector(".menu-toggle");
   const closeMenu = document.querySelector(".close-menu");
@@ -58,35 +100,36 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeModalBtn = document.getElementById("closeModalBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  // Admin data (replace with actual data from your backend)
-  const admin = {
-    userName: "Administrator",
-    image: "Img/mo.jpg",
-    fallbackImage: "https://i.ibb.co/tptmQ9jw/admin-Photoroom.png",
-    email: "mohamed.hassan@example.com"
-  };
-
   // Initialize the page
-  function initializePage() {
-    // Set initial values
-    adminName.textContent = getFirstName(admin.userName);
-    adminFullName.textContent = admin.userName;
-    
-    // Set profile images with fallback
-    const setProfileImage = (imgElement) => {
-      imgElement.onerror = () => {
-        imgElement.src = admin.fallbackImage;
+  async function initializePage() {
+    try {
+      const adminData = await getCurrentAdminData();
+      
+      // Set initial values
+      adminName.textContent = getFirstName(adminData.userName);
+      adminFullName.textContent = adminData.userName;
+      
+      // Set profile images with fallback
+      const setProfileImage = (imgElement) => {
+        imgElement.onerror = () => {
+          imgElement.src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+        };
+        imgElement.src = adminData.image;
       };
-      imgElement.src = admin.image;
-    };
-    
-    setProfileImage(adminProfilePic);
-    setProfileImage(profileImagePreview);
-    
-    currentEmail.value = admin.email;
+      
+      setProfileImage(adminProfilePic);
+      setProfileImage(profileImagePreview);
+      
+      currentEmail.value = adminData.email;
 
-    // Hide loading screen
-    loadingContainer.classList.add("hidden");
+      // Hide loading screen
+      loadingContainer.classList.add("hidden");
+    } catch (error) {
+      console.error('Error initializing page:', error);
+      if (error.message === 'No user logged in' || error.message === 'No user data found') {
+        window.location.href = "login.html";
+      }
+    }
   }
 
   // Get first name
@@ -119,19 +162,31 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Handle profile image upload
-  profileImage.addEventListener("change", function(e) {
+  profileImage.addEventListener("change", async function(e) {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         const newImageSrc = e.target.result;
         profileImagePreview.src = newImageSrc;
         adminProfilePic.src = newImageSrc;
-        admin.image = newImageSrc;
+        
+        // Update the image in Firestore
+        try {
+          const user = auth.currentUser;
+          if (user) {
+            await updateDoc(doc(db, 'users', user.uid), {
+              profilePicture: newImageSrc
+            });
+          }
+        } catch (error) {
+          console.error('Error updating profile picture:', error);
+          alert('Failed to update profile picture. Please try again.');
+        }
       };
       reader.onerror = () => {
-        profileImagePreview.src = admin.fallbackImage;
-        adminProfilePic.src = admin.fallbackImage;
+        profileImagePreview.src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+        adminProfilePic.src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
       };
       reader.readAsDataURL(file);
     }
@@ -157,13 +212,18 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Handle logout
-  logoutBtn.addEventListener("click", function() {
+  logoutBtn.addEventListener("click", async function() {
     if (confirm("Are you sure you want to logout?")) {
-      // Add your logout logic here
-      window.location.href = "./login.html";
+      try {
+        await auth.signOut();
+        window.location.href = "./login.html";
+      } catch (error) {
+        console.error('Error signing out:', error);
+        alert('Failed to logout. Please try again.');
+      }
     }
   });
 
   // Initialize the page
-  initializePage();
+  await initializePage();
 });

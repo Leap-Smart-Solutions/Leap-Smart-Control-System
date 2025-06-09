@@ -544,19 +544,38 @@ nav .Users {
   text-decoration: underline;
 }
 
-.address-modal {
+/* Modal Overlay */
+.address-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
   display: none;
+  z-index: 1000;
+}
+
+.address-modal-overlay.active {
+  display: block;
+}
+
+/* Modal Styles */
+.address-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #1e1e1e;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  display: none;
+  min-width: 300px;
   max-width: 500px;
   width: 90%;
+  color: #fff;
 }
 
 .address-modal.active {
@@ -567,33 +586,44 @@ nav .Users {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #333;
 }
 
 .address-modal-header h3 {
-  color: #f1f1f1;
   margin: 0;
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
 }
 
 .address-modal-close {
   background: none;
   border: none;
-  color: #f1f1f1;
-  font-size: 20px;
+  color: #fff;
+  font-size: 1.5rem;
   cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.address-modal-close:hover {
+  color: #ff6b00;
 }
 
 .address-modal-content {
-  color: #f1f1f1;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .address-modal-content p {
-  margin: 8px 0;
+  margin: 0;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .address-modal-content span:first-child {
@@ -601,19 +631,25 @@ nav .Users {
   min-width: 100px;
 }
 
-.address-modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+.address-modal-content .modal-value {
+  color: #fff;
+  word-break: break-all;
 }
 
-.address-modal-overlay.active {
-  display: block;
+/* Animation for modal */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.address-modal.active {
+  animation: modalFadeIn 0.3s ease forwards;
 }
 
 /* Email styles */
@@ -625,4 +661,16 @@ nav .Users {
 
 .email-cell:hover {
   text-decoration: underline;
+}
+
+/* Styles for truncated values */
+.phone-cell.truncated,
+.city-cell.truncated {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.phone-cell.truncated:hover,
+.city-cell.truncated:hover {
+  color: #ff6b00;
 }

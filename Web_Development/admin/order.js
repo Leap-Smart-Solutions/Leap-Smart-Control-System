@@ -1,11 +1,11 @@
-// Admin data
-const admin = {
-  userName: "Mohamed Hassan",
-  image: "Img/mo.jpg",
-};
+// Remove the hardcoded admin object
+// const admin = {
+//   userName: "Mohamed Hassan",
+//   image: "Img/mo.jpg",
+// };
 
 // Import Firebase modules
-import { db } from "../src/js/firebase/firebaseConfig.js";
+import { db, auth } from "../src/js/firebase/firebaseConfig.js";
 import { 
   collection, 
   getDocs, 
@@ -13,12 +13,45 @@ import {
   doc, 
   query, 
   orderBy, 
-  updateDoc 
+  updateDoc,
+  where 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import { initAdminAuthCheck } from '../src/js/firebase/adminAuthCheck.js';
 
-// Initialize admin auth check
-initAdminAuthCheck();
+// Function to get current admin data
+async function getCurrentAdminData() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        unsubscribe();
+        reject(new Error('No user logged in'));
+        return;
+      }
+
+      try {
+        // Get user data directly from users collection using the user's UID
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (!userDoc.exists()) {
+          unsubscribe();
+          reject(new Error('No user data found'));
+          return;
+        }
+
+        const userData = userDoc.data();
+        unsubscribe();
+        resolve({
+          userName: userData.fullName || userData.displayName || user.displayName || 'Admin',
+          image: userData.profilePicture || userData.image || user.photoURL || 'https://i.ibb.co/277hTSg8/generic-profile.jpg'
+        });
+      } catch (error) {
+        console.error('Error fetching admin data:', error);
+        unsubscribe();
+        reject(error);
+      }
+    });
+  });
+}
 
 // Function to format date
 function formatDate(timestamp) {
@@ -59,6 +92,8 @@ async function createOrderRow(order) {
     const userDoc = await getDoc(doc(db, 'users', order.userId));
     if (userDoc.exists()) {
       userEmail = userDoc.data().email;
+      // Store email in order object for search functionality
+      order.userEmail = userEmail;
     }
   } catch (error) {
     console.error("Error fetching user email:", error);
@@ -144,12 +179,29 @@ async function fetchOrders() {
 
 // Function to filter orders by search input
 function filterOrders(orders, searchTerm) {
-  searchTerm = searchTerm.toLowerCase();
-  return orders.filter(
-    (order) =>
-      order.id.toLowerCase().includes(searchTerm) ||
-      order.items?.some(item => item.name.toLowerCase().includes(searchTerm))
-  );
+  searchTerm = searchTerm.toLowerCase().trim();
+  if (!searchTerm) return orders;
+  
+  return orders.filter((order) => {
+    // Search in order ID
+    if (order.id.toLowerCase().includes(searchTerm)) return true;
+    
+    // Search in user email
+    if (order.userEmail && order.userEmail.toLowerCase().includes(searchTerm)) return true;
+    
+    // Search in order details (product names)
+    if (order.items && order.items.some(item => 
+      item.name && item.name.toLowerCase().includes(searchTerm)
+    )) return true;
+    
+    // Search in order status
+    if (order.status && order.status.toLowerCase().includes(searchTerm)) return true;
+    
+    // Search in order reason
+    if (order.reason && order.reason.toLowerCase().includes(searchTerm)) return true;
+    
+    return false;
+  });
 }
 
 // Function to show reason in modal
@@ -220,29 +272,41 @@ function showDetails(details) {
   }
 }
 
-// Display the top header with search and admin info
-function displayAdmin(admin) {
-  const header = `
-    <header class="dashboard-header">
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search by Order ID or Product Name..." />
-        <i class="fa fa-search"></i>
-      </div>
-      <div class="admin-info">
-        <img src="${admin.image}" alt="Admin" />
-        <span>${admin.userName}</span>
-      </div>
-    </header>
-  `;
-  document
-    .querySelector(".main-content")
-    .insertAdjacentHTML("afterbegin", header);
+// Update the displayAdmin function to use async/await
+async function displayAdmin() {
+  try {
+    const adminData = await getCurrentAdminData();
+    const header = `
+      <header class="dashboard-header">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="Search by Order ID or Product Name..." />
+          <i class="fa fa-search"></i>
+        </div>
+        <div class="admin-info">
+          <img src="${adminData.image}" alt="Admin" />
+          <span>${adminData.userName}</span>
+        </div>
+      </header>
+    `;
+    document
+      .querySelector(".main-content")
+      .insertAdjacentHTML("afterbegin", header);
+  } catch (error) {
+    console.error('Error displaying admin info:', error);
+    // Redirect to login if not authenticated
+    if (error.message === 'No user logged in' || error.message === 'No admin data found') {
+      window.location.href = "login.html";
+    }
+  }
 }
 
 // Initialize the page
 document.addEventListener("DOMContentLoaded", async () => {
+  // Initialize admin auth check
+  initAdminAuthCheck();
+
   // Display admin header
-  displayAdmin(admin);
+  await displayAdmin();
 
   // Fetch and render initial orders
   let orders = await fetchOrders();
