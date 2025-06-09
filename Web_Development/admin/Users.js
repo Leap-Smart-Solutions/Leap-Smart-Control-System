@@ -295,6 +295,10 @@ async function createUserRow(user, index) {
   const phoneText = padTextWithDots(user.phone || '-', 12);
   const fallbackImage = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
   
+  // Check if values are truncated
+  const isUsernameTruncated = (user.username || '-').length > 11;
+  const isPhoneTruncated = (user.phone || '-').length > 12;
+  
   return `
     <div class="table-row">
       <div class="user-image-cell">
@@ -307,8 +311,8 @@ async function createUserRow(user, index) {
       </div>
       <div class="name-cell">${user.fullName || user.username || user.name}</div>
       <div class="email-cell" data-email="${user.email}">${emailText}</div>
-      <div class="city-cell truncated" data-username="${user.username || '-'}">${usernameText}</div>
-      <div class="phone-cell truncated" data-phone="${user.phone || '-'}">${phoneText}</div>
+      <div class="city-cell ${isUsernameTruncated ? 'truncated' : ''}" data-username="${user.username || '-'}">${usernameText}</div>
+      <div class="phone-cell ${isPhoneTruncated ? 'truncated' : ''}" data-phone="${user.phone || '-'}">${phoneText}</div>
       <div class="status-cell ${statusClass}">${user.phoneVerified === true ? 'true' : 'false'}</div>
       <div class="address-cell" data-user-id="${user.id}">${addressText}</div>
       <div class="manage-cell">

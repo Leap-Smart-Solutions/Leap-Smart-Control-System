@@ -33,11 +33,7 @@ export class EditUserModal {
                 <input type="tel" id="phone" name="phone">
               </div>
               <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" name="city">
-              </div>
-              <div class="form-group">
-                <label for="status">Status</label>
+                <label for="status">Phone Activated</label>
                 <select id="status" name="status">
                   <option value="true">true</option>
                   <option value="false">false</option>
@@ -90,7 +86,6 @@ export class EditUserModal {
         fullName: formData.get('fullName'),
         email: formData.get('email'),
         phone: formData.get('phone'),
-        city: formData.get('city'),
         phoneVerified: formData.get('status')
       };
 
@@ -115,8 +110,7 @@ export class EditUserModal {
     form.fullName.value = user.fullName || '';
     form.email.value = user.email || '';
     form.phone.value = user.phone || '';
-    form.city.value = user.city || '';
-    form.status.value = user.status?.toLowerCase() || 'false';
+    form.status.value = user.phoneVerified?.toString() || 'false';
 
     this.modal.style.display = 'block';
   }
@@ -137,17 +131,19 @@ const styles = `
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.7);
   }
 
   .modal-content {
-    background-color: #fefefe;
+    background-color: #1e1e1e;
     margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
+    padding: 25px;
+    border: 1px solid #333;
     width: 80%;
     max-width: 600px;
-    border-radius: 8px;
+    border-radius: 12px;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .modal-header {
@@ -155,68 +151,108 @@ const styles = `
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #333;
+  }
+
+  .modal-header h2 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.5rem;
   }
 
   .close {
-    color: #aaa;
+    color: #888;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    transition: color 0.2s ease;
   }
 
   .close:hover {
-    color: black;
+    color: rgb(212, 130, 30);
   }
 
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
 
   .form-group label {
     display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #f1efef;
   }
 
   .form-group input,
   .form-group select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: rgb(212, 130, 30);
+  }
+
+  .form-group input::placeholder {
+    color: #666;
   }
 
   .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 25px;
   }
 
   .save-btn,
   .cancel-btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
   }
 
   .save-btn {
-    background-color: #4CAF50;
+    background-color: rgb(212, 130, 30);
     color: white;
   }
 
   .cancel-btn {
-    background-color: #f44336;
-    color: white;
+    background-color: #333;
+    color: #fff;
   }
 
   .save-btn:hover {
-    background-color: #45a049;
+    background-color: rgb(212, 130, 50);
   }
 
   .cancel-btn:hover {
-    background-color: #da190b;
+    background-color: #444;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-content {
+    animation: modalFadeIn 0.3s ease forwards;
   }
 `;
 
