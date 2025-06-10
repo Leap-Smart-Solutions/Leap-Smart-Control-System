@@ -620,3 +620,111 @@ body.activeTabCart .container {
 .loading-container.hidden {
   display: none;
 }
+
+/* Header styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+header .title {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: xx-large;
+  color: #ffffff;
+  margin-block: 25px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* User profile styles */
+.user-profile {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E8BC0E;
+  transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+  transform: scale(1.1);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  padding: 10px 0;
+  min-width: 150px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+}
+
+.user-profile:hover .profile-dropdown {
+  display: block;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 8px 16px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+}
+
+.profile-dropdown a:hover {
+  background-color: #353432;
+}
+
+.profile-dropdown a:nth-child(2) {
+  border-top: 1px solid #353432;
+  border-bottom: 1px solid #353432;
+  margin: 5px 0;
+  padding: 10px 16px;
+}
+
+.profile-dropdown .logout {
+  color: #ff3b30;
+  border-top: 1px solid #353432;
+  margin-top: 5px;
+  padding-top: 10px;
+}
+
+/* Room links styles */
+.room-links {
+  display: flex;
+  gap: 15px;
+  margin-left: 20px;
+}
+
+.room-links a {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #353432;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+}
+
+.room-links a:hover {
+  background-color: #E8BC0E;
+  color: #000;
+}

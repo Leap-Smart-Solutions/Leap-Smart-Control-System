@@ -1,7 +1,8 @@
 import cart from "./cart.js";
 import fetchProducts from "./products.js";
-import { auth } from "../../firebase/firebaseConfig.js";
+import { auth, db } from "../../firebase/firebaseConfig.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
@@ -23,12 +24,49 @@ const checkAuth = () => {
   });
 };
 
+// Check if user has completed orders
+const checkCompletedOrders = async (userId) => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+      ordersRef,
+      where('userId', '==', userId),
+      where('status', '==', 'completed')
+    );
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking completed orders:', error);
+    return false;
+  }
+};
+
+// Get user profile data
+const getUserProfile = async (userId) => {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    if (userDoc.exists()) {
+      return userDoc.data();
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+};
+
 // load template file
 const loadTemplate = async () => {
   try {
     // Check authentication first
     const user = await checkAuth();
     console.log('Authenticated user:', user);
+
+    // Get user profile data
+    const userData = await getUserProfile(user.uid);
+    
+    // Check for completed orders
+    const hasCompletedOrders = await checkCompletedOrders(user.uid);
 
     const response = await fetch('../../../src/pages/shopping/template.html');
     const html = await response.text();
@@ -37,6 +75,18 @@ const loadTemplate = async () => {
     let contentTab = document.getElementById('contentTab');
     contentTab.innerHTML = temporaryContent.innerHTML;
     temporaryContent.innerHTML = null;
+    
+    // Update profile image
+    const profileImg = document.getElementById('user-profile-img');
+    if (profileImg && userData) {
+      profileImg.src = userData.profilePicture || '../../assets/images/placeholder.png';
+    }
+
+    // Show/hide room navigation links based on completed orders
+    const roomLinks = document.querySelector('.room-links');
+    if (roomLinks) {
+      roomLinks.style.display = hasCompletedOrders ? 'flex' : 'none';
+    }
     
     // Initialize cart
     await cart();

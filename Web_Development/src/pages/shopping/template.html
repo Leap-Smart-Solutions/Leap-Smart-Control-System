@@ -12,13 +12,27 @@
       <header>
         <div class="title">
           <a href="./">Home</a>
-          <a href="../issues/issues.html" class="issues">Create an issue</a>
+          <div class="room-links" style="display: none;">
+            <a href="../rooms/livingroom.html">Living Room</a>
+            <a href="../rooms/kitchen.html">Kitchen</a>
+            <a href="../rooms/bedroom.html">Bedroom</a>
+          </div>
         </div>
-        <div class="icon-cart">
-<svg class="w-[30px] h-[30px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="50" height="50">
-  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"></path>
-</svg>
-          <span>0</span>
+        <div class="header-right">
+          <div class="user-profile">
+            <img src="../../assets/images/placeholder.png" alt="Profile" id="user-profile-img" class="profile-img">
+            <div class="profile-dropdown">
+              <a href="../auth/profile.html">Profile</a>
+              <a href="../issues/issues.html">Create an issue</a>
+              <a href="../index.html" class="logout">Logout</a>
+            </div>
+          </div>
+          <div class="icon-cart">
+            <svg class="w-[30px] h-[30px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="50" height="50">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"></path>
+            </svg>
+            <span>0</span>
+          </div>
         </div>
       </header>
       <div id="contentTab">
