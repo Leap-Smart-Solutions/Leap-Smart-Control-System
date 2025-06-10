@@ -7,6 +7,7 @@ import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
+const loadingContainer = document.querySelector('.loading-container');
 
 // Load template file
 const loadTemplate = async () => {
@@ -21,6 +22,14 @@ const loadTemplate = async () => {
     await initCheckout();
   } catch (error) {
     console.error('Error loading template:', error);
+    loadingContainer.innerHTML = `
+      <div class="loading-content">
+        <div class="loading-text">Error loading checkout. Please try again.</div>
+        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6600; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
+          Retry
+        </button>
+      </div>
+    `;
   }
 };
 
@@ -73,10 +82,40 @@ const initCheckout = async () => {
           // Make email and phone readonly since they're verified
           emailInput.readOnly = true;
           phoneInput.readOnly = true;
+
+          // Set user profile image
+          const userProfileImg = document.getElementById('user-profile-img');
+          if (userProfileImg) {
+            userProfileImg.src = userData.profilePicture || user.photoURL || 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+            userProfileImg.onerror = () => {
+              userProfileImg.src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+            };
+          }
+
+          // Wait for profile image to load if it exists
+          if (userProfileImg && userData.profilePicture) {
+            await new Promise((resolve) => {
+              if (userProfileImg.complete) {
+                resolve();
+              } else {
+                userProfileImg.onload = resolve;
+                userProfileImg.onerror = resolve;
+              }
+            });
+          }
         }
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      loadingContainer.innerHTML = `
+        <div class="loading-content">
+          <div class="loading-text">Error loading user data. Please try again.</div>
+          <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6600; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
+            Retry
+          </button>
+        </div>
+      `;
+      return;
     }
   };
 
@@ -240,11 +279,27 @@ const initCheckout = async () => {
     }
   };
 
-  // Initialize page
-  await populateUserData(); // Populate user data first
-  await renderCartItems();
-  await updateOrderSummary();
+  try {
+    // Initialize page
+    await populateUserData(); // Populate user data first
+    await renderCartItems();
+    await updateOrderSummary();
 
-  // Add event listener to place order button
-  placeOrderButton.addEventListener('click', handleOrderSubmission);
+    // Add event listener to place order button
+    placeOrderButton.addEventListener('click', handleOrderSubmission);
+
+    // Hide loading screen and show content
+    loadingContainer.classList.add('hidden');
+    temporaryContent.classList.add('loaded');
+  } catch (error) {
+    console.error('Error initializing checkout:', error);
+    loadingContainer.innerHTML = `
+      <div class="loading-content">
+        <div class="loading-text">Error initializing checkout. Please try again.</div>
+        <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6600; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
+          Retry
+        </button>
+      </div>
+    `;
+  }
 };
