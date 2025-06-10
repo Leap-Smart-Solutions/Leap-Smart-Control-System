@@ -16,6 +16,41 @@ import {
 import phoneInputValidator from "../utils/phoneInputValidator.js";
 import phoneVerificationService from "../utils/phoneVerification.js";
 
+// Add this function at the top of the file, after the imports
+function showNotification(message, type = 'success') {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.className = 'notification-popup';
+  notification.innerHTML = `
+    <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+    <span class="message">${message}</span>
+    <button class="close-btn">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  `;
+
+  // Add to document
+  document.body.appendChild(notification);
+
+  // Show notification
+  setTimeout(() => notification.classList.add('show'), 100);
+
+  // Add close button functionality
+  const closeBtn = notification.querySelector('.close-btn');
+  closeBtn.addEventListener('click', () => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  });
+
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.classList.remove('show');
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 5000);
+}
+
 // listen for auth status changes
 auth.onAuthStateChanged(user => {
 //  console.log(user);
@@ -71,7 +106,7 @@ if (document.querySelector('#signup-form')) {
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      showNotification("Passwords do not match!", 'error');
       return;
     }
 
@@ -80,10 +115,10 @@ if (document.querySelector('#signup-form')) {
         // Send email verification
         sendEmailVerification(cred.user)
           .then(() => {
-            console.log("Verification email sent");
+            showNotification("Verification email sent");
           })
           .catch(error => {
-            console.error("Error sending verification email:", error);
+            showNotification("Error sending verification email: " + error.message, 'error');
           });
           
         // Use the user's UID to create a document in the "users" collection
@@ -105,8 +140,7 @@ if (document.querySelector('#signup-form')) {
         window.location.assign("../../pages/auth/verify-email.html");
       })
       .catch(error => {
-        console.error("Error during signup or saving user data:", error);
-        alert("Signup error: " + error.message);
+        showNotification("Error during signup or saving user data: " + error.message, 'error');
       });
 
     signupForm.reset();
@@ -136,7 +170,7 @@ if(document.querySelector('#login-form')) {
     signInWithEmailAndPassword(auth, email, password).then(async (cred) => {
       // Check if email is verified
       if (!cred.user.emailVerified) {
-        alert("Please verify your email before signing in.");
+        showNotification("Please verify your email before signing in.", 'error');
         auth.signOut();
         return;
       }
@@ -172,14 +206,13 @@ if(document.querySelector('#login-form')) {
           window.location.href = "../../pages/shopping/index.html";
         }
       } catch (error) {
-        console.error("Error checking user verification status:", error);
+        showNotification("Error checking user verification status: " + error.message, 'error');
         // If there's an error, proceed to shopping page
         loginForm.reset();
         window.location.href = "../../pages/shopping/index.html";
       }
     }).catch(error => {
-      console.error("Login error:", error);
-      alert("Login failed: " + error.message);
+      showNotification("Login failed: " + error.message, 'error');
     });
   });
 }
@@ -194,12 +227,11 @@ if(document.querySelector('#forgot-password-form')) {
     
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        alert("Password reset email sent. Please check your inbox.");
+        showNotification("Password reset email sent. Please check your inbox.");
         forgotPasswordForm.reset();
       })
       .catch(error => {
-        console.error("Error sending reset email:", error);
-        alert("Error: " + error.message);
+        showNotification("Error sending reset email: " + error.message, 'error');
       });
   });
 }
@@ -215,7 +247,7 @@ if(document.querySelector('#change-password-form')) {
     const confirmPassword = changePasswordForm['confirm-password'].value;
     
     if(newPassword !== confirmPassword) {
-      alert("New passwords don't match");
+      showNotification("New passwords don't match", 'error');
       return;
     }
     
@@ -229,15 +261,14 @@ if(document.querySelector('#change-password-form')) {
           return updatePassword(user, newPassword);
         })
         .then(() => {
-          alert("Password updated successfully");
+          showNotification("Password updated successfully");
           changePasswordForm.reset();
           // Close modal if exists
           const modal = document.getElementById('password-modal');
           if(modal) modal.style.display = "none";
         })
         .catch(error => {
-          console.error("Error updating password:", error);
-          alert("Error: " + error.message);
+          showNotification("Error updating password: " + error.message, 'error');
         });
     }
   });
@@ -251,14 +282,13 @@ if(document.querySelector('#resend-verification')) {
     if(user) {
       sendEmailVerification(user)
         .then(() => {
-          alert("Verification email sent again!");
+          showNotification("Verification email sent again!");
         })
         .catch(error => {
-          console.error("Error sending verification email:", error);
-          alert("Error: " + error.message);
+          showNotification("Error sending verification email: " + error.message, 'error');
         });
     } else {
-      alert("You need to be logged in to request a verification email");
+      showNotification("You need to be logged in to request a verification email", 'error');
     }
   });
 }
@@ -279,10 +309,9 @@ if(document.querySelector('#verify-phone-form')) {
     phoneVerificationService.sendOTP(pendingPhone)
       .then(result => {
         if(result.success) {
-          console.log("OTP sent successfully");
+          showNotification("OTP sent successfully");
         } else {
-          console.error("Failed to send OTP:", result.message);
-          alert("Failed to send verification code: " + result.message);
+          showNotification("Failed to send OTP: " + result.message, 'error');
         }
       });
   }
@@ -294,7 +323,7 @@ if(document.querySelector('#verify-phone-form')) {
     const phoneNumber = sessionStorage.getItem('pendingPhoneVerification');
     
     if(!phoneNumber) {
-      alert("Phone number not found. Please restart the verification process.");
+      showNotification("Phone number not found. Please restart the verification process.", 'error');
       window.location.href = "signup.html";
       return;
     }
@@ -302,7 +331,7 @@ if(document.querySelector('#verify-phone-form')) {
     // Validate OTP format
     const otpValidation = phoneVerificationService.validateOTP(otpCode);
     if(!otpValidation.valid) {
-      alert(otpValidation.message);
+      showNotification(otpValidation.message, 'error');
       return;
     }
     
@@ -328,14 +357,15 @@ if(document.querySelector('#verify-phone-form')) {
         // Clear pending phone verification
         sessionStorage.removeItem('pendingPhoneVerification');
         
-        alert("Phone number verified successfully!");
-        window.location.href = "../shopping/index.html";
+        showNotification("Phone number verified successfully!");
+        setTimeout(() => {
+          window.location.href = "../shopping/index.html";
+        }, 2000);
       } else {
-        alert("Verification failed: " + result.message);
+        showNotification("Verification failed: " + result.message, 'error');
       }
     } catch (error) {
-      console.error("Error verifying OTP:", error);
-      alert("Verification error: " + error.message);
+      showNotification("Error verifying OTP: " + error.message, 'error');
     } finally {
       // Restore button state
       submitBtn.textContent = originalText;
@@ -351,7 +381,7 @@ if(document.querySelector('#resend-otp')) {
     const phoneNumber = sessionStorage.getItem('pendingPhoneVerification');
     
     if(!phoneNumber) {
-      alert("Phone number not found. Please restart the verification process.");
+      showNotification("Phone number not found. Please restart the verification process.", 'error');
       return;
     }
     
@@ -364,13 +394,12 @@ if(document.querySelector('#resend-otp')) {
       const result = await phoneVerificationService.sendOTP(phoneNumber);
       
       if(result.success) {
-        alert("Verification code sent again!");
+        showNotification("Verification code sent again!");
       } else {
-        alert("Failed to resend code: " + result.message);
+        showNotification("Failed to resend code: " + result.message, 'error');
       }
     } catch (error) {
-      console.error("Error resending OTP:", error);
-      alert("Error resending code: " + error.message);
+      showNotification("Error resending OTP: " + error.message, 'error');
     } finally {
       // Restore button state
       resendOtpBtn.textContent = originalText;
@@ -387,7 +416,7 @@ if(document.querySelector('#continue-to-phone-verification')) {
     if(user && user.emailVerified) {
       window.location.href = "verify-phone.html";
     } else {
-      alert("Please verify your email first before proceeding to phone verification.");
+      showNotification("Please verify your email first before proceeding to phone verification.", 'error');
     }
   });
 }

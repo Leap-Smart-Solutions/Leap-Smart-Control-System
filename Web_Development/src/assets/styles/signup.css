@@ -364,3 +364,49 @@ header a i {
 .otp-input {
   display: none;
 }
+
+/* Custom Notification Popup */
+.notification-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  transform: translateX(120%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.notification-popup.show {
+  transform: translateX(0);
+}
+
+.notification-popup i {
+  font-size: 20px;
+}
+
+.notification-popup .message {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.notification-popup .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.notification-popup .close-btn:hover {
+  opacity: 1;
+}
