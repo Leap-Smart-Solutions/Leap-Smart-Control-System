@@ -11,7 +11,17 @@
     <div class="container">
         <header>
             <h1>Issue Tracker</h1>
-            <button id="createIssueBtn" class="primary-btn">Create New Issue</button>
+            <div class="header-right">
+                <div class="user-profile">
+                    <img src="https://i.ibb.co/277hTSg8/generic-profile.jpg" alt="Profile" id="user-profile-img" class="profile-img">
+                    <div class="profile-dropdown">
+                        <a href="../auth/profile.html">Profile</a>
+                        <a href="../shopping/index.html">Browse Products</a>
+                        <a href="../index.html" class="logout">Logout</a>
+                    </div>
+                </div>
+                <button id="createIssueBtn" class="primary-btn">Create New Issue</button>
+            </div>
         </header>
 
         <!-- Create Issue Modal -->
@@ -76,5 +86,6 @@
     <!-- Add authentication check script -->
     <script src="../../js/components/issues/authCheck.js" type="module"></script>
     <script src="../../js/components/issues/issuereport.js" type="module"></script>
+    <script src="../../js/components/issues/profile.js" type="module"></script>
 </body>
 </html> 
