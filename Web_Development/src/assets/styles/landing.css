@@ -113,11 +113,12 @@ header .sign button:hover {
   display: none;
   width: 160px;
   background-color: #2c2c2c;
-  position: absolute;
+  position: fixed;
+  top: 80px;
+  left: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-  margin-left: 20px;
+  z-index: 1000;
   overflow: hidden;
 }
 
@@ -269,7 +270,7 @@ header .sign button:hover {
   
   header .sign {
     width: fit-content;
-    /* margin: 20px 0 0 0; */
+    margin-left: 0px;
     justify-content: center;
     gap: 20px;
   }

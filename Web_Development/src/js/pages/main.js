@@ -2,6 +2,7 @@
 const dateEl = document.querySelector(".date");
 const subMenu = document.querySelector(".display-nav-links");
 const menuIcon = document.querySelector(".menu");
+let isMenuOpen = false;
 
 const updateDate = function () {
   const today = new Date();
@@ -15,21 +16,41 @@ const updateDate = function () {
 };
 updateDate();
 
-function toggleMenu() {
-  subMenu.classList.toggle("hidden");
+// Mobile menu toggle functionality
+function initializeMenuToggle() {
+  if (menuIcon && subMenu) {
+    menuIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isMenuOpen = !isMenuOpen;
+      subMenu.style.display = isMenuOpen ? 'block' : 'none';
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!menuIcon.contains(e.target) && !subMenu.contains(e.target)) {
+        isMenuOpen = false;
+        subMenu.style.display = 'none';
+      }
+    });
+
+    // Prevent clicks inside the menu from closing it
+    subMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
 }
 
 function handleResize() {
   if (window.innerWidth <= 768) {
-    // Ensure event listener is added only once
-    if (!menuIcon.hasAttribute("data-listener")) {
-      menuIcon.addEventListener("click", toggleMenu);
-      menuIcon.setAttribute("data-listener", "true"); // Prevents duplicate event listeners
+    // Show mobile menu elements
+    if (subMenu) {
+      subMenu.style.display = 'none';
     }
   } else {
-    subMenu.classList.add("hidden"); // Hide menu on large screens
-    menuIcon.removeEventListener("click", toggleMenu);
-    menuIcon.removeAttribute("data-listener");
+    // Hide mobile menu on larger screens
+    if (subMenu) {
+      subMenu.style.display = 'none';
+    }
   }
 }
 
@@ -55,17 +76,8 @@ if(document.getElementById('play')) {
     // Add logic to pause audio
   });
 }
-document.addEventListener("DOMContentLoaded", function () {
-  const navLinks = document.querySelector(".nav-links");
 
-  menuIcon.addEventListener("click", function () {
-    navLinks.classList.toggle("active");
-  });
-});
-menuIcon.addEventListener("click", function () {
-  if (subMenu.style.display === "none") {
-    subMenu.style.display = "block";
-  } else {
-    subMenu.style.display = "none";sss
-  }
+// Initialize menu toggle when DOM is loaded
+document.addEventListener("DOMContentLoaded", function () {
+  initializeMenuToggle();
 });
