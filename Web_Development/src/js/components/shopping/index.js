@@ -55,6 +55,39 @@ const getUserProfile = async (userId) => {
   }
 };
 
+// Handle mobile dropdown
+const initMobileDropdown = () => {
+  const userProfile = document.querySelector('.user-profile');
+  if (!userProfile) return;
+
+  // Toggle dropdown on click for mobile
+  userProfile.addEventListener('click', (e) => {
+    if (window.innerWidth <= 767) {
+      e.preventDefault();
+      userProfile.classList.toggle('active');
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 767 && 
+        userProfile.classList.contains('active') && 
+        !userProfile.contains(e.target)) {
+      userProfile.classList.remove('active');
+    }
+  });
+
+  // Close dropdown when clicking a link
+  const dropdownLinks = userProfile.querySelectorAll('.profile-dropdown a');
+  dropdownLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 767) {
+        userProfile.classList.remove('active');
+      }
+    });
+  });
+};
+
 // load template file
 const loadTemplate = async () => {
   try {
@@ -87,6 +120,9 @@ const loadTemplate = async () => {
     if (roomLinks) {
       roomLinks.style.display = hasCompletedOrders ? 'flex' : 'none';
     }
+    
+    // Initialize mobile dropdown
+    initMobileDropdown();
     
     // Initialize cart
     await cart();
