@@ -9,6 +9,39 @@ let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
 const loadingContainer = document.querySelector('.loading-container');
 
+// Handle mobile dropdown
+const initMobileDropdown = () => {
+  const userProfile = document.querySelector('.user-profile');
+  if (!userProfile) return;
+
+  // Toggle dropdown on click for mobile
+  userProfile.addEventListener('click', (e) => {
+    if (window.innerWidth <= 767) {
+      e.preventDefault();
+      userProfile.classList.toggle('active');
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 767 && 
+        userProfile.classList.contains('active') && 
+        !userProfile.contains(e.target)) {
+      userProfile.classList.remove('active');
+    }
+  });
+
+  // Close dropdown when clicking a link
+  const dropdownLinks = userProfile.querySelectorAll('.profile-dropdown a');
+  dropdownLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 767) {
+        userProfile.classList.remove('active');
+      }
+    });
+  });
+};
+
 // Load template file
 const loadTemplate = async () => {
   try {
@@ -103,6 +136,9 @@ const initCheckout = async () => {
               }
             });
           }
+
+          // Initialize mobile dropdown after profile image is set
+          initMobileDropdown();
         }
       }
     } catch (error) {
@@ -270,9 +306,21 @@ const initCheckout = async () => {
       // Clear cart
       localStorage.removeItem('cart');
       
-      // Show success message and redirect
-      alert('Order placed successfully! Thank you for your purchase. You will receive an email with the invoice.');
-      window.location.href = '../../pages/shopping/index.html';
+      // Show success modal
+      const successModal = document.getElementById('successModal');
+      successModal.classList.add('active');
+      
+      // Prevent scrolling when modal is open
+      document.body.style.overflow = 'hidden';
+      
+      // Add click outside to close
+      successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) {
+          successModal.classList.remove('active');
+          document.body.style.overflow = '';
+          window.location.href = '../../pages/shopping/index.html';
+        }
+      });
     } catch (error) {
       console.error('Error placing order:', error);
       alert('There was an error processing your order. Please try again.');
