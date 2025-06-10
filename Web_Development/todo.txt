@@ -51,3 +51,4 @@ Add admin profile display functionality that shows the current logged-in admin's
    - Redirect to login if not authenticated
    - Show error if not an admin
 5. Add proper error handling and cleanup of auth listeners
+HELLO WORLD
