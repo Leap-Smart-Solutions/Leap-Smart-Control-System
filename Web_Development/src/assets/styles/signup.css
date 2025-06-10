@@ -192,6 +192,26 @@ header a i {
   color: #000;
 }
 
+.login-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.login-link p {
+  color: var(--light-gray);
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #ee8924;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
   .signup-container .signup-rectangle {
@@ -344,4 +364,3 @@ header a i {
 .otp-input {
   display: none;
 }
-</edits>
