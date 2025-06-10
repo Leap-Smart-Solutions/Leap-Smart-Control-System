@@ -18,6 +18,7 @@ body {
   min-height: 100vh;
   width: 100%;
   color: #fff;
+  padding: 0px;
 }
 
 header {
@@ -37,6 +38,7 @@ header .date-menue {
 header .date-menue img {
   cursor: pointer;
   width: 29px;
+  display: none; /* Hide by default on desktop */
 }
 
 header .date-menue p {
@@ -114,7 +116,7 @@ header .sign button:hover {
   width: 160px;
   background-color: #2c2c2c;
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -241,12 +243,20 @@ header .sign button:hover {
 }
 
 @media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
   .display-nav-links {
     display: none;
   }
   
   header .nav-links {
     display: none;
+  }
+  
+  header .date-menue img {
+    display: block; /* Show on mobile */
   }
   
   .page-content h1 {
@@ -263,8 +273,12 @@ header .sign button:hover {
 }
 
 @media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
   header {
-    padding: 0 15px;
+    padding: 0 5px;
     margin: 0;
   }
   
