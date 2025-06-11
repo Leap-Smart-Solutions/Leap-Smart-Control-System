@@ -5,6 +5,18 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/fi
 import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
+// Initialize EmailJS
+(function() {
+  // Add EmailJS script
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+  script.async = true;
+  script.onload = () => {
+    window.emailjs.init("vNNcicG5JmPhSkPF4");
+  };
+  document.head.appendChild(script);
+})();
+
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
 const loadingContainer = document.querySelector('.loading-container');
@@ -282,7 +294,7 @@ const initCheckout = async () => {
       const { subtotal, shipping, tax, total } = await updateOrderSummary();
 
       const order = {
-        orderId: Math.random().toString(36).substr(2, 9).toUpperCase(), // Generate a random order ID
+        orderId: Math.random().toString(36).substr(2, 9).toUpperCase(),
         customer: {
           fullName: fullNameInput.value,
           email: emailInput.value,
@@ -312,22 +324,31 @@ const initCheckout = async () => {
       const orderId = await saveOrderToFirestore(order);
       console.log('Order placed successfully with ID:', orderId);
       
-      // Send order confirmation email via the API
+      // Send order confirmation email using EmailJS
       try {
-        const emailResponse = await fetch('http://localhost:3000/api/send-order-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ orderData: order })
-        });
+        const emailParams = {
+          to_email: order.customer.email,
+          to_name: order.customer.fullName,
+          order_id: order.orderId,
+          order_date: new Date().toLocaleDateString(),
+          order_items: order.items.map(item => 
+            `${item.name} x${item.quantity} - ${formatCurrency(item.price * item.quantity)}`
+          ).join('\n'),
+          order_subtotal: formatCurrency(order.summary.subtotal),
+          order_shipping: formatCurrency(order.summary.shipping),
+          order_tax: formatCurrency(order.summary.tax),
+          order_total: formatCurrency(order.summary.total),
+          delivery_address: `${order.customer.address}, ${order.customer.city}, ${order.customer.town}`,
+          payment_method: order.payment.method
+        };
+
+        await window.emailjs.send(
+          'service_qwds9at',
+          'template_vsjou47',
+          emailParams
+        );
         
-        if (!emailResponse.ok) {
-          const errorData = await emailResponse.json();
-          console.error('Failed to send order confirmation email:', errorData);
-        } else {
-          console.log('Order confirmation email sent successfully');
-        }
+        console.log('Order confirmation email sent successfully');
       } catch (error) {
         console.error('Error sending order confirmation email:', error);
       }
