@@ -303,6 +303,27 @@ const initCheckout = async () => {
       const orderId = await saveOrderToFirestore(order);
       console.log('Order placed successfully with ID:', orderId);
       
+      // Send order confirmation email via the deployed API
+      try {
+        const emailResponse = await fetch('https://send-order-invoice.vercel.app/api/send-order-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'cors',
+          body: JSON.stringify({ orderData: order })
+        });
+        
+        if (!emailResponse.ok) {
+          const errorData = await emailResponse.json();
+          console.error('Failed to send order confirmation email:', errorData);
+        } else {
+          console.log('Order confirmation email sent successfully');
+        }
+      } catch (error) {
+        console.error('Error sending order confirmation email:', error);
+      }
+      
       // Clear cart
       localStorage.removeItem('cart');
       
