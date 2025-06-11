@@ -65,3 +65,57 @@ devonam330@2mik.com
 
 HantyKanty
 >>>>>>> 4c4fb474fb0b0cdfdeeb34096d665c35cdc4d1f3
+
+peplive@PepOS-Live:/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api$ npm run dev
+
+> leap-smart-invoice-api@1.0.0 dev
+> nodemon server.js
+
+[nodemon] 2.0.22
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node server.js`
+[2025-06-11 17:57:04] DEBUG Creating transport: nodemailer (6.10.1; +https://nodemailer.com/; SMTP/6.10.1[client:6.10.1])
+Server running on port 3000
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] Resolved smtp.gmail.com as 74.125.206.109 [cache miss]
+[2025-06-11 17:57:05] INFO  [3BnfMQFriQ] Secure connection established to 74.125.206.109:465
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 220 smtp.gmail.com ESMTP ffacd0b85a97d-3a53229d9adsm15793484f8f.9 - gsmtp
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] C: EHLO [127.0.0.1]
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-smtp.gmail.com at your service, [156.212.54.128]
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-SIZE 35882577
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-8BITMIME
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-ENHANCEDSTATUSCODES
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-PIPELINING
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250-CHUNKING
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 250 SMTPUTF8
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] SMTP handshake finished
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] C: AUTH PLAIN AGxlYXBvcmRlcnNjb25maXJtYXRpb25AZ21haWwuY29tAC8qIHNlY3JldCAqLw==
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 535-5.7.8 Username and Password not accepted. For more information, go to
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] S: 535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-3a53229d9adsm15793484f8f.9 - gsmtp
+[2025-06-11 17:57:05] INFO  [3BnfMQFriQ] User "leapordersconfirmation@gmail.com" failed to authenticate
+[2025-06-11 17:57:05] DEBUG [3BnfMQFriQ] Closing connection to the server using "end"
+Transporter verification error: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-3a53229d9adsm15793484f8f.9 - gsmtp
+    at SMTPConnection._formatError (/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._actionAUTHComplete (/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api/node_modules/nodemailer/lib/smtp-connection/index.js:1588:34)
+    at SMTPConnection.<anonymous> (/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api/node_modules/nodemailer/lib/smtp-connection/index.js:556:26)
+    at SMTPConnection._processResponse (/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api/node_modules/nodemailer/lib/smtp-connection/index.js:993:20)
+    at SMTPConnection._onData (/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api/node_modules/nodemailer/lib/smtp-connection/index.js:774:14)
+    at SMTPConnection._onSocketData (/run/media/external/persistent/Leap-Smart-Control-System/Web_Development/src/api/node_modules/nodemailer/lib/smtp-connection/index.js:195:44)
+    at TLSSocket.emit (node:events:517:28)
+    at addChunk (node:internal/streams/readable:368:12)
+    at readableAddChunk (node:internal/streams/readable:341:9)
+    at Readable.push (node:internal/streams/readable:278:10) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-3a53229d9adsm15793484f8f.9 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+[2025-06-11 17:57:05] INFO  [3BnfMQFriQ] Connection closed
+ 
+
+
+

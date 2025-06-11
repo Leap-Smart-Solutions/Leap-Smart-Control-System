@@ -196,6 +196,10 @@ const initCheckout = async () => {
     cartItems.forEach(item => {
       const product = products.find(p => p.id === item.product_id);
       if (product) {
+        // Add name and price to the cart item
+        item.name = product.name;
+        item.price = product.price;
+        
         const itemElement = document.createElement('div');
         itemElement.classList.add('cart-item');
         itemElement.innerHTML = `
@@ -278,6 +282,7 @@ const initCheckout = async () => {
       const { subtotal, shipping, tax, total } = await updateOrderSummary();
 
       const order = {
+        orderId: Math.random().toString(36).substr(2, 9).toUpperCase(), // Generate a random order ID
         customer: {
           fullName: fullNameInput.value,
           email: emailInput.value,
@@ -286,7 +291,11 @@ const initCheckout = async () => {
           town: townInput.value,
           phone: phoneInput.value
         },
-        items: cartItems,
+        items: cartItems.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        })),
         payment: {
           method: 'Cash on Delivery'
         },
@@ -303,14 +312,13 @@ const initCheckout = async () => {
       const orderId = await saveOrderToFirestore(order);
       console.log('Order placed successfully with ID:', orderId);
       
-      // Send order confirmation email via the deployed API
+      // Send order confirmation email via the API
       try {
-        const emailResponse = await fetch('https://send-order-invoice.vercel.app/api/send-order-email', {
+        const emailResponse = await fetch('http://localhost:3000/api/send-order-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          mode: 'cors',
           body: JSON.stringify({ orderData: order })
         });
         
