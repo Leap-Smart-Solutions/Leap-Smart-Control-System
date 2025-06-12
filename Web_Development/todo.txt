@@ -121,3 +121,16 @@ Hello World!
 
 donam86028@gotemv.com
 T4+G_vFD'xAYF6)
+
+What to mention to Cursor to write in the documentation:
+   1. Tools
+   2. Phone Verification via Whatsapp OTP from the repo ("https://github.com/Abd-El-Rahman-Mohamed/whatsapp-otp")
+   3. Send invoice using JSEmail
+   4. Authentication implementations 
+   5. Saying that the user calls the owner to uplevel the user role to admin 
+   6. Livingroom realtime database which sets the light to 0 to turn off the lights and 1 to turn on
+   7. Backend design pattern
+   8. Backend testing
+   9. Firebase and all its own usages in our own project
+
+   Living room for order complete users
