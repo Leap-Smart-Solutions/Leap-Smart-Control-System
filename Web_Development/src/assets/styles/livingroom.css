@@ -279,6 +279,10 @@
       width: 30%;
     }
 
+    div.main-content:nth-child(3) {
+      margin-top: 10px;
+    }
+
     /* Cloud/Weather section */
     .main-content .left .cloud {
       width: 100%;

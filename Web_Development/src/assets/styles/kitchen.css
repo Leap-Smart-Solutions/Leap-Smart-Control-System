@@ -75,9 +75,11 @@ header {
   width: 100%;
 }
 .head .user-image img {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  display: block;
+  overflow: hidden;
 }
 .display-nav-links {
   margin-left: 20px;
@@ -541,6 +543,135 @@ header {
 .devices-bed .wifi-code a {
   color: green;
   font-size: 20px;
+}
+
+/* User profile styles */
+.user-profile {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ff6600;
+  transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+  transform: scale(1.1);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 65%;
+  right: -5px;
+  background-color: #1c1c1c;
+  border-radius: 8px;
+  padding: 10px 0;
+  min-width: 200px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+  border: 1px solid #f60;
+  margin-top: 10px;
+}
+
+.user-profile:hover .profile-dropdown,
+.user-profile.active .profile-dropdown {
+  display: block;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 12px 16px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown a:active {
+  background-color: #353432;
+}
+
+.profile-dropdown a:nth-child(2) {
+  border-top: 1px solid #353432;
+  border-bottom: 1px solid #353432;
+  margin: 5px 0;
+  padding: 12px 16px;
+}
+
+.profile-dropdown .logout {
+  color: #ff3b30;
+  border-top: 1px solid #353432;
+  margin-top: 5px;
+  padding-top: 12px;
+}
+
+/* Mobile styles for profile dropdown */
+@media screen and (max-width: 767px) {
+  .profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: -10px;
+    width: 200px;
+    min-width: unset;
+    border-radius: 8px;
+    padding: 10px 0;
+    transform: translateY(0);
+    transition: opacity 0.3s ease;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .user-profile.active .profile-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .profile-dropdown a {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+
+  .profile-dropdown a:nth-child(2) {
+    padding: 14px 16px;
+  }
+
+  .profile-dropdown .logout {
+    padding-top: 14px;
+  }
+
+  /* Add overlay when dropdown is active */
+  .user-profile.active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  /* Add arrow to dropdown */
+  .profile-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #1c1c1c;
+  }
 }
 
 /* Responsive Design */
