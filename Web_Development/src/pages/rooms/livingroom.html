@@ -217,7 +217,15 @@
             </div>
           </nav>
           <div class="user-image">
-            <img src="../../assets/images/1.jpg" alt="User" onclick="window.location.href='../auth/profile.html'" />
+            <div class="user-profile">
+              <img src="https://i.ibb.co/277hTSg8/generic-profile.jpg" alt="User" id="user-profile-img" class="profile-img">
+              <div class="profile-dropdown">
+                <a href="../auth/profile.html">Profile</a>
+                <a href="../issues/issues.html">Create an issue</a>
+                <a href="../shopping/index.html">Browse Products</a>
+                <a href="../index.html" class="logout">Logout</a>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -452,6 +460,59 @@
   <script src="../../js/pages/main.js"></script>
   <script src="../../js/pages/rooms.js"></script>
   <script type="module" src="../../js/pages/livingroom.js"></script>
+  <script>
+    // Initialize mobile dropdown
+    function initMobileDropdown() {
+      const menuToggle = document.getElementById('menuToggle');
+      const displayNavLinks = document.querySelector('.display-nav-links');
+      const userProfile = document.querySelector('.user-profile');
+      const profileDropdown = document.querySelector('.profile-dropdown');
+
+      // Toggle mobile menu
+      menuToggle.addEventListener('click', () => {
+        displayNavLinks.style.display = displayNavLinks.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // Handle user profile dropdown
+      userProfile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userProfile.classList.toggle('active');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!userProfile.contains(e.target)) {
+          userProfile.classList.remove('active');
+        }
+      });
+
+      // Update profile image if user has one
+      const updateProfileImage = async () => {
+        try {
+          const user = auth.currentUser;
+          if (user) {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const profileImg = document.getElementById('user-profile-img');
+            if (userDoc.exists() && userDoc.data().profileImage) {
+              profileImg.src = userDoc.data().profileImage;
+            } else {
+              profileImg.src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+            }
+          }
+        } catch (error) {
+          console.error('Error updating profile image:', error);
+          // Set fallback image on error
+          document.getElementById('user-profile-img').src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
+        }
+      };
+
+      // Call updateProfileImage when auth state changes
+      onAuthStateChanged(auth, updateProfileImage);
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initMobileDropdown);
+  </script>
 </body>
 </html>
 
