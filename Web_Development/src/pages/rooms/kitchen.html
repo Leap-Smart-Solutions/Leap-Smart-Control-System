@@ -20,181 +20,426 @@
     />
     <link rel="stylesheet" href="../../assets/styles/kitchen.css" />
     <title>Kitchen</title>
+
+    <!-- Critical styles to prevent white flash -->
+    <style>
+      body {
+        background-color: #1a1a1a;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'Montserrat', sans-serif;
+      }
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999;
+      }
+      .loading-container {
+        text-align: center;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .logo-container {
+        margin-bottom: 30px;
+      }
+      .logo-container img {
+        width: 80px;
+        height: 80px;
+        animation: pulse 2s infinite;
+      }
+      .loading-text {
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #ff6600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .loading-bar {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+      }
+      .loading-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 40%;
+        background: #ff6600;
+        animation: loading 1.5s ease-in-out infinite;
+        border-radius: 2px;
+      }
+      .loading-message {
+        margin-top: 20px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+      }
+      @keyframes loading {
+        0% { left: -40%; }
+        100% { left: 100%; }
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      /* Hide main content initially */
+      .main-content {
+        display: none;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      /* Show main content when authenticated */
+      .main-content.authenticated {
+        display: block;
+      }
+      /* Improve header spacing */
+      header {
+        margin: 20px 0;
+      }
+      /* Improve content spacing */
+      .content {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      /* Improve kit-section spacing */
+      .kit-section {
+        width: 66.65%;
+        margin-right: 20px;
+      }
+      /* Improve devices-bed spacing */
+      .devices-bed {
+        width: 33.3%;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      /* Improve small-devices spacing */
+      .small-devices {
+        margin-top: 20px;
+      }
+      /* Improve float-values spacing */
+      .float-values {
+        gap: 15px;
+      }
+      /* Improve device cards spacing */
+      .door, .alexa, .white {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      /* Improve device-check spacing */
+      .device-check {
+        margin-bottom: 15px;
+      }
+      /* Improve wifi-code spacing */
+      .wifi-code {
+        margin-top: 15px;
+      }
+      /* Improve responsive layout */
+      @media (max-width: 991px) {
+        .content {
+          flex-direction: column;
+          padding: 0 20px;
+        }
+        .kit-section, .devices-bed {
+          width: 100%;
+          margin: 20px 0;
+        }
+      }
+    </style>
+
+    <!-- Authentication script -->
+    <script type="module">
+      import { auth, db } from "../../js/firebase/firebaseConfig.js";
+      import { collection, query, where, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+      // Check authentication and orders before allowing access
+      onAuthStateChanged(auth, async (user) => {
+        console.log('Auth state changed. User:', user ? {
+          uid: user.uid,
+          email: user.email,
+          emailVerified: user.emailVerified
+        } : 'No user');
+        
+        if (!user) {
+          console.log('No authenticated user, redirecting to login');
+          window.location.href = '../auth/login.html';
+          return;
+        }
+
+        try {
+          console.log('Checking orders for user:', user.uid);
+          
+          // Check orders in the main orders collection
+          const mainOrdersRef = collection(db, 'orders');
+          const mainOrdersQuery = query(
+            mainOrdersRef,
+            where('userId', '==', user.uid),
+            where('status', '==', 'completed')
+          );
+          
+          console.log('Querying main orders collection for userId:', user.uid);
+          const mainOrdersSnapshot = await getDocs(mainOrdersQuery);
+          
+          console.log('Main orders query result:', {
+            empty: mainOrdersSnapshot.empty,
+            size: mainOrdersSnapshot.size,
+            docs: mainOrdersSnapshot.docs.map(doc => ({
+              id: doc.id,
+              data: doc.data()
+            }))
+          });
+
+          // Also check orders in the user's subcollection
+          const userOrdersRef = collection(db, 'users', user.uid, 'orders');
+          const userOrdersQuery = query(
+            userOrdersRef,
+            where('status', '==', 'completed')
+          );
+          
+          console.log('Querying user orders subcollection at path:', `users/${user.uid}/orders`);
+          const userOrdersSnapshot = await getDocs(userOrdersQuery);
+          
+          console.log('User orders query result:', {
+            empty: userOrdersSnapshot.empty,
+            size: userOrdersSnapshot.size,
+            docs: userOrdersSnapshot.docs.map(doc => ({
+              id: doc.id,
+              data: doc.data()
+            }))
+          });
+
+          // Grant access if either query returns results
+          if (!mainOrdersSnapshot.empty || !userOrdersSnapshot.empty) {
+            console.log('Access granted - user has completed orders');
+            document.getElementById('loading-overlay').remove();
+            const mainContent = document.querySelector('.main-content');
+            mainContent.style.display = 'block';
+            mainContent.classList.add('authenticated');
+          } else {
+            console.log('No completed orders found in either location, redirecting to index');
+            window.location.href = '../index.html';
+          }
+        } catch (error) {
+          console.error("Error checking orders:", error);
+          console.error("Error details:", {
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+          });
+          window.location.href = '../index.html';
+          return;
+        }
+      });
+    </script>
   </head>
   <body>
-    <header>
-      <div class="head">
-        <div class="date-menue">
-          <img
-            src="../../assets/images/menu-rectangles-component.png"
-            alt="menu"
-            class="menu"
-          />
-          <p class="date"></p>
+    <!-- Loading screen -->
+    <div id="loading-overlay">
+      <div class="loading-container">
+        <div class="logo-container">
+          <img src="../../assets/icons/favicon.ico" alt="Leap Logo">
         </div>
-        <nav class="">
-          <div class="nav-links">
-            <a href="./bedroom.html">Bed Room</a>
-            <a href="./livingroom.html">Living Room</a>
-            <a href="#" id="active" class="kitchen">Kitchen</a>
-          </div>
-        </nav>
-        <div class="user-image">
-          <img src="../../assets/images/1.jpg" alt="User Profile" />
-        </div>
+        <div class="loading-text">Leap Smart Control</div>
+        <div class="loading-bar"></div>
+        <div class="loading-message">Checking access permissions...</div>
       </div>
-    </header>
-    <div class="display-nav-links">
-      <nav class="links">
-        <a href="../shopping/index.html">Profile</a>
-        <div class="line"></div>
-        <a href="../index.html" style="color: #ff3b30">LogOut</a>
-      </nav>
     </div>
-    <div class="content">
-      <div class="kit-section">
-        <div class="image-head">
-          <img src="../../assets/images/kitchen-image.png" alt="Kitchen" />
-          <h1>Kitchen</h1>
-        </div>
-        <div class="kit-content">
-          <div class="float-values">
-            <div class="one">
-              <div class="v-one">
-                <div class="v-one-content">
-                  <img src="../../assets/images/double-arrow-image.png" class="double" />
-                  <img src="../../assets/images/bubbles-image.png" class="bubbles" />
-                </div>
-              </div>
-              <div class="t-tow">
-                <div class="o1">Auto</div>
-                <div class="o2">60%</div>
-              </div>
-            </div>
-            <div class="tow">
-              <div class="v-tow">
-                <div class="v-tow-content">
-                  <img src="../../assets/images/double-arrow-image down.png" class="double" />
-                  <img src="../../assets/images/room-temperature-image.png" class="tem" />
-                </div>
-              </div>
-              <div class="s-tow">
-                <div class="o1">Warm</div>
-                <div class="o2">20°C</div>
-              </div>
-            </div>
-            <div class="three">
-              <div class="v-three">
-                <div class="v-three-content">
-                  <img src="../../assets/images/music.png" class="audio" />
-                </div>
-              </div>
-              <div class="v-three">
-                <div class="v-three-content">⬜</div>
-              </div>
-            </div>
-            <div class="four">
-              <div class="v-four">
-                <div class="v-four-content">
-                  <img src="../../assets/images/sun.png" class="sun" />
-                </div>
-              </div>
-              <div class="v-four-tow">
-                <div class="v-four-tow-content"></div>
-              </div>
-            </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <header>
+        <div class="head">
+          <div class="date-menue">
+            <img
+              src="../../assets/images/menu-rectangles-component.png"
+              alt="menu"
+              class="menu"
+            />
+            <p class="date"></p>
           </div>
-          <div class="small-devices">
-            <div class="music-container">
-              <div class="name-music">
-                <div class="name-value">
-                  <h3>Audio</h3>
-                  <p>Audio</p>
-                </div>
-                <div class="slider">
-                  <div class="line"></div>
-                  <div class="circle"></div>
-                </div>
-              </div>
-              <div class="controls">
-                <!-- <i class="fa-solid fa-caret-left"></i> -->
-                <i class="fa-solid fa-angles-left"></i>
-                <i class="fa-solid fa-play" id="play"></i>
-                <i
-                  class="fa-solid fa-pause"
-                  id="pause"
-                  style="display: none"
-                ></i>
-                <i class="fa-solid fa-angles-right"></i>
-                <!-- <i class="fa-solid fa-caret-right"></i> -->
-              </div>
+          <nav class="">
+            <div class="nav-links">
+              <a href="./bedroom.html">Bed Room</a>
+              <a href="./livingroom.html">Living Room</a>
+              <a href="#" id="active" class="kitchen">Kitchen</a>
             </div>
-            <div class="small-values">
-              <div class="fan">
-                <img src="../../assets/images/fan-image.png" alt="Fan" />
-                <p>speed <strong>6</strong> / 10</p>
-              </div>
-              <div class="camira">
-                <img src="../../assets/images/camera-image.png" alt="Camera" />
-                <p>Cam is off</p>
-              </div>
-              <div class="lock">
-                <img src="../../assets/images/door-lock-image.png" alt="Door Lock" />
-                <p>Door open</p>
-              </div>
-              <div class="wifi">
-                <img src="../../assets/images/wifi-image.png" alt="WiFi" />
-                <p><span>19.7</span> mb/s</p>
-              </div>
-            </div>
+          </nav>
+          <div class="user-image">
+            <img src="../../assets/images/1.jpg" alt="User Profile" />
           </div>
         </div>
+      </header>
+      <div class="display-nav-links">
+        <nav class="links">
+          <a href="../shopping/index.html">Profile</a>
+          <div class="line"></div>
+          <a href="../index.html" style="color: #ff3b30">LogOut</a>
+        </nav>
       </div>
-      <div class="devices-bed">
-        <div class="head1">
-          <h1>Devices</h1>
-          <div class="dot">
-            <p class="D">&#9679;</p>
-            <p class="active"><strong>5 /</strong>6</p>
+      <div class="content">
+        <div class="kit-section">
+          <div class="image-head">
+            <img src="../../assets/images/kitchen-image.png" alt="Kitchen" />
+            <h1>Kitchen</h1>
+          </div>
+          <div class="kit-content">
+            <div class="float-values">
+              <div class="one">
+                <div class="v-one">
+                  <div class="v-one-content">
+                    <img src="../../assets/images/double-arrow-image.png" class="double" />
+                    <img src="../../assets/images/bubbles-image.png" class="bubbles" />
+                  </div>
+                </div>
+                <div class="t-tow">
+                  <div class="o1">Auto</div>
+                  <div class="o2">60%</div>
+                </div>
+              </div>
+              <div class="tow">
+                <div class="v-tow">
+                  <div class="v-tow-content">
+                    <img src="../../assets/images/double-arrow-image down.png" class="double" />
+                    <img src="../../assets/images/room-temperature-image.png" class="tem" />
+                  </div>
+                </div>
+                <div class="s-tow">
+                  <div class="o1">Warm</div>
+                  <div class="o2">20°C</div>
+                </div>
+              </div>
+              <div class="three">
+                <div class="v-three">
+                  <div class="v-three-content">
+                    <img src="../../assets/images/music.png" class="audio" />
+                  </div>
+                </div>
+                <div class="v-three">
+                  <div class="v-three-content">⬜</div>
+                </div>
+              </div>
+              <div class="four">
+                <div class="v-four">
+                  <div class="v-four-content">
+                    <img src="../../assets/images/sun.png" class="sun" />
+                  </div>
+                </div>
+                <div class="v-four-tow">
+                  <div class="v-four-tow-content"></div>
+                </div>
+              </div>
+            </div>
+            <div class="small-devices">
+              <div class="music-container">
+                <div class="name-music">
+                  <div class="name-value">
+                    <h3>Audio</h3>
+                    <p>Audio</p>
+                  </div>
+                  <div class="slider">
+                    <div class="line"></div>
+                    <div class="circle"></div>
+                  </div>
+                </div>
+                <div class="controls">
+                  <i class="fa-solid fa-angles-left"></i>
+                  <i class="fa-solid fa-play" id="play"></i>
+                  <i class="fa-solid fa-pause" id="pause" style="display: none"></i>
+                  <i class="fa-solid fa-angles-right"></i>
+                </div>
+              </div>
+              <div class="small-values">
+                <div class="fan">
+                  <img src="../../assets/images/fan-image.png" alt="Fan" />
+                  <p>speed <strong>6</strong> / 10</p>
+                </div>
+                <div class="camira">
+                  <img src="../../assets/images/camera-image.png" alt="Camera" />
+                  <p>Cam is off</p>
+                </div>
+                <div class="lock">
+                  <img src="../../assets/images/door-lock-image.png" alt="Door Lock" />
+                  <p>Door open</p>
+                </div>
+                <div class="wifi">
+                  <img src="../../assets/images/wifi-image.png" alt="WiFi" />
+                  <p><span>19.7</span> mb/s</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="door">
-          <div class="device-check">
-            <img src="../../assets/images/smart-humidifier-image.png" alt="Smart Humidifier" />
-            <label class="switch">
-              <input type="checkbox" />
-            </label>
+        <div class="devices-bed">
+          <div class="head1">
+            <h1>Devices</h1>
+            <div class="dot">
+              <p class="D">&#9679;</p>
+              <p class="active"><strong>5 /</strong>6</p>
+            </div>
           </div>
-          <h3>Smart humidifier</h3>
-          <div class="wifi-code">
-            <p><i class="fa-solid fa-wifi"></i> Strong</p>
-            <a href="#" class="icon"><></a>
+          <div class="door">
+            <div class="device-check">
+              <img src="../../assets/images/smart-humidifier-image.png" alt="Smart Humidifier" />
+              <label class="switch">
+                <input type="checkbox" />
+              </label>
+            </div>
+            <h3>Smart humidifier</h3>
+            <div class="wifi-code">
+              <p><i class="fa-solid fa-wifi"></i> Strong</p>
+              <a href="#" class="icon"><></a>
+            </div>
           </div>
-        </div>
-        <div class="alexa">
-          <div class="device-check">
-            <img src="../../assets/images/smart-refrigerator-image.png" alt="Smart Refrigerator" />
-            <label class="switch">
-              <input type="checkbox" />
-            </label>
+          <div class="alexa">
+            <div class="device-check">
+              <img src="../../assets/images/smart-refrigerator-image.png" alt="Smart Refrigerator" />
+              <label class="switch">
+                <input type="checkbox" />
+              </label>
+            </div>
+            <h3>Smart refrigerator</h3>
+            <div class="wifi-code">
+              <p><i class="fa-solid fa-wifi"></i> Strong</p>
+              <a href="#" class="icon"><></a>
+            </div>
           </div>
-          <h3>Smart refrigerator</h3>
-          <div class="wifi-code">
-            <p><i class="fa-solid fa-wifi"></i> Strong</p>
-            <a href="#" class="icon"><></a>
-          </div>
-        </div>
-        <div class="white">
-          <div class="device-check">
-            <img src="../../assets/images/motion-sensor-image.png" alt="Motion Sensor" />
-            <label class="switch">
-              <input type="checkbox" />
-            </label>
-          </div>
-          <h3>Motion sensor</h3>
-          <div class="wifi-code">
-            <p><i class="fa-solid fa-wifi"></i> Strong</p>
-            <a href="#" class="icon"><></a>
+          <div class="white">
+            <div class="device-check">
+              <img src="../../assets/images/motion-sensor-image.png" alt="Motion Sensor" />
+              <label class="switch">
+                <input type="checkbox" />
+              </label>
+            </div>
+            <h3>Motion sensor</h3>
+            <div class="wifi-code">
+              <p><i class="fa-solid fa-wifi"></i> Strong</p>
+              <a href="#" class="icon"><></a>
+            </div>
           </div>
         </div>
       </div>

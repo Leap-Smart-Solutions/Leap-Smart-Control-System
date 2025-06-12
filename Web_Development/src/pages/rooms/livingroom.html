@@ -162,7 +162,12 @@
         if (!mainOrdersSnapshot.empty || !userOrdersSnapshot.empty) {
           console.log('Access granted - user has completed orders');
           document.getElementById('loading-overlay').remove();
-          document.querySelector('.main-content').style.display = 'flex';
+          const mainContent = document.querySelector('.main-content');
+          if (mainContent) {
+            mainContent.style.display = 'flex';
+          } else {
+            console.error('No .main-content element found!');
+          }
         } else {
           console.log('No completed orders found in either location, redirecting to index');
           window.location.href = '../index.html';

@@ -20,173 +20,408 @@
     />
     <link rel="stylesheet" href="../../assets/styles/bedroom.css" />
     <title>Bed Room</title>
+
+    <!-- Critical styles to prevent white flash -->
+    <style>
+      body {
+        background-color: #1a1a1a;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'Montserrat', sans-serif;
+      }
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999;
+      }
+      .loading-container {
+        text-align: center;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .logo-container {
+        margin-bottom: 30px;
+      }
+      .logo-container img {
+        width: 80px;
+        height: 80px;
+        animation: pulse 2s infinite;
+      }
+      .loading-text {
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #ff6600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .loading-bar {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+      }
+      .loading-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 40%;
+        background: #ff6600;
+        animation: loading 1.5s ease-in-out infinite;
+        border-radius: 2px;
+      }
+      .loading-message {
+        margin-top: 20px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+      }
+      @keyframes loading {
+        0% { left: -40%; }
+        100% { left: 100%; }
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      /* Hide main content */
+      .content {
+        display: none;
+      }
+      /* --- ENHANCED LAYOUT --- */
+      .main-wrapper {
+        max-width: 1400px;
+        margin: 40px auto 0 auto;
+        padding: 24px;
+        display: flex;
+        gap: 32px;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      header {
+        width: 100vw;
+        max-width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 100;
+        background: #181819;
+        padding: 0 32px 0 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      .content {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        width: 100%;
+        margin-top: 100px;
+      }
+      .bed-section {
+        flex: 2 1 0;
+        min-width: 0;
+      }
+      .devices-bed {
+        flex: 1 1 350px;
+        background: #fff;
+        color: #222;
+        border-radius: 18px;
+        padding: 32px 24px;
+        margin-top: 0;
+        min-width: 320px;
+        box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+      }
+      @media (max-width: 1100px) {
+        .main-wrapper, .content {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .devices-bed {
+          margin-top: 32px;
+        }
+      }
+      @media (max-width: 700px) {
+        .main-wrapper {
+          padding: 8px;
+        }
+        .content {
+          margin-top: 80px;
+          gap: 16px;
+        }
+        .devices-bed {
+          padding: 16px 8px;
+        }
+      }
+    </style>
+
+    <!-- Authentication script -->
+    <script type="module">
+      import { auth, db } from "../../js/firebase/firebaseConfig.js";
+      import { collection, query, where, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+      // Check authentication and orders before allowing access
+      onAuthStateChanged(auth, async (user) => {
+        console.log('Auth state changed. User:', user ? {
+          uid: user.uid,
+          email: user.email,
+          emailVerified: user.emailVerified
+        } : 'No user');
+        
+        if (!user) {
+          console.log('No authenticated user, redirecting to login');
+          window.location.href = '../auth/login.html';
+          return;
+        }
+
+        try {
+          console.log('Checking orders for user:', user.uid);
+          
+          // Check orders in the main orders collection
+          const mainOrdersRef = collection(db, 'orders');
+          const mainOrdersQuery = query(
+            mainOrdersRef,
+            where('userId', '==', user.uid),
+            where('status', '==', 'completed')
+          );
+          
+          console.log('Querying main orders collection for userId:', user.uid);
+          const mainOrdersSnapshot = await getDocs(mainOrdersQuery);
+          
+          console.log('Main orders query result:', {
+            empty: mainOrdersSnapshot.empty,
+            size: mainOrdersSnapshot.size,
+            docs: mainOrdersSnapshot.docs.map(doc => ({
+              id: doc.id,
+              data: doc.data()
+            }))
+          });
+
+          // Also check orders in the user's subcollection
+          const userOrdersRef = collection(db, 'users', user.uid, 'orders');
+          const userOrdersQuery = query(
+            userOrdersRef,
+            where('status', '==', 'completed')
+          );
+          
+          console.log('Querying user orders subcollection at path:', `users/${user.uid}/orders`);
+          const userOrdersSnapshot = await getDocs(userOrdersQuery);
+          
+          console.log('User orders query result:', {
+            empty: userOrdersSnapshot.empty,
+            size: userOrdersSnapshot.size,
+            docs: userOrdersSnapshot.docs.map(doc => ({
+              id: doc.id,
+              data: doc.data()
+            }))
+          });
+
+          // Grant access if either query returns results
+          if (!mainOrdersSnapshot.empty || !userOrdersSnapshot.empty) {
+            console.log('Access granted - user has completed orders');
+            document.getElementById('loading-overlay').remove();
+            document.querySelector('.content').style.display = 'flex';
+          } else {
+            console.log('No completed orders found in either location, redirecting to index');
+            window.location.href = '../index.html';
+          }
+        } catch (error) {
+          console.error("Error checking orders:", error);
+          console.error("Error details:", {
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+          });
+          window.location.href = '../index.html';
+          return;
+        }
+      });
+    </script>
   </head>
   <body>
-    <header>
-      <div class="head">
-        <div class="date-menue">
-          <img
-            src="../../assets/images/menu-rectangles-component.png"
-            alt="menu"
-            class="menu"
-          />
-          <p class="date"></p>
+    <!-- Loading screen -->
+    <div id="loading-overlay">
+      <div class="loading-container">
+        <div class="logo-container">
+          <img src="../../assets/icons/favicon.ico" alt="Leap Logo">
         </div>
-        <nav class="">
-          <div class="nav-links">
-            <a href="./bedroom.html" id="active" class="bedRoom">Bed Room</a>
-            <a href="./livingroom.html">Living Room</a>
-            <a href="./kitchen.html">Kitchen</a>
-          </div>
-        </nav>
-        <div class="user-image">
-          <img src="../../assets/images/1.jpg" alt="User Profile" />
-        </div>
+        <div class="loading-text">Leap Smart Control</div>
+        <div class="loading-bar"></div>
+        <div class="loading-message">Checking access permissions...</div>
       </div>
-    </header>
-    <div class="display-nav-links">
-      <nav class="links">
-        <a href="../shopping/index.html">Profile</a>
-        <div class="line"></div>
-        <a href="../index.html" style="color: #ff3b30">LogOut</a>
-      </nav>
     </div>
-    <div class="content">
-      <div class="bed-section">
-        <div class="image-head">
-          <img src="../../assets/images/bedroom.png" alt="Bedroom" />
-          <h1>Bedroom</h1>
-        </div>
-        <div class="content-bed">
-          <div class="content1">
-            <div class="clock">
-              <p>⏰</p>
 
-              <div class="clock-mode">
-                <div class="vibrate">
-                  <input
-                    type="radio"
-                    id="vibrate"
-                    name="alarm"
-                    value="vibrate"
-                  />
-                  <label for="vibrate">Vibrate Only</label>
-                </div>
-
-                <div class="sound">
-                  <input type="radio" id="sound" name="alarm" value="sound" />
-                  <label for="sound">Sound Alarm</label>
-                </div>
-              </div>
+    <!-- Main content (original structure) -->
+    <div class="main-wrapper">
+      <div class="content">
+        <header>
+          <div class="head">
+            <div class="date-menue">
+              <img
+                src="../../assets/images/menu-rectangles-component.png"
+                alt="menu"
+                class="menu"
+              />
+              <p class="date"></p>
             </div>
-            <div class="chargeIO">
-              <div class="IO">
-                <img src="../../assets/images/smart-wall-socket.png" alt="Smart Wall Socket" /><br />
-                <p>I/O</p>
+            <nav class="">
+              <div class="nav-links">
+                <a href="./bedroom.html" id="active" class="bedRoom">Bed Room</a>
+                <a href="./livingroom.html">Living Room</a>
+                <a href="./kitchen.html">Kitchen</a>
               </div>
-              <div class="charge">
-                <img src="../../assets/images/wireless-charger.png" alt="Wireless Charger" /><br />
-                <p><span>🔋</span> Charging...</p>
-              </div>
+            </nav>
+            <div class="user-image">
+              <img src="../../assets/images/1.jpg" alt="User Profile" />
             </div>
           </div>
-          <div class="content2">
-            <div class="music-container">
-              <div class="name-music">
-                <div class="name-value">
-                  <h3>Audio</h3>
-                  <p>Audio</p>
-                </div>
-                <div class="slider">
-                  <div class="line"></div>
-                  <div class="circle"></div>
-                </div>
-              </div>
-              <div class="controls">
-                <!-- <i class="fa-solid fa-caret-left"></i> -->
-                <i class="fa-solid fa-angles-left"></i>
-                <i class="fa-solid fa-play" id="play"></i>
-                <i
-                  class="fa-solid fa-pause"
-                  id="pause"
-                  style="display: none"
-                ></i>
-                <i class="fa-solid fa-angles-right"></i>
-                <!-- <i class="fa-solid fa-caret-right"></i> -->
-              </div>
-            </div>
-            <div class="air-cond">
-              <img src="../../assets/images/air-conditioner-emoji.png" alt="Air Conditioner" />
-              <div class="air-cond-mode">
-                <div class="cool">
-                  <input type="radio" id="cool" name="condition" value="cool" />
-                  <label for="cool">Cool</label>
-                </div>
-                <div class="warm">
-                  <input type="radio" id="warm" name="condition" value="warm" />
-                  <label for="warm">Warm</label>
-                </div>
-                <div class="check-box">
-                  <label>
+        </header>
+        <div class="display-nav-links">
+          <nav class="links">
+            <a href="../shopping/index.html">Profile</a>
+            <div class="line"></div>
+            <a href="../index.html" style="color: #ff3b30">LogOut</a>
+          </nav>
+        </div>
+        <div class="bed-section">
+          <div class="image-head">
+            <img src="../../assets/images/bedroom.png" alt="Bedroom" />
+            <h1>Bedroom</h1>
+          </div>
+          <div class="content-bed">
+            <div class="content1">
+              <div class="clock">
+                <p>⏰</p>
+                <div class="clock-mode">
+                  <div class="vibrate">
                     <input
-                      type="checkbox"
-                      name="subscribe"
-                      value="newsletter"
+                      type="radio"
+                      id="vibrate"
+                      name="alarm"
+                      value="vibrate"
                     />
-                    Eco
-                  </label>
+                    <label for="vibrate">Vibrate Only</label>
+                  </div>
+                  <div class="sound">
+                    <input type="radio" id="sound" name="alarm" value="sound" />
+                    <label for="sound">Sound Alarm</label>
+                  </div>
+                </div>
+              </div>
+              <div class="chargeIO">
+                <div class="IO">
+                  <img src="../../assets/images/smart-wall-socket.png" alt="Smart Wall Socket" /><br />
+                  <p>I/O</p>
+                </div>
+                <div class="charge">
+                  <img src="../../assets/images/wireless-charger.png" alt="Wireless Charger" /><br />
+                  <p><span>🔋</span> Charging...</p>
+                </div>
+              </div>
+            </div>
+            <div class="content2">
+              <div class="music-container">
+                <div class="name-music">
+                  <div class="name-value">
+                    <h3>Audio</h3>
+                    <p>Audio</p>
+                  </div>
+                  <div class="slider">
+                    <div class="line"></div>
+                    <div class="circle"></div>
+                  </div>
+                </div>
+                <div class="controls">
+                  <i class="fa-solid fa-angles-left"></i>
+                  <i class="fa-solid fa-play" id="play"></i>
+                  <i class="fa-solid fa-pause" id="pause" style="display: none"></i>
+                  <i class="fa-solid fa-angles-right"></i>
+                </div>
+              </div>
+              <div class="air-cond">
+                <img src="../../assets/images/air-conditioner-emoji.png" alt="Air Conditioner" />
+                <div class="air-cond-mode">
+                  <div class="cool">
+                    <input type="radio" id="cool" name="condition" value="cool" />
+                    <label for="cool">Cool</label>
+                  </div>
+                  <div class="warm">
+                    <input type="radio" id="warm" name="condition" value="warm" />
+                    <label for="warm">Warm</label>
+                  </div>
+                  <div class="check-box">
+                    <label>
+                      <input type="checkbox" name="subscribe" value="newsletter" />
+                      Eco
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="devices-bed">
-        <div class="head1">
-          <h1>Devices</h1>
-          <div class="dot">
-            <p class="D">&#9679;</p>
-            <p class="active"><strong>5 /</strong>6</p>
+        <div class="devices-bed">
+          <div class="head1">
+            <h1>Devices</h1>
+            <div class="dot">
+              <p class="D">&#9679;</p>
+              <p class="active"><strong>5 /</strong>6</p>
+            </div>
           </div>
-        </div>
-        <div class="door">
-          <div class="device-check">
-            <img src="../../assets/images/fan-icon-png-1-2.png" alt="Smart Door" />
-            <label class="switch">
-              <input type="checkbox" />
-            </label>
+          <div class="door">
+            <div class="device-check">
+              <img src="../../assets/images/fan-icon-png-1-2.png" alt="Smart Door" />
+              <label class="switch">
+                <input type="checkbox" />
+              </label>
+            </div>
+            <h3>Smart door</h3>
+            <div class="wifi-code">
+              <p><i class="fa-solid fa-wifi"></i> Strong</p>
+              <a href="#" class="icon"><></a>
+            </div>
           </div>
-          <h3>Smart door</h3>
-          <div class="wifi-code">
-            <p><i class="fa-solid fa-wifi"></i> Strong</p>
-            <a href="#" class="icon"><></a>
+          <div class="alexa">
+            <div class="device-check">
+              <img src="../../assets/images/amazon-alexa.png" alt="Amazon Alexa" />
+              <label class="switch">
+                <input type="checkbox" />
+              </label>
+            </div>
+            <h3>Amazon Alexa</h3>
+            <div class="wifi-code">
+              <p><i class="fa-solid fa-wifi"></i> Strong</p>
+              <a href="#" class="icon"><></a>
+            </div>
           </div>
-        </div>
-        <div class="alexa">
-          <div class="device-check">
-            <img src="../../assets/images/amazon-alexa.png" alt="Amazon Alexa" />
-            <label class="switch">
-              <input type="checkbox" />
-            </label>
-          </div>
-          <h3>Amazon Alexa</h3>
-          <div class="wifi-code">
-            <p><i class="fa-solid fa-wifi"></i> Strong</p>
-            <a href="#" class="icon"><></a>
-          </div>
-        </div>
-        <div class="white">
-          <div class="device-check">
-            <img src="../../assets/images/white-noise-machine.png" alt="White Noise Machine" />
-            <label class="switch">
-              <input type="checkbox" />
-            </label>
-          </div>
-          <h3>White noise machine</h3>
-          <div class="wifi-code">
-            <p><i class="fa-solid fa-wifi"></i> Strong</p>
-            <a href="#" class="icon"><></a>
+          <div class="white">
+            <div class="device-check">
+              <img src="../../assets/images/white-noise-machine.png" alt="White Noise Machine" />
+              <label class="switch">
+                <input type="checkbox" />
+              </label>
+            </div>
+            <h3>White noise machine</h3>
+            <div class="wifi-code">
+              <p><i class="fa-solid fa-wifi"></i> Strong</p>
+              <a href="#" class="icon"><></a>
+            </div>
           </div>
         </div>
       </div>
