@@ -99,31 +99,81 @@
   <!-- Authentication script -->
   <script type="module">
     import { auth, db } from "../../js/firebase/firebaseConfig.js";
-    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { collection, query, where, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     // Check authentication and orders before allowing access
     onAuthStateChanged(auth, async (user) => {
+      console.log('Auth state changed. User:', user ? {
+        uid: user.uid,
+        email: user.email,
+        emailVerified: user.emailVerified
+      } : 'No user');
+      
       if (!user) {
+        console.log('No authenticated user, redirecting to login');
         window.location.href = '../auth/login.html';
         return;
       }
 
       try {
-        const ordersRef = collection(db, 'users', user.uid, 'orders');
-        const q = query(ordersRef, where('status', '==', 'completed'));
-        const querySnapshot = await getDocs(q);
+        console.log('Checking orders for user:', user.uid);
+        
+        // Check orders in the main orders collection
+        const mainOrdersRef = collection(db, 'orders');
+        const mainOrdersQuery = query(
+          mainOrdersRef,
+          where('userId', '==', user.uid),
+          where('status', '==', 'completed')
+        );
+        
+        console.log('Querying main orders collection for userId:', user.uid);
+        const mainOrdersSnapshot = await getDocs(mainOrdersQuery);
+        
+        console.log('Main orders query result:', {
+          empty: mainOrdersSnapshot.empty,
+          size: mainOrdersSnapshot.size,
+          docs: mainOrdersSnapshot.docs.map(doc => ({
+            id: doc.id,
+            data: doc.data()
+          }))
+        });
 
-        if (querySnapshot.empty) {
+        // Also check orders in the user's subcollection
+        const userOrdersRef = collection(db, 'users', user.uid, 'orders');
+        const userOrdersQuery = query(
+          userOrdersRef,
+          where('status', '==', 'completed')
+        );
+        
+        console.log('Querying user orders subcollection at path:', `users/${user.uid}/orders`);
+        const userOrdersSnapshot = await getDocs(userOrdersQuery);
+        
+        console.log('User orders query result:', {
+          empty: userOrdersSnapshot.empty,
+          size: userOrdersSnapshot.size,
+          docs: userOrdersSnapshot.docs.map(doc => ({
+            id: doc.id,
+            data: doc.data()
+          }))
+        });
+
+        // Grant access if either query returns results
+        if (!mainOrdersSnapshot.empty || !userOrdersSnapshot.empty) {
+          console.log('Access granted - user has completed orders');
+          document.getElementById('loading-overlay').remove();
+          document.querySelector('.main-content').style.display = 'flex';
+        } else {
+          console.log('No completed orders found in either location, redirecting to index');
           window.location.href = '../index.html';
-          return;
         }
-
-        // If we get here, user is authenticated and has completed orders
-        document.getElementById('loading-overlay').remove();
-        document.querySelector('.main-content').style.display = 'flex';
       } catch (error) {
         console.error("Error checking orders:", error);
+        console.error("Error details:", {
+          code: error.code,
+          message: error.message,
+          stack: error.stack
+        });
         window.location.href = '../index.html';
         return;
       }
