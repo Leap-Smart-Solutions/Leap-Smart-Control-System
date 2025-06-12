@@ -279,6 +279,10 @@
       width: 30%;
     }
 
+    body > div > div > div.main-content {
+      margin-top: 10px;
+    } 
+
     /* Cloud/Weather section */
     .main-content .left .cloud {
       width: 100%;
@@ -789,7 +793,7 @@
       padding: 15px 20px;
       border-radius: 30px;
       width: 96%;
-      min-height: calc(100vh - 120px);
+      min-height: calc(100vh - 215px);
     }
     .right-section .air-head {
       display: flex;
