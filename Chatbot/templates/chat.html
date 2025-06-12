@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leap Smart Chatbot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 10px;
+    }
 
+    .bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .user-msg {
+      background-color: #0d6efd;
+      color: white;
+      align-self: end;
+      margin-left: auto;
+    }
+
+    .bot-msg {
+      background-color: #e4e6eb;
+      color: #333;
+      align-self: start;
+      margin-right: auto;
+    }
+
+    .chat-history {
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center">💬 Leap Smart Chatbot</h2>
+
+    <div class="card p-3 shadow">
+      <div class="chat-box chat-history mb-3" id="chat-box">
+        {% for sender, message in history %}
+          <div class="bubble {{ 'user-msg' if sender == 'You' else 'bot-msg' }}">
+            <strong>{{ sender }}:</strong> {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+
+      <form id="chat-form" class="d-flex gap-2">
+        <input id="message-input" name="message" type="text" class="form-control" placeholder="Type your message..." required>
+        <button class="btn btn-primary" type="submit">Send</button>
+        <button class="btn btn-outline-danger" type="button" onclick="clearChat()">Clear Chat</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const form = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = messageInput.value.trim();
+      if (!message) return;
+
+      addBubble("You", message, true);
+      messageInput.value = "";
+
+      const typingBubble = addBubble("Bot", "⏳ Bot is typing...", false);
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message })
+      });
+
+      const data = await res.json();
+      typingBubble.remove();
+      addBubble("Bot", data.reply, false);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    function addBubble(sender, text, isUser) {
+      const bubble = document.createElement("div");
+      bubble.classList.add("bubble", isUser ? "user-msg" : "bot-msg");
+      bubble.innerHTML = `<strong>${sender}:</strong> ${text}`;
+      chatBox.appendChild(bubble);
+      return bubble;
+    }
+
+    function clearChat() {
+      fetch("/clear", { method: "POST" }).then(() => location.reload());
+    }
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  </script>
+</body>
+</html>
