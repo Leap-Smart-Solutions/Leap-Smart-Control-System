@@ -1,0 +1,30 @@
+# Ignore model files
+models/*.pt
+models/*.onnx
+models/*.pkl
+models/*.h5
+models/*.tflite
+models/__pycache__/
+
+# Ignore test image cache or outputs
+test_images/__pycache__/
+__pycache__/
+*.pyc
+
+# Secrets (if not needed in GitHub)
+secrets/*.json
+
+# VSCode, PyCharm config folders
+.vscode/
+.idea/
+
+# Environment files
+.env
+*.env
+
+# Log files
+*.log
+
+# Windows system files
+Thumbs.db
+.DS_Store
