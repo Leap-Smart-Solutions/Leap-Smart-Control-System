@@ -112,7 +112,7 @@ const loadTemplate = async () => {
     // Update profile image
     const profileImg = document.getElementById('user-profile-img');
     if (profileImg && userData) {
-      profileImg.src = userData.profilePicture || '../../assets/images/placeholder.png';
+      profileImg.src = userData.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
     }
 
     // Show/hide room navigation links based on completed orders
@@ -164,7 +164,7 @@ const initApp = async () => {
               src="${product.image}" 
               alt="${product.name}"
               loading="lazy"
-              onerror="this.onerror=null; this.src='../../assets/images/placeholder.png';"
+              onerror="this.onerror=null; this.src='https://i.ibb.co/277hTSg8/generic-profile.jpg';"
               style="opacity:0; transition: opacity 0.3s;"
               onload="this.style.opacity=1"
             />

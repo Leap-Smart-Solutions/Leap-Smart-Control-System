@@ -657,6 +657,8 @@ header .title {
   object-fit: cover;
   border: 2px solid #ff6600;
   transition: transform 0.3s ease;
+  display: block;
+  overflow: hidden;
 }
 
 .profile-img:hover {

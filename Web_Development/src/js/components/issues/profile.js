@@ -59,9 +59,9 @@ const updateProfileImage = async () => {
         const profileImg = document.getElementById('user-profile-img');
         
         if (profileImg && userData) {
-            profileImg.src = userData.profilePicture || '../../assets/images/placeholder.png';
+            profileImg.src = userData.profilePicture || 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
             profileImg.onerror = () => {
-                profileImg.src = '../../assets/images/placeholder.png';
+                profileImg.src = 'https://i.ibb.co/277hTSg8/generic-profile.jpg';
             };
         }
     } catch (error) {
