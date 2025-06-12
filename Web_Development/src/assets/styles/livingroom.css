@@ -279,9 +279,15 @@
       width: 30%;
     }
 
+<<<<<<< HEAD
     div.main-content:nth-child(3) {
       margin-top: 10px;
     }
+=======
+    body > div > div > div.main-content {
+      margin-top: 10px;
+    } 
+>>>>>>> 37f2cb392ecb097c897296fec8a0f43c0d346510
 
     /* Cloud/Weather section */
     .main-content .left .cloud {
@@ -793,7 +799,7 @@
       padding: 15px 20px;
       border-radius: 30px;
       width: 96%;
-      min-height: calc(100vh - 120px);
+      min-height: calc(100vh - 215px);
     }
     .right-section .air-head {
       display: flex;
