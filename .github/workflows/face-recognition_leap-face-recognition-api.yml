@@ -26,11 +26,11 @@ jobs:
         working-directory: Face Recognition
 
       - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'leap-face-recognition-api'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: 'Face Recognition'
-          clean: true
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'leap-face-recognition-api'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        package: './Face Recognition/web'
+
 
