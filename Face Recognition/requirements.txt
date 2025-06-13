@@ -11,4 +11,3 @@ torch==2.1.2
 ultralytics==8.0.172
 gunicorn==20.1.0
 flask==2.3.3
-streamlit==1.25.0
