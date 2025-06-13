@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 dataset
 venv
 __pycache__
@@ -13,6 +14,8 @@ __pycache__
 .venv/
 .env
 =======
+=======
+>>>>>>> c7a599bd0b4488ac3346d6aaea2ff8713061a672
 # Ignore model files
 models/*.pt
 models/*.onnx
@@ -43,4 +46,7 @@ secrets/*.json
 # Windows system files
 Thumbs.db
 .DS_Store
+<<<<<<< HEAD
 >>>>>>> face-recognition
+=======
+>>>>>>> c7a599bd0b4488ac3346d6aaea2ff8713061a672
