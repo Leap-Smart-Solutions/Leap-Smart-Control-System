@@ -3,7 +3,7 @@ name: Deploy Face Recognition to Azure
 on:
   push:
     branches:
-      - main
+      - face-recognition
     paths:
       - 'Face Recognition/**'
       - '.github/workflows/face-recognition_leap-face-recognition-api.yml'
@@ -26,11 +26,9 @@ jobs:
         working-directory: Face Recognition
 
       - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'leap-face-recognition-api'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-        package: './Face Recognition/web'
-
-
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'leap-face-recognition-api'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: './Face%20Recognition/web'
