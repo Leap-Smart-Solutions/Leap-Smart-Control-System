@@ -32,4 +32,4 @@ jobs:
           app-name: 'leap-face-recognition-api'
           slot-name: 'production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
-          package: './Face Recognition'
+          package: './Face%20Recognition/web'
