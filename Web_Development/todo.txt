@@ -131,3 +131,49 @@ What to mention to Cursor to write in the documentation:
    9. Firebase and all its own usages in our own project
 
    Living room for order complete users
+
+   Leap Smart Control System - Backend Architecture
+Overview
+Core Technologies
+Node.js & Express.js
+Firebase (Authentication, Database, Storage)
+Real-time IoT Integration
+Key Features
+Security & Authentication
+Multi-layered authentication (Email + WhatsApp OTP)
+Role-based access control (User/Admin)
+Order-based feature access
+Secure password management
+Management Systems
+User Management
+Order Management
+Issue Management
+Items Management
+Inventory Management
+Smart Home Integration
+Real-time device control
+Firebase Real-Time Database
+IoT device synchronization
+Automated email invoicing
+Architecture
+Initial: Monolithic design
+Future: Microservices architecture
+Scalable and maintainable structure
+Security Measures
+Email verification
+Phone verification via WhatsApp OTP
+Role-based access control
+Order-based feature access
+Regular security audits
+Future Development
+Comprehensive testing framework
+Performance optimization
+Enhanced security measures
+Automated testing implementation
+Unique Selling Points
+Dual verification system (Email + WhatsApp)
+Real-time IoT control
+Comprehensive management systems
+Automated invoicing
+Secure access control
+This presentation provides a high-level overview of the backend architecture while highlighting the key features and security measures that make the Leap Smart Control System robust and user-friendly. Would you like me to expand on any particular aspect?
