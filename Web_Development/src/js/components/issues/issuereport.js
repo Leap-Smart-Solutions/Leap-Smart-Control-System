@@ -1,6 +1,18 @@
 import { auth, db } from '../../firebase/firebaseConfig.js';
 import { collection, addDoc, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js';
 
+// Initialize EmailJS
+(function() {
+  // Add EmailJS script
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+  script.async = true;
+  script.onload = () => {
+    window.emailjs.init("vNNcicG5JmPhSkPF4");
+  };
+  document.head.appendChild(script);
+})();
+
 // DOM Elements
 const modal = document.getElementById('issueModal');
 const createIssueBtn = document.getElementById('createIssueBtn');
@@ -47,7 +59,31 @@ issueForm.addEventListener('submit', async (e) => {
             createdAt: new Date()
         };
 
-        await addDoc(collection(db, 'issues'), issueData);
+        const docRef = await addDoc(collection(db, 'issues'), issueData);
+        
+        // Send email notification
+        try {
+            const emailParams = {
+                to_email: user.email,
+                to_name: user.displayName || 'User',
+                issue_id: docRef.id,
+                issue_title: title,
+                issue_description: description,
+                issue_status: 'Pending',
+                issue_date: new Date().toLocaleDateString(),
+                issue_priority: 'Not Set'
+            };
+
+            await window.emailjs.send(
+                'service_qwds9at',
+                'template_vsjou47',
+                emailParams
+            );
+            
+            console.log('Issue notification email sent successfully');
+        } catch (error) {
+            console.error('Error sending issue notification email:', error);
+        }
         
         // Clear form and close modal
         issueForm.reset();
