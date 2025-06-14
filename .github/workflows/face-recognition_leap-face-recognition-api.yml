@@ -1,0 +1,35 @@
+name: Deploy Face Recognition to Azure
+
+on:
+  push:
+    branches:
+      - main   # ← لأن ده الفرع اللي شغّال بيه فعليًا
+
+    paths:
+      - 'Face Recognition/**'
+      - '.github/workflows/face-recognition_leap-face-recognition-api.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: Face Recognition
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'leap-face-recognition-api'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: './Face%20Recognition/web'
