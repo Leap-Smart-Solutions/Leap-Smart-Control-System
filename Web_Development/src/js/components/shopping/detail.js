@@ -93,7 +93,7 @@ const initApp = async () => {
       newProduct.classList.add('item');
       newProduct.innerHTML =
       `
-        <a href="../../../pages/shopping/detail.html?id=${product.id}">
+        <a href="../../pages/shopping/detail.html?id=${product.id}">
         <img src="${product.image}"/>
         <h2>${product.name}</h2>
         <div class="price">${product.price}</div>

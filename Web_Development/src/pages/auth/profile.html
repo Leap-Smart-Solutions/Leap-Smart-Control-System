@@ -10,10 +10,14 @@
   <title>Profile</title>
 </head>
 <body>
-  <div class="loading-container">
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Loading profile...</div>
+  <div id="loading-overlay">
+    <div class="loading-container">
+      <div class="logo-container">
+        <img src="../../assets/icons/favicon.ico" alt="Leap Logo">
+      </div>
+      <div class="loading-text">Leap Smart Control</div>
+      <div class="loading-bar"></div>
+      <div class="loading-message">Loading profile...</div>
     </div>
   </div>
   <header>
@@ -27,7 +31,7 @@
       <input type="file" id="upload-profile" accept="image/*" style="display: none;" />
     </div>
     <div class="profileName">
-      <h2>User Name</h2>
+      <h2 id="fullname"></h2>
       <p id="username"></p>
     </div>
     <div class="edit-fild">

@@ -6,12 +6,13 @@ import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.
 const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 
 // DOM refs
+const displaynameH  = document.querySelector("#fullname");
 const usernameP  = document.querySelector("#username");
 const emailInput = document.querySelector("#email");
 const phoneInput = document.querySelector("#phone");
 const profileImg = document.querySelector("#profile-picture");
 const fileInput  = document.querySelector("#upload-profile");
-const loadingContainer = document.querySelector(".loading-container");
+const loadingOverlay = document.querySelector("#loading-overlay");
 const content = document.querySelector(".content");
 
 // Watch auth
@@ -48,6 +49,7 @@ onAuthStateChanged(auth, async (user) => {
     const snap     = await getDoc(userRef);
     if (snap.exists()) {
       const data = snap.data();
+      displaynameH.innerText = "" + (data.fullName  || "Unnamed");
       usernameP.innerText = "#" + (data.username || "Unnamed");
       emailInput.value    = data.email || "";
       phoneInput.value    = data.phone || "";
@@ -75,8 +77,8 @@ onAuthStateChanged(auth, async (user) => {
     }
   } catch (err) {
     console.error("Error fetching profile:", err);
-    loadingContainer.innerHTML = `
-      <div class="loading-content">
+    loadingOverlay.innerHTML = `
+      <div class="loading-container">
         <div class="loading-text">Error loading profile. Please try again.</div>
         <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #E8BC0E; border: none; border-radius: 5px; cursor: pointer;">
           Retry
@@ -87,7 +89,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   // Only hide loading and show content if we successfully loaded the profile and image
-  loadingContainer.classList.add('hidden');
+  loadingOverlay.classList.add('hidden');
   content.classList.add("loaded");
 
   // Handle new image uploads via ImgBB
