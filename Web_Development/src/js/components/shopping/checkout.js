@@ -19,7 +19,7 @@ import phoneInputValidator from "../../utils/phoneInputValidator.js";
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
-const loadingContainer = document.querySelector('.loading-container');
+const loadingOverlay = document.getElementById('loading-overlay');
 
 // Handle mobile dropdown
 const initMobileDropdown = () => {
@@ -67,9 +67,10 @@ const loadTemplate = async () => {
     await initCheckout();
   } catch (error) {
     console.error('Error loading template:', error);
-    loadingContainer.innerHTML = `
-      <div class="loading-content">
-        <div class="loading-text">Error loading checkout. Please try again.</div>
+    loadingOverlay.innerHTML = `
+      <div class="loading-container">
+        <div class="loading-text">Error loading checkout</div>
+        <div class="loading-message">Please try again</div>
         <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6600; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
           Retry
         </button>
@@ -155,9 +156,10 @@ const initCheckout = async () => {
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
-      loadingContainer.innerHTML = `
-        <div class="loading-content">
-          <div class="loading-text">Error loading user data. Please try again.</div>
+      loadingOverlay.innerHTML = `
+        <div class="loading-container">
+          <div class="loading-text">Error loading user data</div>
+          <div class="loading-message">Please try again</div>
           <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6600; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
             Retry
           </button>
@@ -387,13 +389,15 @@ const initCheckout = async () => {
     placeOrderButton.addEventListener('click', handleOrderSubmission);
 
     // Hide loading screen and show content
-    loadingContainer.classList.add('hidden');
+    loadingOverlay.classList.add('hidden');
     temporaryContent.classList.add('loaded');
+    document.body.classList.remove('loading'); // Remove loading class to enable scrolling
   } catch (error) {
     console.error('Error initializing checkout:', error);
-    loadingContainer.innerHTML = `
-      <div class="loading-content">
-        <div class="loading-text">Error initializing checkout. Please try again.</div>
+    loadingOverlay.innerHTML = `
+      <div class="loading-container">
+        <div class="loading-text">Error initializing checkout</div>
+        <div class="loading-message">Please try again</div>
         <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #ff6600; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
           Retry
         </button>

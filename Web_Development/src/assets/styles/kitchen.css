@@ -508,6 +508,14 @@ header {
   align-items: center;
   margin-bottom: 10px;
 }
+
+.dot {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
 .devices-bed .door,
 .devices-bed .white,
 .devices-bed .alexa {

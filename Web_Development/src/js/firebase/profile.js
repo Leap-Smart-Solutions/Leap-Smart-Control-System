@@ -1,7 +1,7 @@
 // profile.js
 import { auth, db } from "./firebaseConfig.js"; 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 const IMGBB_API_KEY = "7358f23b1f2d81c20df3232eaaee1567";
 
@@ -14,6 +14,20 @@ const profileImg = document.querySelector("#profile-picture");
 const fileInput  = document.querySelector("#upload-profile");
 const loadingOverlay = document.querySelector("#loading-overlay");
 const content = document.querySelector(".content");
+const backButton = document.querySelector("header a");
+
+// Function to check if user has completed orders
+const checkUserOrders = async (userId) => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(ordersRef, where('userId', '==', userId), where('status', '==', 'completed'));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error("Error checking user orders:", error);
+    return false;
+  }
+};
 
 // Watch auth
 onAuthStateChanged(auth, async (user) => {
@@ -53,6 +67,10 @@ onAuthStateChanged(auth, async (user) => {
       usernameP.innerText = "#" + (data.username || "Unnamed");
       emailInput.value    = data.email || "";
       phoneInput.value    = data.phone || "";
+      
+      // Check user's order history and set back button href
+      const hasCompletedOrders = await checkUserOrders(user.uid);
+      backButton.href = hasCompletedOrders ? "../rooms/livingroom.html" : "../shopping/index.html";
       
       // Create a promise to handle image loading
       const loadProfileImage = () => {

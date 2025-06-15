@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="../../assets/styles/shopping.css">
     <link rel="icon" href="https://raw.githubusercontent.com/Leap-Smart-Solutions/Leap-Smart-Control-System/refs/heads/main/Web_Development/src/assets/icons/favicon.ico" />
     <style>
+      /* Prevent scrolling while loading */
+      body.loading {
+        overflow: hidden;
+      }
+
       /* Success Modal Styles */
       .success-modal {
         display: none;
@@ -101,49 +106,91 @@
         }
       }
 
-      /* Loading container styles */
-      .loading-container {
+      /* Loading Styles */
+      #loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #212121;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease-out;
+        z-index: 999999;
       }
 
-      .loading-container.hidden {
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      .loading-content {
+      .loading-container {
         text-align: center;
-        color: #fff;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: none;
       }
 
-      .loading-spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid #353432;
-        border-top: 5px solid #ff6600;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 20px;
+      .logo-container {
+        margin-bottom: 30px;
+      }
+
+      .logo-container img {
+        width: 80px;
+        height: 80px;
+        animation: pulse 2s infinite;
       }
 
       .loading-text {
-        font-size: 1.2rem;
-        font-family: Poppins, sans-serif;
+        font-size: 24px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        color: #ff6600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
       }
 
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+      .loading-bar {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+      }
+
+      .loading-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 40%;
+        background: #ff6600;
+        animation: loading 1.5s ease-in-out infinite;
+        border-radius: 2px;
+      }
+
+      .loading-message {
+        margin-top: 20px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 300;
+      }
+
+      @keyframes loading {
+        0% { left: -40%; }
+        100% { left: 100%; }
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+
+      /* Hide loading container when content is loaded */
+      #loading-overlay.hidden {
+        display: none;
       }
 
       #temporaryContent {
@@ -156,11 +203,15 @@
       }
     </style>
   </head>
-  <body>
-    <div class="loading-container">
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading checkout information...</div>
+  <body class="loading">
+    <div id="loading-overlay">
+      <div class="loading-container">
+        <div class="logo-container">
+          <img src="../../assets/icons/favicon.ico" alt="Leap Logo">
+        </div>
+        <div class="loading-text">Leap Smart Control</div>
+        <div class="loading-bar"></div>
+        <div class="loading-message">Loading checkout information...</div>
       </div>
     </div>
 
