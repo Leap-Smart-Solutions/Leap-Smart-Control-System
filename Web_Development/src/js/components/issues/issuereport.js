@@ -86,9 +86,22 @@ issueForm.addEventListener('submit', async (e) => {
             // Fetch admin emails
             const adminEmails = await getAdminEmails();
             
+            // Fetch user's full name from Firestore
+            const userDoc = await getDocs(query(collection(db, 'users'), where('email', '==', user.email)));
+            let userName = 'User';
+            
+            if (!userDoc.empty) {
+                const userData = userDoc.docs[0].data();
+                userName = userData.fullName;
+                console.log('User data from Firestore:', userData);
+            }
+            
+            console.log('User name from Firestore:', userName);
+            
             const emailParams = {
                 to_email: user.email,
-                to_name: user.displayName || 'User',
+                to_name: userName,
+                subject: `New Issue Created - ${title} (ID: ${docRef.id})`,
                 issue_id: docRef.id,
                 issue_title: title,
                 issue_description: description,
@@ -241,8 +254,21 @@ async function loadUserIssues() {
 }
 
 // Listen for auth state changes
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
     if (user) {
+        try {
+            // Fetch user's full name from Firestore
+            const userDoc = await getDocs(query(collection(db, 'users'), where('email', '==', user.email)));
+            if (!userDoc.empty) {
+                const userData = userDoc.docs[0].data();
+                console.log('User data from Firestore:', userData);
+                console.log('User fullName:', userData.fullName);
+            } else {
+                console.log('No user document found in Firestore');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
         loadUserIssues();
     } else {
         issuesList.innerHTML = '<div class="auth-message">Please log in to view your issues</div>';
@@ -251,7 +277,7 @@ auth.onAuthStateChanged((user) => {
 
 // Load issues when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    loadUserIssues();
+    // The auth state change listener will handle the loading
 });
 
 // Initial render
