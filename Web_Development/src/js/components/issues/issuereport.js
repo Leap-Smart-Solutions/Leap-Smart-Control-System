@@ -73,7 +73,7 @@ issueForm.addEventListener('submit', async (e) => {
         const issueData = {
             title,
             description,
-            priority: 'null',
+            priority: 'Not Set Yet',
             status: 'Pending',
             userId: user.uid,
             createdAt: new Date()
@@ -142,18 +142,22 @@ filterStatus.addEventListener('change', filterAndRenderIssues);
 // Filter and render issues
 function filterAndRenderIssues() {
     const searchTerm = searchInput.value.toLowerCase();
-    const priorityFilter = filterPriority.value;
-    const statusFilter = filterStatus.value;
+    const priorityFilter = filterPriority.value.toLowerCase();
+    const statusFilter = filterStatus.value.toLowerCase();
 
     const filteredIssues = allIssues.filter(issue => {
+        // Search term matching
         const matchesSearch = 
             issue.title.toLowerCase().includes(searchTerm) ||
-            issue.description.toLowerCase().includes(searchTerm) ||
-            (issue.priority && issue.priority.toLowerCase().includes(searchTerm)) ||
-            (issue.status && issue.status.toLowerCase().includes(searchTerm));
+            issue.description.toLowerCase().includes(searchTerm);
         
-        const matchesPriority = !priorityFilter || issue.priority === priorityFilter;
-        const matchesStatus = !statusFilter || issue.status === statusFilter;
+        // Priority matching
+        const matchesPriority = !priorityFilter || 
+            (issue.priority && issue.priority.toLowerCase() === priorityFilter);
+        
+        // Status matching
+        const matchesStatus = !statusFilter || 
+            (issue.status && issue.status.toLowerCase() === statusFilter);
         
         return matchesSearch && matchesPriority && matchesStatus;
     });
@@ -170,10 +174,10 @@ function renderIssues(issues) {
             </div>
             <div class="issue-col" data-label="Description">${issue.description}</div>
             <div class="issue-col" data-label="Priority">
-                <span class="priority-tag priority-${issue.priority}">${issue.priority}</span>
+                <span class="priority-tag priority-${(issue.priority || 'Not-Set-Yet').replace(/\s+/g, '-')}">${issue.priority || 'Not Set Yet'}</span>
             </div>
             <div class="issue-col" data-label="Status">
-                <span class="status-tag status-${issue.status}">${issue.status}</span>
+                <span class="status-tag status-${issue.status.toLowerCase()}">${issue.status}</span>
             </div>
         </div>
     `).join('');

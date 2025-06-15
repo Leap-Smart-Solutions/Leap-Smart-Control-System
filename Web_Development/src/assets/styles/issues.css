@@ -357,43 +357,86 @@ textarea {
 
 /* Priority Tags */
 .priority-tag {
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
     text-align: center;
     font-size: 0.9em;
+    font-weight: 500;
+    text-transform: capitalize;
+    display: inline-block;
+    min-width: 100px;
 }
 
-.priority-low {
-    background-color: var(--success-color);
+.priority-low,
+.priority-Low {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
 }
 
-.priority-medium {
-    background-color: var(--warning-color);
+.priority-medium,
+.priority-Medium {
+    background-color: #ff9800;
+    color: white;
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.2);
 }
 
-.priority-high {
-    background-color: var(--danger-color);
+.priority-high,
+.priority-High {
+    background-color: #f44336;
+    color: white;
+    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2);
+}
+
+.priority-Not-Set-Yet {
+    background-color: #757575;
+    color: white;
+    box-shadow: 0 2px 4px rgba(117, 117, 117, 0.2);
 }
 
 /* Status Tags */
 .status-tag {
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
     text-align: center;
     font-size: 0.9em;
+    font-weight: 500;
+    text-transform: capitalize;
+    display: inline-block;
+    min-width: 100px;
 }
 
 .status-open {
-    background-color: var(--primary-color);
-    color: var(--background-color);
+    background-color: #2196F3;
+    color: white;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
 }
 
-.status-in-progress {
-    background-color: var(--warning-color);
+.status-pending {
+    background-color: #FFC107;
+    color: #212121;
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.2);
 }
 
-.status-resolved {
-    background-color: var(--success-color);
+.status-closed {
+    background-color: #9E9E9E;
+    color: white;
+    box-shadow: 0 2px 4px rgba(158, 158, 158, 0.2);
+}
+
+/* Hover effects for tags */
+.priority-tag:hover, .status-tag:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+}
+
+/* Mobile adjustments for tags */
+@media (max-width: 768px) {
+    .priority-tag, .status-tag {
+        min-width: 80px;
+        padding: 4px 8px;
+        font-size: 0.8em;
+    }
 }
 
 /* Action Buttons */
