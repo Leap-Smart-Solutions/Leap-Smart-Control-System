@@ -284,14 +284,14 @@ header a i {
 .resend-button {
   background: none;
   border: none;
-  color: var(--blue);
+  color: #ee8924;
   cursor: pointer;
   font-size: 16px;
   text-decoration: underline;
 }
 
 .resend-button:hover {
-  color: #0703ff;
+  color: #ee8924;
 }
 
 /* Phone Verification Styles */
