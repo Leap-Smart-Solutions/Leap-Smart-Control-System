@@ -659,7 +659,7 @@
       width: 30%;
     }
     .middle .middle-section .mid-bot .left-mid-bot .camera,
-    .middle .middle-section .mid-bot .left-mid-bot .wifi {
+    .middle .middle-section .mid-bot .left-mid-bot .doorlock {
       padding: 10px 20px;
       background-color: #1c1c1c;
       border-radius: 15px;
@@ -667,26 +667,32 @@
       height: 43%;
       width: 90%;
     }
+    .middle .middle-section .mid-bot .left-mid-bot .doorlock {
+      position: relative;
+    }
     .fa-power-off {
-      color: #ff6600;
+      color: rgb(102, 102, 102);
       cursor: pointer;
     }
     .middle .middle-section .mid-bot .left-mid-bot .camera .camera-detailes,
-    .middle .middle-section .mid-bot .left-mid-bot .wifi .wifi-detailes {
+    .middle .middle-section .mid-bot .left-mid-bot .doorlock .doorlock-detailes {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .middle .middle-section .mid-bot .left-mid-bot .camera img,
-    .middle .middle-section .mid-bot .left-mid-bot .wifi img {
+    .middle .middle-section .mid-bot .left-mid-bot .doorlock img {
       display: block;
       margin-right: auto;
       margin-left: auto;
-      padding-top: 10px;
       width: 50%;
+      margin-top: 10px;
     }
-    .middle .middle-section .mid-bot .left-mid-bot .wifi img {
-      width: 75%;
+    .middle .middle-section .mid-bot .left-mid-bot .doorlock img {
+      position: absolute;
+      width: 50%;
+      top: 10px;
+      left: 33.5375px;
     }
 
     /* Robotic vacuum section */

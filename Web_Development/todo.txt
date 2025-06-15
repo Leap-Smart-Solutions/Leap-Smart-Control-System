@@ -191,3 +191,5 @@ The splash screen should be added to: [list the specific pages you want to add i
 
 maris14415@hosliy.com
 G*Un"Z-YwLF7_Fq
+
+rgb(102, 102, 102)
