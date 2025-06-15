@@ -177,3 +177,17 @@ Comprehensive management systems
 Automated invoicing
 Secure access control
 This presentation provides a high-level overview of the backend architecture while highlighting the key features and security measures that make the Leap Smart Control System robust and user-friendly. Would you like me to expand on any particular aspect?
+
+Prompt for loading splash screen
+————————————————————————————————
+Please help me add the loading splash screen from the living room page to other pages in the application. The splash screen should:
+Show a pulsing logo animation
+Display a loading bar
+Show a loading message
+Check authentication and permissions before showing the main content
+Use the same styling and animations as the living room page
+Handle the transition from loading to main content smoothly
+The splash screen should be added to: [list the specific pages you want to add it to]
+
+maris14415@hosliy.com
+G*Un"Z-YwLF7_Fq

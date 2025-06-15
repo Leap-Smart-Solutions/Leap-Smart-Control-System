@@ -6,7 +6,7 @@ import { collection, query, where, getDocs, doc, getDoc } from "https://www.gsta
 
 let app = document.getElementById('app');
 let temporaryContent = document.getElementById('temporaryContent');
-let loadingContainer = document.querySelector('.loading-container');
+let loadingOverlay = document.getElementById('loading-overlay');
 
 // Check authentication state
 const checkAuth = () => {
@@ -130,13 +130,14 @@ const loadTemplate = async () => {
     // Initialize products
     await initApp();
     
-    // Hide loading container after everything is loaded
-    loadingContainer.classList.add('hidden');
+    // Hide loading overlay after everything is loaded
+    loadingOverlay.classList.add('hidden');
   } catch (error) {
     console.error('Error loading template:', error);
-    loadingContainer.innerHTML = `
-      <div class="loading-content">
-        <div class="loading-text">Error loading products. Please try again.</div>
+    loadingOverlay.innerHTML = `
+      <div class="loading-container">
+        <div class="loading-text" style="color: #ff3b30;">Error loading products</div>
+        <div class="loading-message">Please try again</div>
         <button onclick="window.location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #E8BC0E; border: none; border-radius: 5px; cursor: pointer;">
           Retry
         </button>
