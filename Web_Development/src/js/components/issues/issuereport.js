@@ -1,17 +1,37 @@
 import { auth, db } from '../../firebase/firebaseConfig.js';
 import { collection, addDoc, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js';
 
-// Initialize EmailJS
+// Initialize EmailJS for Issues
 (function() {
-  // Add EmailJS script
-  const script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-  script.async = true;
-  script.onload = () => {
-    window.emailjs.init("vNNcicG5JmPhSkPF4");
-  };
-  document.head.appendChild(script);
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+    script.async = true;
+    script.onload = () => {
+        window.emailjs.init("cji7mNq-RToAXRA72"); // Replace with your new EmailJS public key
+    };
+    document.head.appendChild(script);
 })();
+
+// Function to fetch admin emails from Firestore
+async function getAdminEmails() {
+    try {
+        const adminsQuery = query(collection(db, 'admins'));
+        const querySnapshot = await getDocs(adminsQuery);
+        const adminEmails = [];
+        
+        querySnapshot.forEach((doc) => {
+            const adminData = doc.data();
+            if (adminData.email) {
+                adminEmails.push(adminData.email);
+            }
+        });
+        
+        return adminEmails;
+    } catch (error) {
+        console.error('Error fetching admin emails:', error);
+        return [];
+    }
+}
 
 // DOM Elements
 const modal = document.getElementById('issueModal');
@@ -63,6 +83,9 @@ issueForm.addEventListener('submit', async (e) => {
         
         // Send email notification
         try {
+            // Fetch admin emails
+            const adminEmails = await getAdminEmails();
+            
             const emailParams = {
                 to_email: user.email,
                 to_name: user.displayName || 'User',
@@ -71,12 +94,13 @@ issueForm.addEventListener('submit', async (e) => {
                 issue_description: description,
                 issue_status: 'Pending',
                 issue_date: new Date().toLocaleDateString(),
-                issue_priority: 'Not Set'
+                issue_priority: 'Not Set Yet',
+                bcc_emails: adminEmails.join(',') // Add admin emails as BCC
             };
 
             await window.emailjs.send(
-                'service_qwds9at',
-                'template_vsjou47',
+                'service_2if6dys', // Replace with your new EmailJS service ID
+                'template_ngjjgzr', // Replace with your new EmailJS template ID
                 emailParams
             );
             
