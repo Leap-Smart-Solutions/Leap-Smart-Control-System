@@ -101,7 +101,7 @@ Leap-Smart-Control-System/
 
 ### Software
 - Python 3.8+
-- TensorFlow, Keras, OpenCV (AI/ML modules)
+- TensorFlow, Keras, OpenCV, LangChain (AI/ML modules)
 - Android Studio or React Native (mobile app)
 - Web stack: HTML, CSS, JavaScript, Flask/Streamlit (dashboard)
 - Additional libraries: Firebase, SQLite, MQTT, etc.
