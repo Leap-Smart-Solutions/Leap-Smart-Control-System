@@ -70,7 +70,7 @@ It integrates **IoT control, recipe retrieval, shopping list categorization, and
 
 ### **1. Clone the repo**
 ```bash
-git clone https://github.com/HabibaMAtiia/leap-smart-control-system
+git clone https://github.com/leap-smart-solutions/leap-smart-control-system
 cd leap-smart-control-system
 ```
 ### **2. Install dependencies**
@@ -99,6 +99,7 @@ Go to:
 ## 👨‍💻 Author 
 
 **Eng. Habiba Mohammad** 📩 habibamohamad062@gmail.com
+
 
 
 
