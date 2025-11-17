@@ -4,7 +4,6 @@
 The **Leap Smart Home Chatbot** is an AI-powered conversational system designed to manage smart-home tasks through **voice and text**.  
 It integrates **IoT control, recipe retrieval, shopping list categorization, and general conversation**, powered by **LLaMA-3**, LangChain, Firebase, and a custom RAG pipeline.
 
----
 
 ## 🚀 Features
 
@@ -28,9 +27,8 @@ It integrates **IoT control, recipe retrieval, shopping list categorization, and
 - LLaMA-3 powered general conversation  
 - Uses **ConversationBufferMemory** for multi-turn context  
 - Natural & concise responses
- 
----
 
+ 
 ## 🛠️ Tech Stack
 
 ### **Backend**
@@ -52,7 +50,6 @@ It integrates **IoT control, recipe retrieval, shopping list categorization, and
 - ConversationBufferMemory
 - Custom RAG pipeline
 
----
 
 ## 📁 Project Structure
 ```bash
@@ -67,7 +64,7 @@ It integrates **IoT control, recipe retrieval, shopping list categorization, and
 │ └── food_recipes.csv
 └── README.md
 ```
----
+
 
 ## ⚙️ Setup Instructions
 
@@ -102,6 +99,7 @@ Go to:
 ## 👨‍💻 Author 
 
 **Eng. Habiba Mohammad** 📩 habibamohamad062@gmail.com
+
 
 
 
