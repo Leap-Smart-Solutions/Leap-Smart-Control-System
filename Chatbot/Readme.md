@@ -31,22 +31,6 @@ It integrates **IoT control, recipe retrieval, shopping list categorization, and
  
 ---
 
-## 🧠 System Architecture
-User Input (Text/Voice)
-↓
-Intent Classifier (LLaMA-3)
-↓
-| home_assistant | recipe_assistant | shopping | general |
-↓
-Task-specific module
-↓
-Flask Backend → Firebase / RAG / Groq API
-↓
-Frontend (chat.html)
-
-
----
-
 ## 🛠️ Tech Stack
 
 ### **Backend**
@@ -118,6 +102,7 @@ Go to:
 ## 👨‍💻 Author 
 
 **Eng. Habiba Mohammad** 📩 habibamohamad062@gmail.com
+
 
 
 
