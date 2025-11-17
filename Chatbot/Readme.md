@@ -9,7 +9,7 @@ It integrates **IoT control, recipe retrieval, shopping list categorization, and
 
 ### 🏠 1. Smart Home Control  
 - Turn ON/OFF IoT devices via Firebase  
-- Real-time state reading and updates  
+- Real-time devices state reading and updates  
 - Natural-language control (e.g., *“Turn on the light”*)
 
 ### 🍳 2. Recipe Assistant (RAG)  
@@ -99,6 +99,7 @@ Go to:
 ## 👨‍💻 Author 
 
 **Eng. Habiba Mohammad** 📩 habibamohamad062@gmail.com
+
 
 
 
